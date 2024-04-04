@@ -1,0 +1,11 @@
+错误描述：
+Traceback (most recent call last):
+  File "D:/PycharmProjects/newProject/07-Python中变量的定义与引用.py", line 7, in <module>
+    print(age)
+NameError: name 'age' is not defined
+
+错误解析：
+首先要查看File这一行，了解具体是这个项目中的哪个文件出错了，然后分析第多少行，看line 行号。最后看报错的原因：NameError: name 'age' is not defined，由以上描述可知，代表age这个变量没有定义就直接被引用了
+
+解决方案：
+重新定义age这个变量

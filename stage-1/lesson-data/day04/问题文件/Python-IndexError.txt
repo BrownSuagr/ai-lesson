@@ -1,0 +1,11 @@
+错误描述：
+Traceback (most recent call last):
+  File "D:/PycharmProjects/newProject/12-Python中字符串索引下标.py", line 7, in <module>
+    print(name[4])  # ???
+IndexError: string index out of range
+
+错误分析：
+出现以上错误的主要原因在于我们访问的索引下标超过了这个序列类型数据的最大范围（越界） =>  out  of  range
+
+解决方案：
+删除越界的标志

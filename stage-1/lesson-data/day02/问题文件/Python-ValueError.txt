@@ -1,0 +1,10 @@
+错误描述：Traceback (most recent call last):
+  File "D:/PycharmProjects/newProject/04-Python中数据类型转换.py", line 33, in <module>
+    num1 = int(str1)
+ValueError: invalid literal for int() with base 10: 'abcd'
+
+错误解析：
+出现以上错误的主要原因在于我们对int('abcd')进行了类型转换，但是类型转换，比如字符串 => 整形，其字符串的值必须是有意义的整数，否则无法转换
+
+解决方案：
+使用正确的数值类型字符串进行int转换

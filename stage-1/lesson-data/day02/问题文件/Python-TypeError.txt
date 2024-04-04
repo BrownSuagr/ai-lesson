@@ -1,0 +1,8 @@
+错误描述：
+Traceback (most recent call last):
+  File "D:/PycharmProjects/newProject/16-Python中if判断语句（结合input输入）.py", line 7, in <module>
+    if age >= 18:
+TypeError: '>=' not supported between instances of 'str' and 'int'
+
+错误解析：
+类型错误，>=不支持在字符串str与整型int之间进行比较
