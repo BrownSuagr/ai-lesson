@@ -1,4 +1,5 @@
 import multiprocessing
+import signal
 import time
 import os
 
@@ -27,6 +28,23 @@ def work():
 
     ppid = os.getppid()
     print(f'work父进程编号：{ppid}')
+
+
+# 全局进程变量
+process_variable = []
+
+
+# 进程变量写入数据
+def write_data():
+    for i in range(5):
+        process_variable.append(i)
+        print(f'数组添加元素：{i}')
+    print(f'进程变量写入数据完毕：{process_variable}')
+
+
+# 进程变量读数据
+def read_data():
+    print(f'读出进程变量的数据：{process_variable}')
 
 
 def main():
@@ -60,6 +78,33 @@ def main():
     coding_pid = coding_process.pid
     time.sleep(1)
     print(f'coding_pid:{coding_pid}')
+
+    # 2、结束进程
+    # os.kill(pid, signal.SIGTERM)
+    # pid：需要结束进程PID
+    # signal：操作系统标志位，不同系统不一样 eg：9代表强制结束进程，15代表正常结束进程
+    # os.kill(1024, signal.NSIG)
+
+    # 3、进程之间不共享全局变量，类似于Copy,
+    # - 进程与进程之间是相互独立的
+    # - 主进程不会等待所有子进程结束才结束
+    write_process = multiprocessing.Process(target=write_data)
+    read_process = multiprocessing.Process(target=read_data)
+
+    # 守护进程
+    read_process.daemon = True
+    write_process.start()
+    time.sleep(2)
+    read_process.start()
+
+    # 强制销毁全部子进程
+    read_process.terminate()
+    read_process.terminate()
+
+
+
+
+
 
 
 
