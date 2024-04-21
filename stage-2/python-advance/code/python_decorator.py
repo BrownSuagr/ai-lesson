@@ -8,8 +8,10 @@ def main():
     #     - 装饰器传递参数（高级装饰器）
     #     - 类中装饰器
 
-    sub_num(1, 2)
-    sum_num(1, 2)
+    # sub_num(1, 2)
+    # sum_num(1, 2)
+
+    comment()
 
 # 装饰器传递参数
 # 定一个外层的函数接收装饰器传递参数
@@ -39,7 +41,7 @@ def sub_num(num1, num2):
 
 
 # 类装饰器
-class Check(object):
+class CheckLogin(object):
     # 定一个初始化方法用户接收fn函数的内存地址
     def __init__(self, fn):
         # 把函数的内存地址赋值给类的私有属性
@@ -49,10 +51,12 @@ class Check(object):
     def __call__(self, *args, **kwargs):
         # 装饰器的功能逻辑
         print('请先登录')
+
         # 调用装饰器修饰的函数
         self.__fn()
 
-@Check
+
+@CheckLogin
 def comment():
     print('开始编写评论')
 
