@@ -50,5 +50,13 @@
 ![img_19.png](img_19.png)
 
 ### 6、Shell编程
+![img_24.png](img_24.png)
+
+
+
+
+
+
+
 
 
