@@ -14,7 +14,41 @@
 ![img_31.png](img_31.png)
 ![img_32.png](img_32.png)
 
- 
+## 3、MySQL约束
+
+### 3.1、主键约束
+![img_37.png](img_37.png)
+
+### 3.2、唯一约束
+![img_33.png](img_33.png)
+
+### 3.3、非空约束
+![img_35.png](img_35.png)
+
+### 3.4、默认值约束
+![img_34.png](img_34.png)
+
+### 3.5、外键约束
+![img_38.png](img_38.png)
+
+### 3.6、总结
+![img_39.png](img_39.png)
+![img_40.png](img_40.png)
+
+
+## 4、MySQL中DQL语句
+![img_41.png](img_41.png)
+### 4.1、WHERE查询条件类型
+![img_42.png](img_42.png)
+### 4.2、GROUP BY聚合查询
+![img_43.png](img_43.png)
+### 4.3、
+
+
+
+
+
+
 
 
 
