@@ -35,14 +35,45 @@
 ![img_39.png](img_39.png)
 ![img_40.png](img_40.png)
 
-
 ## 4、MySQL中DQL语句
 ![img_41.png](img_41.png)
 ### 4.1、WHERE查询条件类型
+
 ![img_42.png](img_42.png)
 ### 4.2、GROUP BY聚合查询
 ![img_43.png](img_43.png)
-### 4.3、
+
+
+## 5、MySQL多表查询
+### 5.1、交叉连接
+![img_46.png](img_46.png)
+
+### 5.2、内连接
+![img_45.png](img_45.png)
+
+### 5.3、外连接
+![img_44.png](img_44.png)
+
+### 5.4、子查询
+![img_47.png](img_47.png)
+
+
+## 6、数据库三大范式（数据库设计）
+### 6.1、第一范式
+![img_49.png](img_49.png)
+
+### 6.2、第二范式
+![img_50.png](img_50.png)
+
+### 6.3、第三范式
+![img_51.png](img_51.png)
+
+
+
+
+
+
+
 
 
 

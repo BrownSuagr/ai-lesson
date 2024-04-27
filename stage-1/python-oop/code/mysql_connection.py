@@ -1,7 +1,5 @@
 import sys
 import pymysql
-from colorama import Fore, Back, Style
-
 
 class MySQLConnection(object):
 
@@ -20,9 +18,12 @@ class MySQLConnection(object):
         Author: Brown Sugar
         Description: This is a sample script
         """
-        print(Fore.YELLOW + '='*80)
-        print(Fore.YELLOW + 'MySQL Connection - Version 1.0 - Start of connection')
         print('='*80)
+        print('MySQL Connection - Version 1.0 - Start of connection')
+        print('='*80)
+        print('')
+        print('')
+        print('')
         # print('Author: Brown Sugar')
         # print('Description: This is a sample script')
 
@@ -58,6 +59,9 @@ class MySQLConnection(object):
         self.__cursor.close()
         self.__connection_obj.close()
 
+        print('')
+        print('')
+        print('')
         print('='*80)
         print('MySQL Connection - Version 1.0 - Connection destruction')
         print('='*80)
@@ -65,9 +69,19 @@ class MySQLConnection(object):
 
 def main():
     # 创建连接对象
-    conn = MySQLConnection('124.70.78.122', 'root', '!@#123qwe', 'bs')
-    result = conn.execute('SELECT * FROM amm_user')
-    print(result)
+    conn = MySQLConnection('124.70.78.122', 'root', '!@#123qwe', 'temp')
+    result = conn.execute('SELECT * FROM product')
+    for i in result:
+        print(f'产品数据：{i}')
+    else:
+        print('')
+
+    result2 = conn.execute('SELECT * FROM students')
+    for i in result2:
+        print(f'学生数据：{i}')
+    else:
+        print('')
+
     del conn
 
 
