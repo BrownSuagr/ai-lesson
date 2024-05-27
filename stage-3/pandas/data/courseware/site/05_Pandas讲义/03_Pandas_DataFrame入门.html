@@ -1,0 +1,1928 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/logo.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+    
+    
+      
+        <title>3 Pandas DataFrame 入门 - 数据处理与统计分析 V3.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2d9f7617.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#3-pandas-dataframe" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="数据处理与统计分析 V3.0" class="md-header__button md-logo" aria-label="数据处理与统计分析 V3.0" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            数据处理与统计分析 V3.0
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              3 Pandas DataFrame 入门
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="数据处理与统计分析 V3.0" class="md-nav__button md-logo" aria-label="数据处理与统计分析 V3.0" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    数据处理与统计分析 V3.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          第一章 Linux
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第一章 Linux" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          第一章 Linux
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Linux%E8%AE%B2%E4%B9%89/01_Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F.html" class="md-nav__link">
+        1 Linux操作系统
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Linux%E8%AE%B2%E4%B9%89/02_Linux%E7%B3%BB%E7%BB%9F%E9%AB%98%E7%BA%A7.html" class="md-nav__link">
+        2 Linux系统高级
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          第二章 MySQL
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第二章 MySQL" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          第二章 MySQL
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MySQL%E8%AE%B2%E4%B9%89/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%801.html" class="md-nav__link">
+        1 MySQL数据库基础I
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MySQL%E8%AE%B2%E4%B9%89/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%802.html" class="md-nav__link">
+        2 MySQL数据库基础II
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MySQL%E8%AE%B2%E4%B9%89/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E9%AB%98%E7%BA%A7.html" class="md-nav__link">
+        3 MySQL高级
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          第三章 环境搭建
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第三章 环境搭建" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          第三章 环境搭建
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/01_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        1 环境搭建及使用
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          第四章 NumPy
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第四章 NumPy" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          第四章 NumPy
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_NumPy%E8%AE%B2%E4%B9%89/01_NumPy%E8%AE%B2%E4%B9%89.html" class="md-nav__link">
+        1 NumPy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_NumPy%E8%AE%B2%E4%B9%89/02_%E5%B8%B8%E7%94%A8%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        2 常用概念
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          第五章 Pandas
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第五章 Pandas" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          第五章 Pandas
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01_Python%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%AE%80%E4%BB%8B.html" class="md-nav__link">
+        1 Python 数据分析处理简介
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02_Pandas_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html" class="md-nav__link">
+        2 Pandas 数据结构
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          3 Pandas DataFrame 入门
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="03_Pandas_DataFrame%E5%85%A5%E9%97%A8.html" class="md-nav__link md-nav__link--active">
+        3 Pandas DataFrame 入门
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1 加载数据集
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2 查看部分数据
+  </a>
+  
+    <nav class="md-nav" aria-label="2 查看部分数据">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    2.1 根据列名加载部分列数据
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    2.2 按行加载部分数据
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    2.3 获取指定行/列数据
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3 分组和聚合计算
+  </a>
+  
+    <nav class="md-nav" aria-label="3 分组和聚合计算">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    3.1 分组方式
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    3.2 分组频数计算
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4 简单绘图
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    小结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04_Pandas%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8.html" class="md-nav__link">
+        4 Pandas 数据分析入门
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="05_%E6%95%B0%E6%8D%AE%E7%BB%84%E5%90%88.html" class="md-nav__link">
+        5 数据组合
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="06_%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97.html" class="md-nav__link">
+        6 数据清洗
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="07_apply%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0.html" class="md-nav__link">
+        7 apply 自定义函数
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="08_%E6%95%B0%E6%8D%AE%E5%88%86%E7%BB%84.html" class="md-nav__link">
+        8 数据分组
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="09_%E6%95%B0%E6%8D%AE%E9%80%8F%E8%A7%86%E8%A1%A8.html" class="md-nav__link">
+        9 数据透视表
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="10_datetime%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html" class="md-nav__link">
+        10 datetime 数据类型
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          第六章 数据分析绘图
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第六章 数据分析绘图" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          第六章 数据分析绘图
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/01_%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        1 Python数据可视化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/02_Matplotlib%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        2 Matplotlib绘图
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/03_Pandas%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        3 Pandas绘图
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/04_Seaborn%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        4 Seaborn 可视化
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          第七章 综合案例
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第七章 综合案例" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          第七章 综合案例
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_%E7%BB%BC%E5%90%88%E6%A1%88%E4%BE%8B/01_RFM%E4%BC%9A%E5%91%98%E4%BB%B7%E5%80%BC%E5%BA%A6%E6%A8%A1%E5%9E%8B%E6%A1%88%E4%BE%8B.html" class="md-nav__link">
+        1 RFM会员价值度模型案例
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1 加载数据集
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2 查看部分数据
+  </a>
+  
+    <nav class="md-nav" aria-label="2 查看部分数据">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    2.1 根据列名加载部分列数据
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    2.2 按行加载部分数据
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    2.3 获取指定行/列数据
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3 分组和聚合计算
+  </a>
+  
+    <nav class="md-nav" aria-label="3 分组和聚合计算">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    3.1 分组方式
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    3.2 分组频数计算
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4 简单绘图
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    小结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="3-pandas-dataframe">3 Pandas DataFrame 入门<a class="headerlink" href="#3-pandas-dataframe" title="Permanent link">&para;</a></h1>
+<h2 id="_1">学习目标<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>掌握DataFrame加载数据文件的方法</li>
+<li>知道如何加载部分数据</li>
+<li>知道如何对数据进行简单的分组聚合操作</li>
+</ul>
+<h2 id="1">1 加载数据集<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>做数据分析首先要加载数据，并查看其结构和内容，对数据有初步的了解</li>
+<li>查看行，列</li>
+<li>
+<p>查看每一列中存储信息的类型</p>
+</li>
+<li>
+<p>Pandas 并不是 Python 标准库，所以先导入Pandas</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</code></pre></div>
+</li>
+<li>
+<p>导入Pandas库之后，通过read_csv加载文件</p>
+</li>
+<li>
+<p>加载CSV文件</p>
+<ul>
+<li><em>csv文件 Comma-Separated Values</em></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">nobel</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/nobel_prizes.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="c1"># 加载nobel_prizes.csv文件</span>
+<span class="n">nobel</span><span class="o">.</span><span class="n">head</span><span class="p">()</span> <span class="c1"># 展示前5条数据</span>
+</code></pre></div>
+<p><img alt="image-20220121141321225" src="img/image-20220121141321225.png" /></p>
+</li>
+<li>
+<p>加载TSV文件</p>
+<ul>
+<li>tsv文件 Tab-Separated Values</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 参数1 要加载的文件路径，参数2sep 传入分隔符，默认是&#39;,&#39;  &#39;\t&#39;制表符</span>
+<span class="n">gapminder</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/gapminder.tsv&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>  
+<span class="n">gapminder</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+<p><img alt="image-20220121141604905" src="img/image-20220121141604905.png" /></p>
+</li>
+<li>
+<p>可以通过Python的内置函数type查看返回的数据类型
+  <div class="highlight"><pre><span></span><code>type(gapminder)
+</code></pre></div></p>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>pandas.core.frame.DataFrame
+</code></pre></div>
+</blockquote>
+</li>
+<li>
+<p>每个dataframe都有一个shape属性，可以获取DataFrame的行数，列数</p>
+<ul>
+<li><em>注：shape是属性 不是方法 不可以使用df.shape() 会报错</em></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">gapminder</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code><span class="o">(</span><span class="m">1704</span>, <span class="m">6</span><span class="o">)</span>
+</code></pre></div>
+</blockquote>
+</li>
+<li>
+<p>可以通过DataFrame的columns属性获取DataFrame中的列名</p>
+<div class="highlight"><pre><span></span><code><span class="n">gapminder</span><span class="o">.</span><span class="n">columns</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>Index<span class="o">([</span><span class="s1">&#39;country&#39;</span>, <span class="s1">&#39;continent&#39;</span>, <span class="s1">&#39;year&#39;</span>, <span class="s1">&#39;lifeExp&#39;</span>, <span class="s1">&#39;pop&#39;</span>, <span class="s1">&#39;gdpPercap&#39;</span><span class="o">]</span>, <span class="nv">dtype</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="o">)</span>
+</code></pre></div>
+</blockquote>
+</li>
+<li>
+<p>如何获取每一列的数据类型？</p>
+<ul>
+<li>与SQL中的数据表类似，DataFrame中的每一列的数据类型必须相同，不同列的数据类型可以不同</li>
+<li>可以通过**dtypes属性**，或者**info()**方法获取数据类型</li>
+</ul>
+<div class="highlight"><pre><span></span><code>  <span class="n">gapminder</span><span class="o">.</span><span class="n">dtypes</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<p><div class="highlight"><pre><span></span><code>country       object
+continent     object
+year           int64
+lifeExp      float64
+pop            int64
+gdpPercap    float64
+dtype: object
+</code></pre></div>
+  <div class="highlight"><pre><span></span><code><span class="n">gapminder</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</code></pre></div></p>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>&lt;class <span class="s1">&#39;pandas.core.frame.DataFrame&#39;</span>&gt;
+RangeIndex: <span class="m">1704</span> entries, <span class="m">0</span> to <span class="m">1703</span>
+Data columns <span class="o">(</span>total <span class="m">6</span> columns<span class="o">)</span>:
+<span class="c1">#   Column     Non-Null Count  Dtype  </span>
+---  ------     --------------  -----  
+<span class="m">0</span>   country    <span class="m">1704</span> non-null   object 
+<span class="m">1</span>   continent  <span class="m">1704</span> non-null   object 
+<span class="m">2</span>   year       <span class="m">1704</span> non-null   int64  
+<span class="m">3</span>   lifeExp    <span class="m">1704</span> non-null   float64
+<span class="m">4</span>   pop        <span class="m">1704</span> non-null   int64  
+<span class="m">5</span>   gdpPercap  <span class="m">1704</span> non-null   float64
+dtypes: float64<span class="o">(</span><span class="m">2</span><span class="o">)</span>, int64<span class="o">(</span><span class="m">2</span><span class="o">)</span>, object<span class="o">(</span><span class="m">2</span><span class="o">)</span>
+memory usage: <span class="m">80</span>.0+ KB
+</code></pre></div>
+</blockquote>
+</li>
+<li>
+<p>Pandas与Python常用数据类型对照
+    <table>
+      <tr>
+        <td>Pandas类型</td><td>Python类型</td><td>说明</td>
+      </tr>
+      <tr>
+        <td>Object</td><td>string</td><td>字符串类型</td>
+      </tr>
+      <tr>
+        <td>int64</td><td>int</td><td>整形</td>
+      </tr>
+      <tr>
+        <td>float64</td><td>float</td><td>浮点型</td>
+      </tr>
+      <tr>
+        <td>datetime64</td><td>datetime</td><td>日期时间类型，python中需要加载</td>
+      </tr>
+    </table></p>
+</li>
+</ul>
+<h2 id="2">2 查看部分数据<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1 根据列名加载部分列数据<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<ul>
+<li>加载一列数据，通过DataFrame['列名']方式获取</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">nobel_firstname</span> <span class="o">=</span> <span class="n">nobel</span><span class="p">[</span><span class="s1">&#39;firstname&#39;</span><span class="p">]</span>
+<span class="c1">#获取数据前5行</span>
+<span class="n">nobel_firstname</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>id
+<span class="m">941</span>      Rainer
+<span class="m">942</span>    Barry C.
+<span class="m">943</span>      Kip S.
+<span class="m">944</span>     Jacques
+<span class="m">945</span>     Joachim
+Name: firstname, dtype: object
+</code></pre></div>
+</blockquote>
+<ul>
+<li>
+<p>通过列名加载多列数据，通过DataFrame[['列名1','列名2',...]]</p>
+</li>
+<li>
+<p>注意这里是两层[] 可以理解为DataFrame[列名的list]</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">subset</span> <span class="o">=</span> <span class="n">nobel</span><span class="p">[[</span><span class="s1">&#39;firstname&#39;</span><span class="p">,</span> <span class="s1">&#39;surname&#39;</span><span class="p">]]</span>
+<span class="c1">#打印后五行数据</span>
+<span class="n">subset</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>    firstname    surname
+id       
+<span class="m">160</span>  Jacobus Henricus    van <span class="err">&#39;</span>t Hoff
+<span class="m">293</span>  Emil Adolf  von Behring
+<span class="m">569</span>  Sully   Prudhomme
+<span class="m">462</span>  Jean Henry  Dunant
+<span class="m">463</span>  Frédéric    Passy
+</code></pre></div>
+</blockquote>
+<h3 id="22">2.2 按行加载部分数据<a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
+<ul>
+<li>loc：通过行索引标签获取指定行数据</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">#先打印前5行数据 观察第一列</span>
+<span class="n">nobel</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+<p><font color = red>显示结果</font></p>
+<div class="highlight"><pre><span></span><code>    year  category    overallMotivation   firstname   surname motivation  share
+id                            
+<span class="m">941</span>   <span class="m">2017</span>    physics NaN Rainer  Weiss   <span class="s2">&quot;for decisive contributions to the LIGO detect...   2</span>
+<span class="s2">942   2017    physics NaN Barry C.    Barish  &quot;</span><span class="k">for</span> decisive contributions to the LIGO detect...   <span class="m">4</span>
+<span class="m">943</span>   <span class="m">2017</span>    physics NaN Kip S.  Thorne  <span class="s2">&quot;for decisive contributions to the LIGO detect...   4</span>
+<span class="s2">944   2017    chemistry   NaN Jacques Dubochet    &quot;</span><span class="k">for</span> developing cryo-electron microscopy <span class="k">for</span> t...   <span class="m">3</span>
+<span class="m">945</span>   <span class="m">2017</span>    chemistry   NaN Joachim Frank   <span class="s2">&quot;for developing cryo-electron microscopy for t...   3</span>
+</code></pre></div>
+<ul>
+<li>上述结果中发现，最左边一列是id，这一列的数据是DataFrame的**行索引**，默认情况Pandas会使用[0,1,2,...]作为的行索引，这里我们指定了id作为行索引。</li>
+<li>我们可以使用 .loc 方法传入行索引，来获取DataFrame的部分数据（一行，或多行）</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 获取第一行数据</span>
+<span class="n">nobel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">941</span><span class="p">]</span>
+</code></pre></div>
+<p><font color = red>显示结果</font></p>
+<div class="highlight"><pre><span></span><code>year                                                              <span class="m">2017</span>
+category                                                       physics
+overallMotivation                                                  NaN
+firstname                                                       Rainer
+surname                                                          Weiss
+motivation           <span class="s2">&quot;for decisive contributions to the LIGO detect...</span>
+<span class="s2">share                                                                2</span>
+<span class="s2">Name: 941, dtype: object</span>
+</code></pre></div>
+<ul>
+<li>
+<p>使用tail方法获取最后一行数据</p>
+<div class="highlight"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#tail方法默认输出一行 传入n=1控制只显示1行</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>    year  category    overallMotivation   firstname   surname motivation  share
+id                            
+<span class="m">463</span>   <span class="m">1901</span>    peace   NaN Frédéric    Passy   NaN <span class="m">2</span>
+</code></pre></div>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="c1"># 获取最后一行数据，并打印</span>
+<span class="n">nobel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">463</span><span class="p">]</span>
+</code></pre></div>
+<p><font color = red>显示结果</font></p>
+<div class="highlight"><pre><span></span><code>year                     <span class="m">1901</span>
+category                peace
+overallMotivation         NaN
+firstname            Frédéric
+surname                 Passy
+motivation                NaN
+share                       <span class="m">2</span>
+Name: <span class="m">463</span>, dtype: object
+</code></pre></div>
+</li>
+<li>
+<p>注意：nobel.loc 和 nobel.tail 两种方式获得的最后一行数据有些不同</p>
+<ul>
+<li>我们可以打印两种结果的类型</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">subset_loc</span> <span class="o">=</span> <span class="n">nobel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">463</span><span class="p">]</span> 
+<span class="n">subset_tail</span> <span class="o">=</span> <span class="n">nobel</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> 
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">subset_loc</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">subset_head</span><span class="p">))</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>&lt;class <span class="s1">&#39;pandas.core.series.Series&#39;</span>&gt;
+&lt;class ’pandas.core.frame.DataFrame’&gt;
+</code></pre></div>
+</blockquote>
+</li>
+<li>
+<p>loc：通过索引标签获取指定多行数据</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">nobel</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="mi">941</span><span class="p">,</span> <span class="mi">945</span><span class="p">]]</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>       year category    overallMotivation   firstname   surname motivation  share
+id                          
+<span class="m">941</span> <span class="m">2017</span>    physics NaN Rainer  Weiss   <span class="s2">&quot;for decisive contributions to the LIGO detect...   2</span>
+<span class="s2">945 2017    chemistry   NaN Joachim Frank   &quot;</span><span class="k">for</span> developing cryo-electron microscopy <span class="k">for</span> t...   <span class="m">3</span>
+</code></pre></div>
+</blockquote>
+<ul>
+<li>
+<p>iloc : 通过行号获取行数据</p>
+</li>
+<li>
+<p>在当前案例中，使用iloc 和 loc效果是一样的</p>
+</li>
+<li>需要注意的是，iloc传入的是索引的序号，loc是索引的标签<ul>
+<li>在当前案例中，索引标签和索引序号刚好相同</li>
+<li>并不是所有情况下索引标签=索引序号</li>
+<li>例如：在做时间序列分析的时候，我们可以使用日期作为行索引</li>
+<li>此时索引标签日期</li>
+<li>索引序号依然是0，1，2，3</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 获取第一行数据，并打印</span>
+<span class="n">nobel</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>year                                                              2017
+category                                                       physics
+overallMotivation                                                  NaN
+firstname                                                       Rainer
+surname                                                          Weiss
+motivation           &quot;for decisive contributions to the LIGO detect...
+share                                                                2
+Name: 941, dtype: object
+</code></pre></div>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="c1">#获取第100行数据，并打印</span>
+<span class="n">nobel</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">99</span><span class="p">]</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>year                                                              2009
+category                                                      medicine
+overallMotivation                                                  NaN
+firstname                                                 Elizabeth H.
+surname                                                      Blackburn
+motivation           &quot;for the discovery of how chromosomes are prot...
+share                                                                3
+Name: 835, dtype: object
+</code></pre></div>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="c1"># 获取最后一行  通过shape 获取一共有多少行</span>
+<span class="n">number_of_rows</span> <span class="o">=</span> <span class="n">nobel</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># 总行数-1 获取最后一行行索引</span>
+<span class="n">last_row_index</span> <span class="o">=</span> <span class="n">number_of_rows</span> <span class="o">-</span> <span class="mi">1</span> 
+<span class="c1"># 获取最后一行数据，并打印</span>
+<span class="n">nobel</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">last_row_index</span><span class="p">]</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>year                     1901
+category                peace
+overallMotivation         NaN
+firstname            Frédéric
+surname                 Passy
+motivation                NaN
+share                       2
+Name: 463, dtype: object
+</code></pre></div>
+</blockquote>
+<ul>
+<li>使用iloc时传入-1可以获取最后一行数据</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">nobel</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>year                     1901
+category                peace
+overallMotivation         NaN
+firstname            Frédéric
+surname                 Passy
+motivation                NaN
+share                       2
+Name: 463, dtype: object
+</code></pre></div>
+</blockquote>
+<ul>
+<li><strong>注意</strong> 使用iloc时可以传入-1来获取最后一行数据，使用loc的时候不行 </li>
+</ul>
+<h3 id="23">2.3 获取指定行/列数据<a class="headerlink" href="#23" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>loc和iloc属性既可以用于获取列数据，也可以用于获取行数据</p>
+</li>
+<li>
+<p>df.loc[[行]，[列]]</p>
+</li>
+<li>
+<p>df.iloc[[行]，[列]]</p>
+</li>
+<li>
+<p>使用 loc 获取数据中的1列/几列</p>
+</li>
+<li>
+<p>df.loc[[所有行],[列名]] </p>
+</li>
+<li>取出所有行，可以使用切片语法 df.loc[ : , [列名]]</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">subset</span> <span class="o">=</span> <span class="n">nobel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;firstname&#39;</span><span class="p">,</span> <span class="s1">&#39;surname&#39;</span><span class="p">]]</span>
+<span class="n">subset</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>    firstname    surname
+id       
+<span class="m">941</span>  Rainer  Weiss
+<span class="m">942</span>  Barry C.    Barish
+<span class="m">943</span>  Kip S.  Thorne
+<span class="m">944</span>  Jacques Dubochet
+<span class="m">945</span>  Joachim Frank
+</code></pre></div>
+</blockquote>
+<ul>
+<li>
+<p>使用 iloc 获取数据中的1列/几列</p>
+</li>
+<li>
+<p>df.iloc[:,[列序号]]  # 列序号可以使用-1代表最后一列</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">subset</span> <span class="o">=</span> <span class="n">nobel</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+<span class="n">subset</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>    category surname share
+id           
+941  physics Weiss   2
+942  physics Barish  4
+943  physics Thorne  4
+944  chemistry   Dubochet    3
+945  chemistry   Frank   3
+</code></pre></div>
+</blockquote>
+<ul>
+<li>
+<p>如果loc 和 iloc 传入的参数弄混了，会报错</p>
+</li>
+<li>
+<p>loc 只能接受行/列 的名字， 不能传入索引</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">subset</span> <span class="o">=</span> <span class="n">nobel</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+<span class="n">subset</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<p><div class="highlight"><pre><span></span><code>KeyError: <span class="s2">&quot;None of [Int64Index([1, 4, -1], dtype=&#39;int64&#39;)] are in the [columns]&quot;</span>
+</code></pre></div>
+  - iloc只能接受行/列的索引，不能传入行名，或者列名</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="n">subset</span> <span class="o">=</span> <span class="n">nobel</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,[</span><span class="s1">&#39;category&#39;</span><span class="p">,</span><span class="s1">&#39;surname&#39;</span><span class="p">,</span><span class="s1">&#39;share&#39;</span><span class="p">]]</span>
+<span class="n">subset</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>IndexError: .iloc requires numeric indexers, got <span class="o">[</span><span class="s1">&#39;category&#39;</span> <span class="s1">&#39;surname&#39;</span> <span class="s1">&#39;share&#39;</span><span class="o">]</span>
+</code></pre></div>
+</blockquote>
+<ul>
+<li>通过range 生成序号，结合iloc 获取连续多列数据</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">tmp_range</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">tmp_range</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code><span class="o">[</span><span class="m">0</span>, <span class="m">1</span>, <span class="m">2</span>, <span class="m">3</span>, <span class="m">4</span><span class="o">]</span>
+</code></pre></div>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="n">subset</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="n">tmp_range</span><span class="p">]</span>
+<span class="n">subset</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>    year category    overallMotivation   firstname   surname
+id                   
+<span class="m">941</span>  <span class="m">2017</span>    physics NaN Rainer  Weiss
+<span class="m">942</span>  <span class="m">2017</span>    physics NaN Barry C.    Barish
+<span class="m">943</span>  <span class="m">2017</span>    physics NaN Kip S.  Thorne
+<span class="m">944</span>  <span class="m">2017</span>    chemistry   NaN Jacques Dubochet
+<span class="m">945</span>  <span class="m">2017</span>    chemistry   NaN Joachim Frank
+</code></pre></div>
+</blockquote>
+<ul>
+<li>
+<p>在 iloc中使用切片语法获取几列数据</p>
+</li>
+<li>
+<p>使用切片语法获取前三列</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">subset</span> <span class="o">=</span> <span class="n">nobel</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="n">subset</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code> firstname   surname motivation
+id           
+<span class="m">941</span>  Rainer  Weiss   <span class="s2">&quot;for decisive contributions to the LIGO detect...</span>
+<span class="s2">942  Barry C.    Barish  &quot;</span><span class="k">for</span> decisive contributions to the LIGO detect...
+<span class="m">943</span>  Kip S.  Thorne  <span class="s2">&quot;for decisive contributions to the LIGO detect...</span>
+<span class="s2">944  Jacques Dubochet    &quot;</span><span class="k">for</span> developing cryo-electron microscopy <span class="k">for</span> t...
+<span class="m">945</span>  Joachim Frank   <span class="s2">&quot;for developing cryo-electron microscopy for t...</span>
+</code></pre></div>
+</blockquote>
+<ul>
+<li>获取第0,2,4列</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">subset</span> <span class="o">=</span> <span class="n">nobel</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">subset</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>    year overallMotivation   surname
+id           
+<span class="m">941</span>  <span class="m">2017</span>    NaN Weiss
+<span class="m">942</span>  <span class="m">2017</span>    NaN Barish
+<span class="m">943</span>  <span class="m">2017</span>    NaN Thorne
+<span class="m">944</span>  <span class="m">2017</span>    NaN Dubochet
+<span class="m">945</span>  <span class="m">2017</span>    NaN Frank
+</code></pre></div>
+</blockquote>
+<ul>
+<li>
+<p>使用 loc/iloc 获取指定行，指定列的数据</p>
+</li>
+<li>
+<p>使用loc</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">nobel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">941</span><span class="p">,</span><span class="s1">&#39;firstname&#39;</span><span class="p">]</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<p><div class="highlight"><pre><span></span><code>Rainer
+</code></pre></div>
+  - 使用iloc</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="n">nobel</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>Rainer
+</code></pre></div>
+</blockquote>
+<ul>
+<li>不要混淆loc和iloc，df.loc[42,0] 会报错</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">nobel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code>KeyError: <span class="m">0</span>
+</code></pre></div>
+</blockquote>
+<ul>
+<li>
+<p>获取多行多列</p>
+</li>
+<li>
+<p>可以把获取单行单列的语法和获取多行多列的语法结合起来使用</p>
+</li>
+<li>获取 第一列，第四列，第六列（country,lifeExp,gdpPercap) 数据中的第1行，第20行和第30行</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">nobel</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">29</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">]]</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<p><div class="highlight"><pre><span></span><code> year    firstname   motivation
+id           
+<span class="m">941</span>  <span class="m">2017</span>    Rainer  <span class="s2">&quot;for decisive contributions to the LIGO detect...</span>
+<span class="s2">937  2016    Bob &quot;</span><span class="k">for</span> having created new poetic expressions wit...
+<span class="m">917</span>  <span class="m">2015</span>    Satoshi <span class="s2">&quot;for their discoveries concerning a novel ther...</span>
+</code></pre></div>
+  - 在实际工作中，获取某几列数据的时候，建议传入实际的列名，使用列名的好处：
+    - 增加代码的可读性
+    - 避免因列顺序的变化导致取出错误的列数据</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="n">nobel</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="mi">941</span><span class="p">,</span><span class="mi">937</span><span class="p">,</span><span class="mi">917</span><span class="p">],[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span><span class="s1">&#39;firstname&#39;</span><span class="p">,</span><span class="s1">&#39;motivation&#39;</span><span class="p">]]</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code> year    firstname   motivation
+id           
+<span class="m">941</span>  <span class="m">2017</span>    Rainer  <span class="s2">&quot;for decisive contributions to the LIGO detect...</span>
+<span class="s2">937  2016    Bob &quot;</span><span class="k">for</span> having created new poetic expressions wit...
+<span class="m">917</span>  <span class="m">2015</span>    Satoshi <span class="s2">&quot;for their discoveries concerning a novel ther...</span>
+</code></pre></div>
+</blockquote>
+<ul>
+<li>注意：可以在loc 和 iloc 属性的行部分使用切片获取数据</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">nobel</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">941</span><span class="p">:</span><span class="mi">938</span><span class="p">,[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span><span class="s1">&#39;firstname&#39;</span><span class="p">,</span><span class="s1">&#39;motivation&#39;</span><span class="p">]]</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<div class="highlight"><pre><span></span><code> year    firstname   motivation
+id           
+<span class="m">941</span>  <span class="m">2017</span>    Rainer  <span class="s2">&quot;for decisive contributions to the LIGO detect...</span>
+<span class="s2">942  2017    Barry C.    &quot;</span><span class="k">for</span> decisive contributions to the LIGO detect...
+<span class="m">943</span>  <span class="m">2017</span>    Kip S.  <span class="s2">&quot;for decisive contributions to the LIGO detect...</span>
+<span class="s2">944  2017    Jacques &quot;</span><span class="k">for</span> developing cryo-electron microscopy <span class="k">for</span> t...
+<span class="m">945</span>  <span class="m">2017</span>    Joachim <span class="s2">&quot;for developing cryo-electron microscopy for t...</span>
+<span class="s2">946  2017    Richard &quot;</span><span class="k">for</span> developing cryo-electron microscopy <span class="k">for</span> t...
+<span class="m">938</span>  <span class="m">2017</span>    Jeffrey C.  <span class="s2">&quot;for their discoveries of molecular mechanisms...</span>
+</code></pre></div>
+</blockquote>
+<h2 id="3">3 分组和聚合计算<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>在我们使用Excel或者SQL进行数据处理时，Excel和SQL都提供了基本的统计计算功能</p>
+</li>
+<li>
+<p>当我们再次查看gapminder数据的时候，可以根据数据提出几个问题</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">gapminder</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>输出结果</font></p>
+<p><code>shell
+       country continent  year  lifeExp       pop   gdpPercap
+0  Afghanistan      Asia  1952   28.801   8425333  779.445314
+1  Afghanistan      Asia  1957   30.332   9240934  820.853030
+2  Afghanistan      Asia  1962   31.997  10267083  853.100710
+3  Afghanistan      Asia  1967   34.020  11537966  836.197138
+4  Afghanistan      Asia  1972   36.088  13079460  739.981106
+5  Afghanistan      Asia  1977   38.438  14880372  786.113360
+6  Afghanistan      Asia  1982   39.854  12881816  978.011439
+7  Afghanistan      Asia  1987   40.822  13867957  852.395945
+8  Afghanistan      Asia  1992   41.674  16317921  649.341395
+9  Afghanistan      Asia  1997   41.763  22227415  635.341351</code></p>
+</blockquote>
+<p>① 每一年的平均预期寿命是多少？每一年的平均人口和平均GDP是多少？</p>
+<p>② 如果我们按照大洲来计算，每年每个大洲的平均预期寿命，平均人口，平均GDP情况又如何？</p>
+<p>③ 在数据中，每个大洲列出了多少个国家和地区？</p>
+<h3 id="31">3.1 分组方式<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>对于上面提出的问题，需要进行分组-聚合计算</p>
+</li>
+<li>
+<p>先将数据分组（每一年的平均预期寿命问题 按照年份将相同年份的数据分成一组） </p>
+</li>
+<li>对每组的数据再去进行统计计算如，求平均，求每组数据条目数（频数）等</li>
+<li>再将每一组计算的结果合并起来</li>
+<li>可以使用DataFrame的groupby方法完成分组/聚合计算</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">gapminder</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">)[</span><span class="s1">&#39;lifeExp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>显示结果</font></p>
+<div class="highlight"><pre><span></span><code>year
+<span class="m">1952</span>    <span class="m">49</span>.057620
+<span class="m">1957</span>    <span class="m">51</span>.507401
+<span class="m">1962</span>    <span class="m">53</span>.609249
+<span class="m">1967</span>    <span class="m">55</span>.678290
+<span class="m">1972</span>    <span class="m">57</span>.647386
+<span class="m">1977</span>    <span class="m">59</span>.570157
+<span class="m">1982</span>    <span class="m">61</span>.533197
+<span class="m">1987</span>    <span class="m">63</span>.212613
+<span class="m">1992</span>    <span class="m">64</span>.160338
+<span class="m">1997</span>    <span class="m">65</span>.014676
+<span class="m">2002</span>    <span class="m">65</span>.694923
+<span class="m">2007</span>    <span class="m">67</span>.007423
+Name: lifeExp, dtype: float64
+</code></pre></div>
+</blockquote>
+<ul>
+<li>
+<p>我们将上面一行代码拆开，逐步分析</p>
+</li>
+<li>
+<p>通过gapminder.groupby('year')先创一个分组对象，如果打印这个分组的DataFrame，会返回一个内存地址</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">grouped_year_gapminder</span> <span class="o">=</span> <span class="n">gapminder</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">grouped_year_gapminder</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">grouped_year_gapminder</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>显示结果</font></p>
+<div class="highlight"><pre><span></span><code>&lt;class <span class="s1">&#39;pandas.core.groupby.generic.DataFrameGroupBy&#39;</span>&gt;
+&lt;pandas.core.groupby.generic.DataFrameGroupBy object at 0x123493f10&gt;
+</code></pre></div>
+</blockquote>
+<ul>
+<li>我们可以从分组之后的数据DataFrameGroupBy中，传入列名获取我们感兴趣的数据，并进行进一步计算<ul>
+<li>计算每一年的平均预期寿命，我们需要用到 <em>lifeExp</em>  这一列</li>
+<li>我们可以使用上一小节介绍的方法获取分组之后数据中的一列</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">grouped_year_gapminder_lifeExp</span> <span class="o">=</span> <span class="n">grouped_year_gapminder</span><span class="p">[</span><span class="s1">&#39;lifeExp&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">grouped_year_gapminder_lifeExp</span><span class="p">))</span> 
+<span class="nb">print</span><span class="p">(</span><span class="n">grouped_year_gapminder_lifeExp</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>显示结果</font></p>
+<div class="highlight"><pre><span></span><code>&lt;class <span class="s1">&#39;pandas.core.groupby.generic.SeriesGroupBy&#39;</span>&gt;
+&lt;pandas.core.groupby.generic.SeriesGroupBy object at 0x000001E1938D0710&gt;
+</code></pre></div>
+</blockquote>
+<ul>
+<li>返回结果为一个 SeriesGroupBy （只获取了DataFrameGroupBy中的一列），其内容是分组后的数据</li>
+<li>对分组后的数据计算平均值</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">mean_lifeExp_by_year</span> <span class="o">=</span> <span class="n">grouped_year_gapminder_lifeExp</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mean_lifeExp_by_year</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>显示结果</font></p>
+<div class="highlight"><pre><span></span><code>year
+<span class="m">1952</span>    <span class="m">49</span>.057620
+<span class="m">1957</span>    <span class="m">51</span>.507401
+<span class="m">1962</span>    <span class="m">53</span>.609249
+<span class="m">1967</span>    <span class="m">55</span>.678290
+<span class="m">1972</span>    <span class="m">57</span>.647386
+<span class="m">1977</span>    <span class="m">59</span>.570157
+<span class="m">1982</span>    <span class="m">61</span>.533197
+<span class="m">1987</span>    <span class="m">63</span>.212613
+<span class="m">1992</span>    <span class="m">64</span>.160338
+<span class="m">1997</span>    <span class="m">65</span>.014676
+<span class="m">2002</span>    <span class="m">65</span>.694923
+<span class="m">2007</span>    <span class="m">67</span>.007423
+Name: lifeExp, dtype: float64
+</code></pre></div>
+</blockquote>
+<ul>
+<li>上面的例子只是对一列 <em>lifeExp</em> 进行了分组求平均，如果想对多列值进行分组聚合代码也类似</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">gapminder</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;continent&#39;</span><span class="p">])[[</span><span class="s1">&#39;lifeExp&#39;</span><span class="p">,</span><span class="s1">&#39;gdpPercap&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>显示结果</font></p>
+<p><div class="highlight"><pre><span></span><code>                  lifeExp     gdpPercap
+year continent                         
+<span class="m">1952</span> Africa     <span class="m">39</span>.135500   <span class="m">1252</span>.572466
+     Americas   <span class="m">53</span>.279840   <span class="m">4079</span>.062552
+     Asia       <span class="m">46</span>.314394   <span class="m">5195</span>.484004
+     Europe     <span class="m">64</span>.408500   <span class="m">5661</span>.057435
+     Oceania    <span class="m">69</span>.255000  <span class="m">10298</span>.085650
+<span class="m">1957</span> Africa     <span class="m">41</span>.266346   <span class="m">1385</span>.236062
+     Americas   <span class="m">55</span>.960280   <span class="m">4616</span>.043733
+     Asia       <span class="m">49</span>.318544   <span class="m">5787</span>.732940
+     Europe     <span class="m">66</span>.703067   <span class="m">6963</span>.012816
+     Oceania    <span class="m">70</span>.295000  <span class="m">11598</span>.522455
+<span class="m">1962</span> Africa     <span class="m">43</span>.319442   <span class="m">1598</span>.078825
+     Americas   <span class="m">58</span>.398760   <span class="m">4901</span>.541870
+     Asia       <span class="m">51</span>.563223   <span class="m">5729</span>.369625
+     Europe     <span class="m">68</span>.539233   <span class="m">8365</span>.486814
+     Oceania    <span class="m">71</span>.085000  <span class="m">12696</span>.452430
+<span class="m">1967</span> Africa     <span class="m">45</span>.334538   <span class="m">2050</span>.363801
+     Americas   <span class="m">60</span>.410920   <span class="m">5668</span>.253496
+     Asia       <span class="m">54</span>.663640   <span class="m">5971</span>.173374
+     Europe     <span class="m">69</span>.737600  <span class="m">10143</span>.823757
+     Oceania    <span class="m">71</span>.310000  <span class="m">14495</span>.021790
+<span class="m">1972</span> Africa     <span class="m">47</span>.450942   <span class="m">2339</span>.615674
+     Americas   <span class="m">62</span>.394920   <span class="m">6491</span>.334139
+     Asia       <span class="m">57</span>.319269   <span class="m">8187</span>.468699
+     Europe     <span class="m">70</span>.775033  <span class="m">12479</span>.575246
+     Oceania    <span class="m">71</span>.910000  <span class="m">16417</span>.333380
+<span class="m">1977</span> Africa     <span class="m">49</span>.580423   <span class="m">2585</span>.938508
+     Americas   <span class="m">64</span>.391560   <span class="m">7352</span>.007126
+     Asia       <span class="m">59</span>.610556   <span class="m">7791</span>.314020
+     Europe     <span class="m">71</span>.937767  <span class="m">14283</span>.979110
+     Oceania    <span class="m">72</span>.855000  <span class="m">17283</span>.957605
+<span class="m">1982</span> Africa     <span class="m">51</span>.592865   <span class="m">2481</span>.592960
+     Americas   <span class="m">66</span>.228840   <span class="m">7506</span>.737088
+     Asia       <span class="m">62</span>.617939   <span class="m">7434</span>.135157
+     Europe     <span class="m">72</span>.806400  <span class="m">15617</span>.896551
+     Oceania    <span class="m">74</span>.290000  <span class="m">18554</span>.709840
+<span class="m">1987</span> Africa     <span class="m">53</span>.344788   <span class="m">2282</span>.668991
+     Americas   <span class="m">68</span>.090720   <span class="m">7793</span>.400261
+     Asia       <span class="m">64</span>.851182   <span class="m">7608</span>.226508
+     Europe     <span class="m">73</span>.642167  <span class="m">17214</span>.310727
+     Oceania    <span class="m">75</span>.320000  <span class="m">20448</span>.040160
+<span class="m">1992</span> Africa     <span class="m">53</span>.629577   <span class="m">2281</span>.810333
+     Americas   <span class="m">69</span>.568360   <span class="m">8044</span>.934406
+     Asia       <span class="m">66</span>.537212   <span class="m">8639</span>.690248
+     Europe     <span class="m">74</span>.440100  <span class="m">17061</span>.568084
+     Oceania    <span class="m">76</span>.945000  <span class="m">20894</span>.045885
+<span class="m">1997</span> Africa     <span class="m">53</span>.598269   <span class="m">2378</span>.759555
+     Americas   <span class="m">71</span>.150480   <span class="m">8889</span>.300863
+     Asia       <span class="m">68</span>.020515   <span class="m">9834</span>.093295
+     Europe     <span class="m">75</span>.505167  <span class="m">19076</span>.781802
+     Oceania    <span class="m">78</span>.190000  <span class="m">24024</span>.175170
+<span class="m">2002</span> Africa     <span class="m">53</span>.325231   <span class="m">2599</span>.385159
+     Americas   <span class="m">72</span>.422040   <span class="m">9287</span>.677107
+     Asia       <span class="m">69</span>.233879  <span class="m">10174</span>.090397
+     Europe     <span class="m">76</span>.700600  <span class="m">21711</span>.732422
+     Oceania    <span class="m">79</span>.740000  <span class="m">26938</span>.778040
+<span class="m">2007</span> Africa     <span class="m">54</span>.806038   <span class="m">3089</span>.032605
+     Americas   <span class="m">73</span>.608120  <span class="m">11003</span>.031625
+     Asia       <span class="m">70</span>.728485  <span class="m">12473</span>.026870
+     Europe     <span class="m">77</span>.648600  <span class="m">25054</span>.481636
+     Oceania    <span class="m">80</span>.719500  <span class="m">29810</span>.188275
+</code></pre></div>
+  - 上面的代码按年份和大洲对数据进行分组，针对每一组数据计算了对应的平均预期寿命 <em>lifeExp</em> 和 平均GDP
+  - 输出的结果中  year continent 和 lifeExp gdpPercap 不在同一行， year continent两个行索引存在层级结构，后面的章节会详细介绍这种复合索引的用法
+  - 如果想去掉 year continent的层级结构，可以使用reset_index方法（重置行索引）</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="n">multi_group_var</span> <span class="o">=</span> <span class="n">gapminder</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;continent&#39;</span><span class="p">])[[</span><span class="s1">&#39;lifeExp&#39;</span><span class="p">,</span><span class="s1">&#39;gdpPercap&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">flat</span> <span class="o">=</span> <span class="n">multi_group_var</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">15</span><span class="p">))</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>显示结果</font></p>
+<div class="highlight"><pre><span></span><code>    <span class="n">year</span> <span class="n">continent</span>    <span class="n">lifeExp</span>     <span class="n">gdpPercap</span>
+<span class="mi">0</span>   <span class="mi">1952</span>    <span class="n">Africa</span>  <span class="mf">39.135500</span>   <span class="mf">1252.572466</span>
+<span class="mi">1</span>   <span class="mi">1952</span>  <span class="n">Americas</span>  <span class="mf">53.279840</span>   <span class="mf">4079.062552</span>
+<span class="mi">2</span>   <span class="mi">1952</span>      <span class="n">Asia</span>  <span class="mf">46.314394</span>   <span class="mf">5195.484004</span>
+<span class="mi">3</span>   <span class="mi">1952</span>    <span class="n">Europe</span>  <span class="mf">64.408500</span>   <span class="mf">5661.057435</span>
+<span class="mi">4</span>   <span class="mi">1952</span>   <span class="n">Oceania</span>  <span class="mf">69.255000</span>  <span class="mf">10298.085650</span>
+<span class="mi">5</span>   <span class="mi">1957</span>    <span class="n">Africa</span>  <span class="mf">41.266346</span>   <span class="mf">1385.236062</span>
+<span class="mi">6</span>   <span class="mi">1957</span>  <span class="n">Americas</span>  <span class="mf">55.960280</span>   <span class="mf">4616.043733</span>
+<span class="mi">7</span>   <span class="mi">1957</span>      <span class="n">Asia</span>  <span class="mf">49.318544</span>   <span class="mf">5787.732940</span>
+<span class="mi">8</span>   <span class="mi">1957</span>    <span class="n">Europe</span>  <span class="mf">66.703067</span>   <span class="mf">6963.012816</span>
+<span class="mi">9</span>   <span class="mi">1957</span>   <span class="n">Oceania</span>  <span class="mf">70.295000</span>  <span class="mf">11598.522455</span>
+<span class="mi">10</span>  <span class="mi">1962</span>    <span class="n">Africa</span>  <span class="mf">43.319442</span>   <span class="mf">1598.078825</span>
+<span class="mi">11</span>  <span class="mi">1962</span>  <span class="n">Americas</span>  <span class="mf">58.398760</span>   <span class="mf">4901.541870</span>
+<span class="mi">12</span>  <span class="mi">1962</span>      <span class="n">Asia</span>  <span class="mf">51.563223</span>   <span class="mf">5729.369625</span>
+<span class="mi">13</span>  <span class="mi">1962</span>    <span class="n">Europe</span>  <span class="mf">68.539233</span>   <span class="mf">8365.486814</span>
+<span class="mi">14</span>  <span class="mi">1962</span>   <span class="n">Oceania</span>  <span class="mf">71.085000</span>  <span class="mf">12696.452430</span>
+</code></pre></div>
+</blockquote>
+<h3 id="32">3.2 分组频数计算<a class="headerlink" href="#32" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>在数据分析中，一个常见的任务是计算频数</p>
+</li>
+<li>
+<p>可以使用 <em>nunique</em> 方法 计算Pandas Series的唯一值计数</p>
+</li>
+<li>可以使用 <em>value_counts</em> 方法来获取Pandas Series 的频数统计</li>
+<li>在数据中，每个大洲列出了多少个国家和地区？</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">gapminder</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;continent&#39;</span><span class="p">)[</span><span class="s1">&#39;country&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>显示结果</font></p>
+<div class="highlight"><pre><span></span><code>continent
+Africa      52
+Americas    25
+Asia        33
+Europe      30
+Oceania      2
+Name: country, dtype: int64
+</code></pre></div>
+</blockquote>
+<h2 id="4">4 简单绘图<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<ul>
+<li>可视化在数据分析的每个步骤中都非常重要，在理解或清理数据时，可视化有助于识别数据中的趋势</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">global_yearly_life_expectancy</span> <span class="o">=</span> <span class="n">gapminder</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">)[</span><span class="s1">&#39;lifeExp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">global_yearly_life_expectancy</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>显示结果</font></p>
+<p><div class="highlight"><pre><span></span><code>year
+<span class="m">1952</span>    <span class="m">49</span>.057620
+<span class="m">1957</span>    <span class="m">51</span>.507401
+<span class="m">1962</span>    <span class="m">53</span>.609249
+<span class="m">1967</span>    <span class="m">55</span>.678290
+<span class="m">1972</span>    <span class="m">57</span>.647386
+<span class="m">1977</span>    <span class="m">59</span>.570157
+<span class="m">1982</span>    <span class="m">61</span>.533197
+<span class="m">1987</span>    <span class="m">63</span>.212613
+<span class="m">1992</span>    <span class="m">64</span>.160338
+<span class="m">1997</span>    <span class="m">65</span>.014676
+<span class="m">2002</span>    <span class="m">65</span>.694923
+<span class="m">2007</span>    <span class="m">67</span>.007423
+Name: lifeExp, dtype: float64
+</code></pre></div>
+  - 可以通过plot画图</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="n">global_yearly_life_expectancy</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</code></pre></div>
+<blockquote>
+<p><font color = red>显示结果</font></p>
+<div class="highlight"><pre><span></span><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x1e196e73f98&gt;
+</code></pre></div>
+<p><img alt="img" src="data:image/png;base64,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" /></p>
+</blockquote>
+<h2 id="_2">小结<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>本节课程介绍了如何使用Pandas的DataFrame加载数据，并介绍了如何对数据进行简单的分组聚合</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span> <span class="c1"># 加载CSV文件</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">loc</span>      <span class="c1"># 从DataFrame中获取部分数据，传入索引名字</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">iloc</span>     <span class="c1"># 从DataFrame中获取部分数据，传入索引序号</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">groupby</span>  <span class="c1"># 分组</span>
+</code></pre></div>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="页脚">
+      
+        
+        <a href="02_Pandas_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 2 Pandas 数据结构" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              2 Pandas 数据结构
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="04_Pandas%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 4 Pandas 数据分析入门" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              4 Pandas 数据分析入门
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.467223ff.min.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+  </body>
+</html>

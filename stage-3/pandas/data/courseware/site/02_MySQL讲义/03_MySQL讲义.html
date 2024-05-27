@@ -1,0 +1,1405 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/logo.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+    
+    
+      
+        <title>3 MySQL基础III - 数据处理与统计分析 V3.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2d9f7617.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#3-mysqliii" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="数据处理与统计分析 V3.0" class="md-header__button md-logo" aria-label="数据处理与统计分析 V3.0" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            数据处理与统计分析 V3.0
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              3 MySQL基础III
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="数据处理与统计分析 V3.0" class="md-nav__button md-logo" aria-label="数据处理与统计分析 V3.0" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    数据处理与统计分析 V3.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          第一章 Linux
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第一章 Linux" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          第一章 Linux
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Linux%E8%AE%B2%E4%B9%89/01_Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F.html" class="md-nav__link">
+        1 Linux操作系统
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Linux%E8%AE%B2%E4%B9%89/02_Linux%E7%B3%BB%E7%BB%9F%E9%AB%98%E7%BA%A7.html" class="md-nav__link">
+        2 Linux系统高级
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          第二章 MySQL
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第二章 MySQL" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          第二章 MySQL
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%801.html" class="md-nav__link">
+        1 MySQL数据库基础I
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%802.html" class="md-nav__link">
+        2 MySQL数据库基础II
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E9%AB%98%E7%BA%A7.html" class="md-nav__link">
+        3 MySQL高级
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          第三章 环境搭建
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第三章 环境搭建" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          第三章 环境搭建
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/01_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        1 环境搭建及使用
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          第四章 NumPy
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第四章 NumPy" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          第四章 NumPy
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_NumPy%E8%AE%B2%E4%B9%89/01_NumPy%E8%AE%B2%E4%B9%89.html" class="md-nav__link">
+        1 NumPy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_NumPy%E8%AE%B2%E4%B9%89/02_%E5%B8%B8%E7%94%A8%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        2 常用概念
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          第五章 Pandas
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第五章 Pandas" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          第五章 Pandas
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/01_Python%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%AE%80%E4%BB%8B.html" class="md-nav__link">
+        1 Python 数据分析处理简介
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/02_Pandas_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html" class="md-nav__link">
+        2 Pandas 数据结构
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/03_Pandas_DataFrame%E5%85%A5%E9%97%A8.html" class="md-nav__link">
+        3 Pandas DataFrame 入门
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/04_Pandas%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8.html" class="md-nav__link">
+        4 Pandas 数据分析入门
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/05_%E6%95%B0%E6%8D%AE%E7%BB%84%E5%90%88.html" class="md-nav__link">
+        5 数据组合
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/06_%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97.html" class="md-nav__link">
+        6 数据清洗
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/07_apply%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0.html" class="md-nav__link">
+        7 apply 自定义函数
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/08_%E6%95%B0%E6%8D%AE%E5%88%86%E7%BB%84.html" class="md-nav__link">
+        8 数据分组
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/09_%E6%95%B0%E6%8D%AE%E9%80%8F%E8%A7%86%E8%A1%A8.html" class="md-nav__link">
+        9 数据透视表
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/10_datetime%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html" class="md-nav__link">
+        10 datetime 数据类型
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          第六章 数据分析绘图
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第六章 数据分析绘图" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          第六章 数据分析绘图
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/01_%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        1 Python数据可视化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/02_Matplotlib%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        2 Matplotlib绘图
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/03_Pandas%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        3 Pandas绘图
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/04_Seaborn%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        4 Seaborn 可视化
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          第七章 综合案例
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第七章 综合案例" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          第七章 综合案例
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_%E7%BB%BC%E5%90%88%E6%A1%88%E4%BE%8B/01_RFM%E4%BC%9A%E5%91%98%E4%BB%B7%E5%80%BC%E5%BA%A6%E6%A8%A1%E5%9E%8B%E6%A1%88%E4%BE%8B.html" class="md-nav__link">
+        1 RFM会员价值度模型案例
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#8dql" class="md-nav__link">
+    8.DQL数据查询语言
+  </a>
+  
+    <nav class="md-nav" aria-label="8.DQL数据查询语言">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81" class="md-nav__link">
+    8.1.准备工作
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82" class="md-nav__link">
+    8.2.语法：
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83" class="md-nav__link">
+    8.3.简单查询
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84" class="md-nav__link">
+    8.4.条件查询
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85" class="md-nav__link">
+    8.5.排序查询
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#86" class="md-nav__link">
+    8.6.聚合查询
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#87" class="md-nav__link">
+    8.7.分组查询
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#88" class="md-nav__link">
+    8.8.分页查询
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#89insert-into-select" class="md-nav__link">
+    8.9.insert into select语句
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    9.多表操作
+  </a>
+  
+    <nav class="md-nav" aria-label="9.多表操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    9.1.表与表之间的关系
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92" class="md-nav__link">
+    9.2.外键约束
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93" class="md-nav__link">
+    9.3.一对多操作
+  </a>
+  
+    <nav class="md-nav" aria-label="9.3.一对多操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#931" class="md-nav__link">
+    9.3.1.分析
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#932" class="md-nav__link">
+    9.3.2.实现：分类和商品
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#933" class="md-nav__link">
+    9.3.3.操作
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    10.多表查询
+  </a>
+  
+    <nav class="md-nav" aria-label="10.多表查询">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101" class="md-nav__link">
+    10.1.初始化数据
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102" class="md-nav__link">
+    10.2.多表查询
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103" class="md-nav__link">
+    10.3.子查询
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="3-mysqliii">3 MySQL基础III<a class="headerlink" href="#3-mysqliii" title="Permanent link">&para;</a></h1>
+<h2 id="8dql">8.DQL数据查询语言<a class="headerlink" href="#8dql" title="Permanent link">&para;</a></h2>
+<h3 id="81">8.1.准备工作<a class="headerlink" href="#81" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">#创建商品表：</span><span class="w"></span>
+<span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="w"></span>
+<span class="w"> </span><span class="n">pid</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="kt">varchar</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="w"></span>
+<span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="kt">double</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="kt">varchar</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;联想&#39;</span><span class="p">,</span><span class="mi">5000</span><span class="p">,</span><span class="s1">&#39;c001&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;海尔&#39;</span><span class="p">,</span><span class="mi">3000</span><span class="p">,</span><span class="s1">&#39;c001&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="s1">&#39;雷神&#39;</span><span class="p">,</span><span class="mi">5000</span><span class="p">,</span><span class="s1">&#39;c001&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="s1">&#39;杰克琼斯&#39;</span><span class="p">,</span><span class="mi">800</span><span class="p">,</span><span class="s1">&#39;c002&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;真维斯&#39;</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="s1">&#39;c002&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;花花公子&#39;</span><span class="p">,</span><span class="mi">440</span><span class="p">,</span><span class="s1">&#39;c002&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="s1">&#39;劲霸&#39;</span><span class="p">,</span><span class="mi">2000</span><span class="p">,</span><span class="s1">&#39;c002&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="s1">&#39;香奈儿&#39;</span><span class="p">,</span><span class="mi">800</span><span class="p">,</span><span class="s1">&#39;c003&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="s1">&#39;相宜本草&#39;</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="s1">&#39;c003&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;面霸&#39;</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;c003&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="s1">&#39;好想你枣&#39;</span><span class="p">,</span><span class="mi">56</span><span class="p">,</span><span class="s1">&#39;c004&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="s1">&#39;香飘飘奶茶&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;c005&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span><span class="s1">&#39;海澜之家&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;c002&#39;</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+<h3 id="82">8.2.语法：<a class="headerlink" href="#82" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="err">[</span><span class="k">distinct</span><span class="err">]</span><span class="w"></span>
+<span class="o">*|</span><span class="w"> </span><span class="n">列名</span><span class="p">,</span><span class="n">列名</span><span class="w"></span>
+<span class="k">from</span><span class="w"> </span><span class="n">表</span><span class="w"></span>
+<span class="k">where</span><span class="w"> </span><span class="n">条件</span><span class="w"></span>
+</code></pre></div>
+<h3 id="83">8.3.简单查询<a class="headerlink" href="#83" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">#1.查询所有的商品.  </span><span class="w"></span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w">  </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span><span class="w"></span>
+<span class="c1">#2.查询商品名和商品价格. </span><span class="w"></span>
+<span class="k">select</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span><span class="w"></span>
+<span class="c1">#3.别名查询.使用的关键字是as（as可以省略的）.  </span><span class="w"></span>
+<span class="c1">#3.1表别名: </span><span class="w"></span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">p</span><span class="p">;</span><span class="w"></span>
+<span class="c1">#3.2列别名：</span><span class="w"></span>
+<span class="k">select</span><span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">pn</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span><span class="w"> </span>
+<span class="c1">#4.去掉重复值.  </span><span class="w"></span>
+<span class="k">select</span><span class="w"> </span><span class="k">distinct</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span><span class="w"></span>
+<span class="c1">#5.查询结果是表达式（运算查询）：将所有商品的价格+10元进行显示.</span><span class="w"></span>
+<span class="k">select</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="o">+</span><span class="mi">10</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<h3 id="84">8.4.条件查询<a class="headerlink" href="#84" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>比较运算符</th>
+<th>&gt; &lt; &lt;= &gt;= = &lt;&gt; !=</th>
+<th>大于、小于、大于(小于)等于、不等于</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>BETWEEN ... AND ...</td>
+<td>显示在某一区间的值(含头含尾)</td>
+</tr>
+<tr>
+<td></td>
+<td>IN(set)</td>
+<td>显示在in列表中的值，例：in(100,200)</td>
+</tr>
+<tr>
+<td></td>
+<td>LIKE '张%' Like '周_'LIKE '%涛%'</td>
+<td>模糊查询，Like语句中，%代表零个或多个任意字符，_代表一个字符，例如：first_name like '_a%';</td>
+</tr>
+<tr>
+<td></td>
+<td>IS NULLIS NOT NULL</td>
+<td>判断是否为空</td>
+</tr>
+<tr>
+<td>逻辑运算符</td>
+<td>and</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>or</td>
+<td>多个条件任一成立</td>
+</tr>
+<tr>
+<td></td>
+<td>not</td>
+<td>不成立，例：where not(salary&gt;100);</td>
+</tr>
+</tbody>
+</table>
+<p>示例:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#查询商品名称为“花花公子”的商品所有信息：</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;花花公子&#39;</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">#查询价格为800商品</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">#查询价格不是800的所有商品</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">NOT</span><span class="p">(</span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">800</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">#查询商品价格大于60元的所有商品信息</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">60</span><span class="p">;</span><span class="w"></span>
+
+
+<span class="c1">#查询商品价格在200到1000之间所有商品</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&lt;=</span><span class="mi">1000</span><span class="p">;</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">#查询商品价格是200或800的所有商品</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="mi">800</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">#查询含有&#39;霸&#39;字的所有商品</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%霸%&#39;</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">#查询以&#39;香&#39;开头的所有商品</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;香%&#39;</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">#查询第二个字为&#39;想&#39;的所有商品</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;_想%&#39;</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">#匹配四个字的所有商品 ____</span><span class="w"></span>
+
+<span class="c1">#查询没有分类的商品</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="no">NULL</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">#查询有分类的商品</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="no">NULL</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<h3 id="85">8.5.排序查询<a class="headerlink" href="#85" title="Permanent link">&para;</a></h3>
+<p>通过order by语句，可以将查询出的结果进行排序。暂时放置在select语句的最后。</p>
+<p>格式:</p>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">表名</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">排序字段</span><span class="w"> </span><span class="k">ASC</span><span class="o">|</span><span class="k">DESC</span><span class="p">;</span><span class="w"></span>
+<span class="w"> </span><span class="k">ASC</span><span class="w"> </span><span class="n">升序</span><span class="w"> </span><span class="p">(</span><span class="n">默认</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="n">降序</span><span class="w"></span>
+
+<span class="c1">#1.使用价格排序(降序)</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span><span class="w"></span>
+<span class="c1">#2.在价格排序(降序)的基础上，以分类排序(降序)</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">DESC</span><span class="p">,</span><span class="n">category_id</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span><span class="w"></span>
+<span class="c1">#3.显示商品的价格(去重复)，并排序(降序)</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<h3 id="86">8.6.聚合查询<a class="headerlink" href="#86" title="Permanent link">&para;</a></h3>
+<p>之前我们做的查询都是横向查询，它们都是根据条件一行一行的进行判断，而使用聚合函数查询是纵向查询，它是对一列的值进行计算，然后返回一个单一的值；另外聚合函数会忽略空值。</p>
+<p>今天我们学习如下五个聚合函数：</p>
+<table>
+<thead>
+<tr>
+<th>聚合函数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>count()</td>
+<td>统计指定列不为NULL的记录行数；</td>
+</tr>
+<tr>
+<td>sum()</td>
+<td>计算指定列的数值和，如果指定列类型不是数值类型，那么计算结果为0</td>
+</tr>
+<tr>
+<td>max()</td>
+<td>计算指定列的最大值，如果指定列是字符串类型，那么使用字符串排序运算；</td>
+</tr>
+<tr>
+<td>min()</td>
+<td>计算指定列的最小值，如果指定列是字符串类型，那么使用字符串排序运算；</td>
+</tr>
+<tr>
+<td>avg()</td>
+<td>计算指定列的平均值，如果指定列类型不是数值类型，那么计算结果为0</td>
+</tr>
+</tbody>
+</table>
+<p>示例:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#1 查询商品的总条数</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="p">;</span><span class="w"></span>
+<span class="c1">#2 查询价格大于200商品的总条数</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">200</span><span class="p">;</span><span class="w"></span>
+<span class="c1">#3 查询分类为&#39;c001&#39;的所有商品的总和</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="nf">SUM</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;c001&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="c1">#4 查询分类为&#39;c002&#39;所有商品的平均价格</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">AVG</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;c002&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="c1">#5 查询商品的最大价格和最小价格</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="nf">MAX</span><span class="p">(</span><span class="n">price</span><span class="p">),</span><span class="nf">MIN</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<h3 id="87">8.7.分组查询<a class="headerlink" href="#87" title="Permanent link">&para;</a></h3>
+<p>分组查询是指使用group by字句对查询信息进行分组。</p>
+<p>格式：</p>
+<p><strong>SELECT</strong> 字段1,字段2… <strong>FROM</strong> 表名 <strong>GROUP</strong> BY分组字段 <strong>HAVING</strong> 分组条件;</p>
+<p>分组操作中的having子语句，是用于在分组后对数据进行过滤的，作用类似于where条件。</p>
+<p><strong>having</strong> 与**where**  的区别:</p>
+<p>1).having是在分组后对数据进行过滤.,where是在分组前对数据进行过滤</p>
+<p>2).having后面可以使用分组函数(统计函数),where后面不可以使用分组函数。</p>
+<p>示例:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#1 统计各个分类商品的个数</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="p">,</span><span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="c1">#2 统计各个分类商品的个数,且只显示个数大于1的信息</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="p">,</span><span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="k">HAVING</span><span class="w"> </span><span class="nf">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<h3 id="88">8.8.分页查询<a class="headerlink" href="#88" title="Permanent link">&para;</a></h3>
+<p>分页查询在项目开发中常见，由于数据量很大，显示屏长度有限，因此对数据需要采取分页显示方式。例如数据共有30条，每页显示5条，第一页显示1-5条，第二页显示6-10条。</p>
+<ul>
+<li>格式：</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="n">字段1，字段2</span><span class="p">...</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">表名</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="n">N</span><span class="w"></span>
+<span class="n">M</span><span class="o">:</span><span class="w"> </span><span class="n">整数，表示从第几条索引开始，计算方式</span><span class="w"> </span><span class="n">（当前页</span><span class="o">-</span><span class="n">1）</span><span class="o">*</span><span class="n">每页显示条数</span><span class="w"></span>
+<span class="n">N</span><span class="o">:</span><span class="w"> </span><span class="n">整数，表示查询多少条数据</span><span class="w"> </span><span class="k">offset</span><span class="w"> </span><span class="n">偏移量（每页显示多少条数据）</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">字段1，字段2</span><span class="p">...</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">表名</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">字段1，字段2</span><span class="p">...</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">表名</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="w"></span>
+
+<span class="c1">#查询product表的前5条记录</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="w"></span>
+<span class="n">等价于</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
+</code></pre></div>
+<h3 id="89insert-into-select">8.9.insert into select语句<a class="headerlink" href="#89insert-into-select" title="Permanent link">&para;</a></h3>
+<p>INSERT INTO SELECT 语句从一个表复制数据，然后把数据插入到一个已存在的表中。</p>
+<p>基本语法:</p>
+<div class="highlight"><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">table2</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">column_name</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="w"></span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">table1</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<p>示例:</p>
+<div class="highlight"><pre><span></span><code><span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">product2</span><span class="p">(</span><span class="w"></span>
+<span class="w"> </span><span class="n">pid</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="kt">varchar</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="w"></span>
+<span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="kt">double</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+
+<span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">product2</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;c001&#39;</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<p><img alt="image-20211229180329061" src="img/image-20211229180329061.png" /></p>
+<h2 id="9">9.多表操作<a class="headerlink" href="#9" title="Permanent link">&para;</a></h2>
+<p>实际开发中，一个项目通常需要很多张表才能完成。例如：一个商城项目就需要分类表(category)、商品表(products)、订单表(orders)等多张表。且这些表的数据之间存在一定的关系，接下来我们将在单表的基础上，一起学习多表方面的知识。</p>
+<p><img alt="image-20211229180340531" src="img/image-20211229180340531.png" /></p>
+<h3 id="91">9.1.表与表之间的关系<a class="headerlink" href="#91" title="Permanent link">&para;</a></h3>
+<ul>
+<li>一对多关系：</li>
+<li>常见示例：客户和订单，分类和商品，部门和员工.</li>
+<li>一对多建表原则：在从表(多方)创建一个字段，字段作为外键指向主表(一方)的主键.</li>
+</ul>
+<p><img alt="image-20211229180352847" src="img/image-20211229180352847.png" /></p>
+<ul>
+<li>一对一关系：</li>
+</ul>
+<p>一个学生对应一个学生档案材料，或者每个人都有唯一的身份证编号。</p>
+<ul>
+<li>一对多关系：</li>
+</ul>
+<p>一个学生只属于一个班，但是一个班级有多名学生。</p>
+<ul>
+<li>多对多关系：</li>
+</ul>
+<p>一个学生可以选择多门课，一门课也有多名学生。</p>
+<h3 id="92">9.2.外键约束<a class="headerlink" href="#92" title="Permanent link">&para;</a></h3>
+<p>现在我们有两张表&quot;分类表&quot;和&quot;商品表&quot;，为了表明商品属于哪个分类，通常情况下，我们将在商品表上添加一列，用于存放分类cid的信息，此列称为：外键</p>
+<p><img alt="image-20211229180404921" src="img/image-20211229180404921.png" /></p>
+<p><img alt="image-20211229180416325" src="img/image-20211229180416325.png" /></p>
+<p>此时&quot;分类表category&quot;称为：主表，&quot;cid&quot;我们称为主键。&quot;商品表products&quot;称为：从表，category_id称为外键。我们通过主表的主键和从表的外键来描述主外键关系，呈现就是一对多关系。</p>
+<p>外键特点：
+- 从表外键的值是对主表主键的引用。
+- 从表外键类型，必须与主表主键类型一致。</p>
+<p><strong>声明外键约束</strong></p>
+<p>语法：</p>
+<div class="highlight"><pre><span></span><code><span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">从表</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="err">[</span><span class="k">constraint</span><span class="err">]</span><span class="w"> </span><span class="err">[</span><span class="n">外键名称</span><span class="err">]</span><span class="w"> </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="p">(</span><span class="n">从表外键字段名</span><span class="p">)</span><span class="w"> </span><span class="k">references</span><span class="w"> </span><span class="n">主表</span><span class="w"> </span><span class="p">(</span><span class="n">主表的主键</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+<p>[外键名称] 用于删除外键约束的，一般建议&quot;_fk&quot;结尾
+alter table 从表  drop foreign key 外键名称</p>
+<ul>
+<li>使用外键目的：</li>
+<li>保证数据完整性</li>
+</ul>
+<h3 id="93">9.3.一对多操作<a class="headerlink" href="#93" title="Permanent link">&para;</a></h3>
+<h4 id="931">9.3.1.分析<a class="headerlink" href="#931" title="Permanent link">&para;</a></h4>
+<p><img alt="image-20211229180430198" src="img/image-20211229180430198.png" /></p>
+<ul>
+<li>category分类表，为一方，也就是主表，必须提供主键cid</li>
+<li>products商品表，为多方，也就是从表，必须提供外键category_id</li>
+</ul>
+<h4 id="932">9.3.2.实现：分类和商品<a class="headerlink" href="#932" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">###创建分类表</span><span class="w"></span>
+<span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">category</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">cid</span><span class="w"> </span><span class="kt">varchar</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">cname</span><span class="w"> </span><span class="kt">varchar</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="w">  </span><span class="c1">#分类名称</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+
+<span class="c1"># 商品表</span><span class="w"></span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">pid</span><span class="w"> </span><span class="kt">varchar</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="k">name</span><span class="w"> </span><span class="kt">VARCHAR</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span><span class="w"> </span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">price</span><span class="w"> </span><span class="kt">DOUBLE</span><span class="w"> </span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">category_id</span><span class="w"> </span><span class="kt">varchar</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+
+<span class="c1">#添加约束</span><span class="w"></span>
+<span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="k">constraint</span><span class="w"> </span><span class="n">product_fk</span><span class="w"> </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="p">(</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">references</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="p">(</span><span class="n">cid</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+<h4 id="933">9.3.3.操作<a class="headerlink" href="#933" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">#1 向分类表中添加数据</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="p">(</span><span class="n">cid</span><span class="w"> </span><span class="p">,</span><span class="n">cname</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;c001&#39;</span><span class="p">,</span><span class="s1">&#39;服装&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">#2 向商品表添加普通数据,没有外键数据，默认为null</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">pname</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p001&#39;</span><span class="p">,</span><span class="s1">&#39;商品名称&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">#3 向商品表添加普通数据，含有外键信息(category表中存在这条数据)</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span><span class="n">pid</span><span class="w"> </span><span class="p">,</span><span class="n">pname</span><span class="w"> </span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p002&#39;</span><span class="p">,</span><span class="s1">&#39;商品名称2&#39;</span><span class="p">,</span><span class="s1">&#39;c001&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">#4 向商品表添加普通数据，含有外键信息(category表中不存在这条数据) -- 失败,异常</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span><span class="n">pid</span><span class="w"> </span><span class="p">,</span><span class="n">pname</span><span class="w"> </span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p003&#39;</span><span class="p">,</span><span class="s1">&#39;商品名称2&#39;</span><span class="p">,</span><span class="s1">&#39;c999&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">#5 删除指定分类(分类被商品使用) -- 执行异常</span><span class="w"></span>
+<span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">cid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;c001&#39;</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<h2 id="10">10.多表查询<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<p><img alt="image-20211229180449606" src="img/image-20211229180449606.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">cid</span><span class="w"> </span><span class="kt">VARCHAR</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">cname</span><span class="w"> </span><span class="kt">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">products</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">pid</span><span class="w"> </span><span class="kt">VARCHAR</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">pname</span><span class="w"> </span><span class="kt">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span><span class="w"></span>
+<span class="w">  </span><span class="n">price</span><span class="w"> </span><span class="kt">INT</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">flag</span><span class="w"> </span><span class="kt">VARCHAR</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w">    </span><span class="c1">#是否上架标记为：1表示上架、0表示下架</span><span class="w"></span>
+<span class="w">  </span><span class="n">category_id</span><span class="w"> </span><span class="kt">VARCHAR</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span><span class="w"></span>
+<span class="w">  </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">products_fk</span><span class="w"> </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="p">(</span><span class="n">cid</span><span class="p">)</span><span class="w"></span>
+<span class="p">);</span><span class="w"></span>
+</code></pre></div>
+<h3 id="101">10.1.初始化数据<a class="headerlink" href="#101" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">#分类</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">category</span><span class="p">(</span><span class="n">cid</span><span class="p">,</span><span class="n">cname</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;c001&#39;</span><span class="p">,</span><span class="s1">&#39;家电&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">category</span><span class="p">(</span><span class="n">cid</span><span class="p">,</span><span class="n">cname</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;c002&#39;</span><span class="p">,</span><span class="s1">&#39;服饰&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">category</span><span class="p">(</span><span class="n">cid</span><span class="p">,</span><span class="n">cname</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;c003&#39;</span><span class="p">,</span><span class="s1">&#39;化妆品&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="c1">#商品</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">flag</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p001&#39;</span><span class="p">,</span><span class="s1">&#39;联想&#39;</span><span class="p">,</span><span class="mi">5000</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;c001&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">flag</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p002&#39;</span><span class="p">,</span><span class="s1">&#39;海尔&#39;</span><span class="p">,</span><span class="mi">3000</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;c001&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">flag</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p003&#39;</span><span class="p">,</span><span class="s1">&#39;雷神&#39;</span><span class="p">,</span><span class="mi">5000</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;c001&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">flag</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p004&#39;</span><span class="p">,</span><span class="s1">&#39;JACK JONES&#39;</span><span class="p">,</span><span class="mi">800</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;c002&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">flag</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p005&#39;</span><span class="p">,</span><span class="s1">&#39;真维斯&#39;</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;c002&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">flag</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p006&#39;</span><span class="p">,</span><span class="s1">&#39;花花公子&#39;</span><span class="p">,</span><span class="mi">440</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;c002&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">flag</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p007&#39;</span><span class="p">,</span><span class="s1">&#39;劲霸&#39;</span><span class="p">,</span><span class="mi">2000</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;c002&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">flag</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p008&#39;</span><span class="p">,</span><span class="s1">&#39;香奈儿&#39;</span><span class="p">,</span><span class="mi">800</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;c003&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="n">price</span><span class="p">,</span><span class="n">flag</span><span class="p">,</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;p009&#39;</span><span class="p">,</span><span class="s1">&#39;相宜本草&#39;</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;c003&#39;</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+<h3 id="102">10.2.多表查询<a class="headerlink" href="#102" title="Permanent link">&para;</a></h3>
+<ol>
+<li>交叉连接查询(基本不会使用-得到的是两个表的乘积) [了解]</li>
+</ol>
+<p>语法： <strong>select</strong> * <strong>from</strong> A,B;
+2. 内连接查询(使用的关键字 inner join -- inner可以省略)</p>
+<ul>
+<li>隐式内连接： <strong>select</strong> * <strong>from</strong> A,B <strong>where</strong> 条件;</li>
+<li>显示内连接： <strong>select</strong> * <strong>from</strong> A <strong>inner join</strong> B <strong>on</strong> 条件;</li>
+<li>外连接查询(使用的关键字 outer join -- outer可以省略)</li>
+<li>左外连接：left outer join<ul>
+<li><strong>select</strong> * <strong>from</strong> A <strong>left outer join</strong> B <strong>on</strong> 条件;</li>
+</ul>
+</li>
+<li>右外连接：right outer join<ul>
+<li><strong>select</strong> * <strong>from</strong> A <strong>right outer join</strong> B <strong>on</strong> 条件;</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">#1.查询哪些分类的商品已经上架</span><span class="w"></span>
+<span class="c1">#隐式内连接</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">cname</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="n">p</span><span class="w"> </span>
+<span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">cid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">category_id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">#显示内连接</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">cname</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="n">c</span><span class="w"> </span>
+<span class="w"> </span><span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">cid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">category_id</span><span class="w"> </span>
+<span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">#2.查询所有分类商品的个数</span><span class="w"></span>
+<span class="c1">#左外连接</span><span class="w"></span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">category</span><span class="p">(</span><span class="n">cid</span><span class="p">,</span><span class="n">cname</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;c004&#39;</span><span class="p">,</span><span class="s1">&#39;奢侈品&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">cname</span><span class="p">,</span><span class="nf">COUNT</span><span class="p">(</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="n">c</span><span class="w"> </span>
+<span class="w"> </span><span class="k">LEFT</span><span class="w"> </span><span class="k">OUTER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="n">p</span><span class="w"> </span>
+<span class="w">  </span><span class="k">ON</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">cid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">category_id</span><span class="w"> </span>
+<span class="w"> </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">cname</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<p>下面通过一张图说明连接的区别:</p>
+<p><img alt="image-20211229180506868" src="img/image-20211229180506868.png" /></p>
+<h3 id="103">10.3.子查询<a class="headerlink" href="#103" title="Permanent link">&para;</a></h3>
+<p>子查询：一条select语句结果作为另一条select语法一部分（查询条件，查询结果，表等）。</p>
+<p>select ....查询字段 ... from ... 表.. where ... 查询条件</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#3 子查询, 查询“化妆品”分类上架商品详情</span><span class="w"></span>
+<span class="c1">#隐式内连接</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="n">c</span><span class="w"> </span>
+<span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">category_id</span><span class="o">=</span><span class="n">c</span><span class="p">.</span><span class="n">cid</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">cname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;化妆品&#39;</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">#子查询</span><span class="w"></span>
+<span class="c1">##作为查询条件</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="n">p</span><span class="w"> </span>
+<span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">category_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span>
+<span class="w">  </span><span class="k">SELECT</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">cid</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="n">c</span><span class="w"> </span>
+<span class="w">   </span><span class="k">WHERE</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">cname</span><span class="o">=</span><span class="s1">&#39;化妆品&#39;</span><span class="w"></span>
+<span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w"> </span><span class="c1">##作为另一张表</span><span class="w"></span>
+<span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="p">,</span><span class="w"> </span>
+<span class="w">   </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">cname</span><span class="o">=</span><span class="s1">&#39;化妆品&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">c</span><span class="w"> </span>
+<span class="w">  </span><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">category_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">cid</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">#查询“化妆品”和“家电”两个分类上架商品详情</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="n">p</span><span class="w"> </span>
+<span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">category_id</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">(</span><span class="w"> </span>
+<span class="w">  </span><span class="k">SELECT</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">cid</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="n">c</span><span class="w"> </span>
+<span class="w">   </span><span class="k">WHERE</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">cname</span><span class="o">=</span><span class="s1">&#39;化妆品&#39;</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="k">name</span><span class="o">=</span><span class="s1">&#39;家电&#39;</span><span class="w"></span>
+<span class="w"> </span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.467223ff.min.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+  </body>
+</html>

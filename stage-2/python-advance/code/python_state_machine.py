@@ -31,9 +31,9 @@ def main():
     })
 
     # 状态机运行
-    status_machine('init', 'data')
-    status_machine('process', 'data')
-    status_machine('end', 'data')
+    status_machine('init', 'source')
+    status_machine('process', 'source')
+    status_machine('end', 'source')
 
 
 if __name__ == '__main__':

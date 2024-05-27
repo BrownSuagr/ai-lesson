@@ -17,7 +17,7 @@ student['mobile'] = '10010'
 students.append(student)
 
 # 3、保存students中的数据到data.txt文件中
-# f = open('lesson-data.txt', 'w', encoding='utf-8')
+# f = open('lesson-source.txt', 'w', encoding='utf-8')
 # f.write(str(students))
 # f.close()
 
