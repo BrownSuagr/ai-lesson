@@ -1,0 +1,1593 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/logo.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+    
+    
+      
+        <title>1 NumPy - 数据处理与统计分析 V3.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2d9f7617.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#1-numpy" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="数据处理与统计分析 V3.0" class="md-header__button md-logo" aria-label="数据处理与统计分析 V3.0" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            数据处理与统计分析 V3.0
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              1 NumPy
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="数据处理与统计分析 V3.0" class="md-nav__button md-logo" aria-label="数据处理与统计分析 V3.0" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    数据处理与统计分析 V3.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          第一章 Linux
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第一章 Linux" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          第一章 Linux
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Linux%E8%AE%B2%E4%B9%89/01_Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F.html" class="md-nav__link">
+        1 Linux操作系统
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Linux%E8%AE%B2%E4%B9%89/02_Linux%E7%B3%BB%E7%BB%9F%E9%AB%98%E7%BA%A7.html" class="md-nav__link">
+        2 Linux系统高级
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          第二章 MySQL
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第二章 MySQL" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          第二章 MySQL
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MySQL%E8%AE%B2%E4%B9%89/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%801.html" class="md-nav__link">
+        1 MySQL数据库基础I
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MySQL%E8%AE%B2%E4%B9%89/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%802.html" class="md-nav__link">
+        2 MySQL数据库基础II
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MySQL%E8%AE%B2%E4%B9%89/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E9%AB%98%E7%BA%A7.html" class="md-nav__link">
+        3 MySQL高级
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          第三章 环境搭建
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第三章 环境搭建" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          第三章 环境搭建
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/01_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        1 环境搭建及使用
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          第四章 NumPy
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第四章 NumPy" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          第四章 NumPy
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          1 NumPy
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="01_NumPy%E8%AE%B2%E4%B9%89.html" class="md-nav__link md-nav__link--active">
+        1 NumPy
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-numpy_1" class="md-nav__link">
+    1 NumPy简介
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-numpy" class="md-nav__link">
+    2 NumPy属性
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-ndarray" class="md-nav__link">
+    3 创建ndarray
+  </a>
+  
+    <nav class="md-nav" aria-label="3 创建ndarray">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-array" class="md-nav__link">
+    1 array()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-zeros-onesempty" class="md-nav__link">
+    2 zeros() /ones()/empty()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-arange" class="md-nav__link">
+    3 arange()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-matrix" class="md-nav__link">
+    4 matrix()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5 创建随机数矩阵
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-ndarray" class="md-nav__link">
+    6 ndarray的数据类型
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    7 等比/等差数列
+  </a>
+  
+    <nav class="md-nav" aria-label="7 等比/等差数列">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nplogspace" class="md-nav__link">
+    np.logspace等比数列
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nplinspace" class="md-nav__link">
+    np.linspace等差数列
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-numpy" class="md-nav__link">
+    4 NumPy内置函数
+  </a>
+  
+    <nav class="md-nav" aria-label="4 NumPy内置函数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1 基本函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2 统计函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3 比较函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4 去重函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5_1" class="md-nav__link">
+    5 排序函数
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-numpy" class="md-nav__link">
+    5 NumPy运算
+  </a>
+  
+    <nav class="md-nav" aria-label="5 NumPy运算">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_1" class="md-nav__link">
+    1 基本运算
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_1" class="md-nav__link">
+    2 矩阵乘法
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    小结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02_%E5%B8%B8%E7%94%A8%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        2 常用概念
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          第五章 Pandas
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第五章 Pandas" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          第五章 Pandas
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/01_Python%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%AE%80%E4%BB%8B.html" class="md-nav__link">
+        1 Python 数据分析处理简介
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/02_Pandas_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html" class="md-nav__link">
+        2 Pandas 数据结构
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/03_Pandas_DataFrame%E5%85%A5%E9%97%A8.html" class="md-nav__link">
+        3 Pandas DataFrame 入门
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/04_Pandas%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8.html" class="md-nav__link">
+        4 Pandas 数据分析入门
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/05_%E6%95%B0%E6%8D%AE%E7%BB%84%E5%90%88.html" class="md-nav__link">
+        5 数据组合
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/06_%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97.html" class="md-nav__link">
+        6 数据清洗
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/07_apply%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0.html" class="md-nav__link">
+        7 apply 自定义函数
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/08_%E6%95%B0%E6%8D%AE%E5%88%86%E7%BB%84.html" class="md-nav__link">
+        8 数据分组
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/09_%E6%95%B0%E6%8D%AE%E9%80%8F%E8%A7%86%E8%A1%A8.html" class="md-nav__link">
+        9 数据透视表
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/10_datetime%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html" class="md-nav__link">
+        10 datetime 数据类型
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          第六章 数据分析绘图
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第六章 数据分析绘图" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          第六章 数据分析绘图
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/01_%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        1 Python数据可视化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/02_Matplotlib%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        2 Matplotlib绘图
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/03_Pandas%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        3 Pandas绘图
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/04_Seaborn%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        4 Seaborn 可视化
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          第七章 综合案例
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第七章 综合案例" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          第七章 综合案例
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_%E7%BB%BC%E5%90%88%E6%A1%88%E4%BE%8B/01_RFM%E4%BC%9A%E5%91%98%E4%BB%B7%E5%80%BC%E5%BA%A6%E6%A8%A1%E5%9E%8B%E6%A1%88%E4%BE%8B.html" class="md-nav__link">
+        1 RFM会员价值度模型案例
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-numpy_1" class="md-nav__link">
+    1 NumPy简介
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-numpy" class="md-nav__link">
+    2 NumPy属性
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-ndarray" class="md-nav__link">
+    3 创建ndarray
+  </a>
+  
+    <nav class="md-nav" aria-label="3 创建ndarray">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-array" class="md-nav__link">
+    1 array()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-zeros-onesempty" class="md-nav__link">
+    2 zeros() /ones()/empty()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-arange" class="md-nav__link">
+    3 arange()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-matrix" class="md-nav__link">
+    4 matrix()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5 创建随机数矩阵
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-ndarray" class="md-nav__link">
+    6 ndarray的数据类型
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    7 等比/等差数列
+  </a>
+  
+    <nav class="md-nav" aria-label="7 等比/等差数列">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nplogspace" class="md-nav__link">
+    np.logspace等比数列
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nplinspace" class="md-nav__link">
+    np.linspace等差数列
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-numpy" class="md-nav__link">
+    4 NumPy内置函数
+  </a>
+  
+    <nav class="md-nav" aria-label="4 NumPy内置函数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1 基本函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2 统计函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3 比较函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4 去重函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5_1" class="md-nav__link">
+    5 排序函数
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-numpy" class="md-nav__link">
+    5 NumPy运算
+  </a>
+  
+    <nav class="md-nav" aria-label="5 NumPy运算">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_1" class="md-nav__link">
+    1 基本运算
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_1" class="md-nav__link">
+    2 矩阵乘法
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    小结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="1-numpy">1 NumPy<a class="headerlink" href="#1-numpy" title="Permanent link">&para;</a></h1>
+<h2 id="_1">学习目标<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>了解NumPy特性</li>
+<li>掌握 NumPy的使用方法</li>
+</ul>
+<h2 id="1-numpy_1">1 NumPy简介<a class="headerlink" href="#1-numpy_1" title="Permanent link">&para;</a></h2>
+<p>NumPy（Numerical Python）是Python数据分析必不可少的第三方库，NumPy的出现一定程度上解决了Python运算性能不佳的问题，同时提供了更加精确的数据类型，使其具备了构造复杂数据类型的能力。本身是由C语言开发，是个很基础的扩展，NumPy被Python其它科学计算包作为基础包，因此理解np的数据类型对python数据分析十分重要。NumPy重在数值计算，主要用于多维数组（矩阵）处理的库。用来存储和处理大型矩阵，比Python自身的嵌套列表结构要高效的多。</p>
+<p>NumPy重要功能如下：</p>
+<ol>
+<li>
+<p>高性能科学计算和数据分析的基础包</p>
+</li>
+<li>
+<p>ndarray，多维数组，具有矢量运算能力，快速、节省空间</p>
+</li>
+<li>
+<p>矩阵运算，无需循环，可完成类似Matlab中的矢量运算</p>
+</li>
+<li>
+<p>用于读写磁盘数据的工具以及用于操作内存映射文件的工具</p>
+</li>
+</ol>
+<p>官网地址<a href="https://numpy.org/">NumPy</a></p>
+<h2 id="2-numpy">2 NumPy属性<a class="headerlink" href="#2-numpy" title="Permanent link">&para;</a></h2>
+<p>NumPy的主要对象是同类型元素的多维数组，所有的元素都是一种类型。在NumPy中维度(dimensions)叫做轴(axes)，轴的个数叫做秩(rank)。</p>
+<p>例如，在3D空间一个点的坐标[1, 2, 3]是一个秩为1的数组，因为它只有一个轴。那个轴长度为3。又例如，在以下例子中，数组的秩为2(它有两个维度)，第一个维度长度为3，第二个维度长度为3。</p>
+<p>[[1., 0., 0.],</p>
+<p>[0., 1., 2.]]</p>
+<p>NumPy的数组类被称作ndarray，通常被称作数组。注意NumPy.array和标准Python库类array.array并不相同，后者只处理一维数组和提供少量功能，而前者可以进行高维数组的创建和提供较多且复杂的运算功能。更多重要ndarray对象属性有：</p>
+<ul>
+<li>ndarray.ndim</li>
+</ul>
+<p>数组轴的个数</p>
+<ul>
+<li>ndarray.shape</li>
+</ul>
+<p>数组的维度。这是一个指示数组在每个维度上大小的整数元组。例如一个n排m列的矩阵，它的shape属性将是(2,3),这个元组的长度显然是秩，即维度或者ndim属性。</p>
+<ul>
+<li>ndarray.size</li>
+</ul>
+<p>数组元素的总个数，等于shape属性中元组元素的乘积。</p>
+<ul>
+<li>ndarray.dtype</li>
+</ul>
+<p>一个用来描述数组中元素类型的对象，可以通过创造或指定dtype使用标准Python类型。另外NumPy提供它自己的数据类型。</p>
+<ul>
+<li>ndarray.itemsize</li>
+</ul>
+<p>数组中每个元素的字节大小。例如，一个元素类型为float64的数组itemsize属性值为8(=64/8),又如，一个元素类型为complex32的数组itemsize属性为4(=32/8).</p>
+<ul>
+<li>ndarray.data</li>
+</ul>
+<p>包含实际数组元素的缓冲区，通常我们不需要使用这个属性，因为我们总是通过索引来使用数组中的元素。</p>
+<p>代码示例：</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组的维度:&quot;</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组轴的个数:&quot;</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组元素类型:&quot;</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组中每个元素的字节大小:&quot;</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">itemsize</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组元素的总个数:&quot;</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;类型查询:&quot;</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+
+<span class="c1">#创建一个数组</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组b类型:&quot;</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+
+<span class="n">运行结果</span><span class="p">:</span>
+<span class="n">数组的维度</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">数组轴的个数</span><span class="p">:</span> <span class="mi">2</span>
+<span class="n">数组元素类型</span><span class="p">:</span> <span class="n">int32</span>
+<span class="n">数组中每个元素的字节大小</span><span class="p">:</span> <span class="mi">4</span>
+<span class="n">数组元素的总个数</span><span class="p">:</span> <span class="mi">15</span>
+<span class="n">类型查询</span><span class="p">:</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="s1">&#39;&gt;</span>
+<span class="n">数组b</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">数组b类型</span><span class="p">:</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="s1">&#39;&gt;</span>
+</code></pre></div>
+<h2 id="3-ndarray">3 创建ndarray<a class="headerlink" href="#3-ndarray" title="Permanent link">&para;</a></h2>
+<p>ndarray 多维数组(N Dimension Array)</p>
+<p>NumPy数组是一个多维的数组对象（矩阵），称为ndarray，具有矢量算术运算能力和复杂的广播能力，并具有执行速度快和节省空间的特点。注意：ndarray的下标从0开始，且数组里的所有元素必须是相同类型。</p>
+<h3 id="1-array">1 array()<a class="headerlink" href="#1-array" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组a元素类型:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组a类型:&quot;</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">5.1</span><span class="p">])</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组b元素类型:&quot;</span><span class="p">,</span><span class="n">b</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="2-zeros-onesempty">2 zeros() /ones()/empty()<a class="headerlink" href="#2-zeros-onesempty" title="Permanent link">&para;</a></h3>
+<p>函数function创建一个全是0的数组，函数ones创建一个全1的数组，函数empty创建一个内容随机并且依赖于内存状态的数组。默认创建的数组类型(dtype)都是float64</p>
+<div class="highlight"><pre><span></span><code><span class="n">zeros1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span> <span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组zeros1:&quot;</span><span class="p">,</span><span class="n">zeros1</span><span class="p">)</span>
+<span class="n">ones1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组ones1:&quot;</span><span class="p">,</span><span class="n">ones1</span><span class="p">)</span>
+<span class="n">empty1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组empty1:&quot;</span><span class="p">,</span><span class="n">empty1</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="3-arange">3 arange()<a class="headerlink" href="#3-arange" title="Permanent link">&para;</a></h3>
+<p>arange() 类似 python 的 range() ，创建一个一维 ndarray 数组。</p>
+<div class="highlight"><pre><span></span><code><span class="n">np_arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;arange创建np_arange:&quot;</span><span class="p">,</span><span class="n">np_arange</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;arange创建np_arange的元素类型:&quot;</span><span class="p">,</span><span class="n">np_arange</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;arange创建np_arange的类型:&quot;</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="n">np_arange</span><span class="p">))</span>
+</code></pre></div>
+<h3 id="4-matrix">4 matrix()<a class="headerlink" href="#4-matrix" title="Permanent link">&para;</a></h3>
+<p>matrix 是 ndarray 的子类，只能生成 2 维的矩阵</p>
+<div class="highlight"><pre><span></span><code><span class="n">x1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mat</span><span class="p">(</span><span class="s2">&quot;1 2;3 4&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">x1</span><span class="p">)</span>
+
+<span class="n">x2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="s2">&quot;1,2;3,4&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">x2</span><span class="p">)</span>
+<span class="n">x3</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">x3</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="5">5 创建随机数矩阵<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># 生成指定维度大小（3行4列）的随机多维浮点型数据（二维），rand固定区间0.0 ~ 1.0</span>
+<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+
+<span class="c1"># 生成指定维度大小（3行4列）的随机多维整型数据（二维），randint()可以指定区间（-1, 5）</span>
+<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> 
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+
+<span class="c1"># 生成指定维度大小（3行4列）的随机多维浮点型数据（二维），uniform()可以指定区间（-1, 5）产生-1到5之间均匀分布的样本值</span>
+<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="c1"># </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+</code></pre></div>
+<h3 id="6-ndarray">6 ndarray的数据类型<a class="headerlink" href="#6-ndarray" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>dtype参数，指定数组的数据类型，类型名+位数，如float64, int32</p>
+</li>
+<li>
+<p>astype方法，转换数组的数据类型</p>
+</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="c1"># 初始化3行4列数组，数据类型为float64</span>
+<span class="n">zeros_float_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">zeros_float_arr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">zeros_float_arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="c1">#float64</span>
+
+<span class="c1"># astype转换数据类型，将已有的数组的数据类型转换为int32</span>
+<span class="n">zeros_int_arr</span> <span class="o">=</span> <span class="n">zeros_float_arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">zeros_int_arr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">zeros_int_arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>  <span class="c1">#int32</span>
+</code></pre></div>
+<h3 id="7">7 等比/等差数列<a class="headerlink" href="#7" title="Permanent link">&para;</a></h3>
+<h4 id="nplogspace">np.logspace等比数列<a class="headerlink" href="#nplogspace" title="Permanent link">&para;</a></h4>
+<p>logspace中，开始点和结束点是10的幂</p>
+<p>我们让开始点为0，结束点为0，元素个数为10，看看输出结果。</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">a</span>
+<span class="c1"># 输出结果</span>
+<span class="c1"># array([ 1., 1., 1., 1., 1., 1.,  1., 1., 1., 1.])</span>
+</code></pre></div>
+<p>● 我们看下面的例子，0代表10的0次方，9代表10的9次方。</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">a</span>
+<span class="c1"># 输出结果</span>
+<span class="c1"># array([1.e+00, 1.e+01, 1.e+02, 1.e+03, 1.e+04, 1.e+05, 1.e+06, 1.e+07,</span>
+<span class="c1">#       1.e+08, 1.e+09])</span>
+</code></pre></div>
+<p>● 假如，我们想要改变基数，不让它以10为底数，我们可以改变base参数，将其设置为2试试。</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">a</span>
+<span class="c1"># 输出结果</span>
+<span class="c1"># array([  1.,   2.,   4.,   8.,  16.,  32.,  64., 128., 256., 512.])</span>
+</code></pre></div>
+<h4 id="nplinspace">np.linspace等差数列<a class="headerlink" href="#nplinspace" title="Permanent link">&para;</a></h4>
+<p>np.linspace是用于创建一个一维数组，并且是等差数列构成的一维数组，它最常用的有三个参数。</p>
+<p>● 第一个例子，用到三个参数，第一个参数表示起始点，第二个参数表示终止点，第三个参数表示数列的个数。</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">a</span>
+<span class="c1"># 输出结果</span>
+<span class="c1"># array([ 1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10.])</span>
+</code></pre></div>
+<p>● linspace创建的数组元素是浮点型。</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="o">.</span><span class="n">dtype</span>
+<span class="c1"># 输出结果</span>
+<span class="c1"># dtype(&#39;float64&#39;)</span>
+</code></pre></div>
+<p>● 可以使用参数endpoint来决定是否包含终止值，默认值为True。</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">a</span>
+<span class="c1"># 输出结果</span>
+
+<span class="c1"># array([ 1. , 1.9, 2.8, 3.7, 4.6, 5.5, 6.4, 7.3, 8.2, 9.1])</span>
+</code></pre></div>
+<h2 id="4-numpy">4 NumPy内置函数<a class="headerlink" href="#4-numpy" title="Permanent link">&para;</a></h2>
+<h3 id="1">1 基本函数<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>np.ceil(): 向上最接近的整数，参数是 number 或 array</p>
+</li>
+<li>
+<p>np.floor(): 向下最接近的整数，参数是 number 或 array</p>
+</li>
+<li>
+<p>np.rint(): 四舍五入，参数是 number 或 array</p>
+</li>
+<li>
+<p>np.isnan(): 判断元素是否为 NaN(Not a Number)，参数是 number 或 array</p>
+</li>
+<li>
+<p>np.multiply(): 元素相乘，参数是 number 或 array</p>
+</li>
+<li>
+<p>np.divide(): 元素相除，参数是 number 或 array</p>
+</li>
+<li>
+<p>np.abs()：元素的绝对值，参数是 number 或 array</p>
+</li>
+<li>
+<p>np.where(condition, x, y): 三元运算符，x if condition else y</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># randn() 返回具有标准正态分布的序列。</span>
+<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">arr</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">arr</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">arr</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+</code></pre></div>
+<h3 id="2">2 统计函数<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>np.mean(), np.sum()：所有元素的平均值，所有元素的和，参数是 number 或 array</p>
+</li>
+<li>
+<p>np.max(), np.min()：所有元素的最大值，所有元素的最小值，参数是 number 或 array</p>
+</li>
+<li>
+<p>np.std(), np.var()：所有元素的标准差，所有元素的方差，参数是 number 或 array</p>
+</li>
+<li>
+<p>np.argmax(), np.argmin()：最大值的下标索引值，最小值的下标索引值，参数是 number 或 array</p>
+</li>
+<li>
+<p>np.cumsum(), np.cumprod()：返回一个一维数组，每个元素都是之前所有元素的 累加和 和 累乘积，参数是 number 或 array</p>
+</li>
+</ul>
+<p>多维数组默认统计全部维度，axis参数可以按指定轴心统计，值为0则按列统计，值为1则按行统计。</p>
+<div class="highlight"><pre><span></span><code><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span> <span class="c1"># 返回一个一维数组，每个元素都是之前所有元素的 累加和</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span> <span class="c1"># 所有元素的和</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="c1"># 数组的按列统计和</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="c1"># 数组的按行统计和</span>
+</code></pre></div>
+<h3 id="3">3 比较函数<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<p>假如我们想要知道矩阵a和矩阵b中所有对应元素是否相等，我们需要使用all方法，假如我们想要知道矩阵a和矩阵b中对应元素是否有一个相等，我们需要使用any方法。</p>
+<ul>
+<li>np.any(): 至少有一个元素满足指定条件，返回True</li>
+<li>np.all(): 所有的元素满足指定条件，返回True</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">arr</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">arr</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span>
+</code></pre></div>
+<h3 id="4">4 去重函数<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<p>np.unique():找到唯一值并返回排序结果，类似于Python的set集合</p>
+<div class="highlight"><pre><span></span><code><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+</code></pre></div>
+<h3 id="5_1">5 排序函数<a class="headerlink" href="#5_1" title="Permanent link">&para;</a></h3>
+<p>对数组元素进行排序</p>
+<div class="highlight"><pre><span></span><code><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;原数组arr:&quot;</span><span class="p">,</span><span class="n">arr</span><span class="p">)</span>
+
+<span class="c1">#np.sort()函数排序，返回排序后的副本</span>
+<span class="n">sortarr1</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;numpy.sort()函数排序后的数组:&quot;</span><span class="p">,</span><span class="n">sortarr1</span><span class="p">)</span>
+
+<span class="c1"># ndarray直接调用sort，在原数据上进行修改</span>
+<span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;数组.sort()方法排序：&quot;</span><span class="p">,</span><span class="n">arr</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="5-numpy">5 NumPy运算<a class="headerlink" href="#5-numpy" title="Permanent link">&para;</a></h2>
+<h3 id="1_1">1 基本运算<a class="headerlink" href="#1_1" title="Permanent link">&para;</a></h3>
+<p>数组的算数运算是按照元素的。新的数组被创建并且被结果填充。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">-</span><span class="n">b</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;数组a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;数组b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;数组运算a-b:&quot;</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="2_1">2 矩阵乘法<a class="headerlink" href="#2_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]])</span>
+<span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">6</span><span class="p">,</span><span class="mi">23</span><span class="p">],[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">],[</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="_2">小结<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>NumPy常见属性</li>
+<li>NumPy创建方法</li>
+<li>NumPy内置函数</li>
+</ul>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="页脚">
+      
+        
+        <a href="../03_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/01_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 1 环境搭建及使用" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              1 环境搭建及使用
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="02_%E5%B8%B8%E7%94%A8%E6%A6%82%E5%BF%B5.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 2 常用概念" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              2 常用概念
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.467223ff.min.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+  </body>
+</html>

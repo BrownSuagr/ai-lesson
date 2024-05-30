@@ -1,0 +1,2714 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/logo.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+    
+    
+      
+        <title>1 MySQL数据库基础I - 数据处理与统计分析 V3.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2d9f7617.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#1-mysqli" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="数据处理与统计分析 V3.0" class="md-header__button md-logo" aria-label="数据处理与统计分析 V3.0" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            数据处理与统计分析 V3.0
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              1 MySQL数据库基础I
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="数据处理与统计分析 V3.0" class="md-nav__button md-logo" aria-label="数据处理与统计分析 V3.0" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    数据处理与统计分析 V3.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          第一章 Linux
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第一章 Linux" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          第一章 Linux
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Linux%E8%AE%B2%E4%B9%89/01_Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F.html" class="md-nav__link">
+        1 Linux操作系统
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Linux%E8%AE%B2%E4%B9%89/02_Linux%E7%B3%BB%E7%BB%9F%E9%AB%98%E7%BA%A7.html" class="md-nav__link">
+        2 Linux系统高级
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          第二章 MySQL
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第二章 MySQL" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          第二章 MySQL
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          1 MySQL数据库基础I
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%801.html" class="md-nav__link md-nav__link--active">
+        1 MySQL数据库基础I
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    一、数据库概述
+  </a>
+  
+    <nav class="md-nav" aria-label="一、数据库概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1、数据库介绍
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2、数据库分类
+  </a>
+  
+    <nav class="md-nav" aria-label="2、数据库分类">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    ☆ 关系型数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nosql" class="md-nav__link">
+    ☆ 非关系型数据库NoSQL
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3、常见数据库介绍
+  </a>
+  
+    <nav class="md-nav" aria-label="3、常见数据库介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    ☆ 关系型数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    ☆ 非关系型数据库
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4、小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mysql" class="md-nav__link">
+    二、MySQL数据库
+  </a>
+  
+    <nav class="md-nav" aria-label="二、MySQL数据库">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1mysql" class="md-nav__link">
+    1、MySQL介绍
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2mysql" class="md-nav__link">
+    2、MySQL的特点
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3mysql" class="md-nav__link">
+    3、MySQL版本
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4mysql" class="md-nav__link">
+    4、MySQL数据库下载与安装
+  </a>
+  
+    <nav class="md-nav" aria-label="4、MySQL数据库下载与安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    ☆ 下载
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    ☆ 安装
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5windows" class="md-nav__link">
+    5、添加环境变量（Windows）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    6、检测环境变量是否配置成功
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linuxmysql" class="md-nav__link">
+    三、Linux系统下的MySQL安装与使用
+  </a>
+  
+    <nav class="md-nav" aria-label="三、Linux系统下的MySQL安装与使用">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1mysql_1" class="md-nav__link">
+    1、MySQL安装与使用
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2mysql_1" class="md-nav__link">
+    2、登陆MySQL数据库
+  </a>
+  
+    <nav class="md-nav" aria-label="2、登陆MySQL数据库">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mysql_1" class="md-nav__link">
+    ☆ 本地（针对本地MySQL）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mysqlmysql" class="md-nav__link">
+    ☆ 远程（针对远程MySQL，MySQL服务器不再本地）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    ☆ 退出
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_1" class="md-nav__link">
+    3、小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mysqldatagrip" class="md-nav__link">
+    四、MySQL图形化开发工具DataGrip
+  </a>
+  
+    <nav class="md-nav" aria-label="四、MySQL图形化开发工具DataGrip">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1datagrip" class="md-nav__link">
+    1、DataGrip介绍
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2datagrip" class="md-nav__link">
+    2、DataGrip安装
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_2" class="md-nav__link">
+    3、创建工程
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_1" class="md-nav__link">
+    4、连接数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5、选择要使用的数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6datagrip" class="md-nav__link">
+    6、DataGrip软件设置
+  </a>
+  
+    <nav class="md-nav" aria-label="6、DataGrip软件设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    ☆ 设置字体大小
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    ☆ 设置关键字大写
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    ☆ 自动排版
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sql" class="md-nav__link">
+    五、SQL语句
+  </a>
+  
+    <nav class="md-nav" aria-label="五、SQL语句">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_1" class="md-nav__link">
+    1、连接数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2sql" class="md-nav__link">
+    2、SQL语句分类
+  </a>
+  
+    <nav class="md-nav" aria-label="2、SQL语句分类">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ddl" class="md-nav__link">
+    ☆ DDL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dml" class="md-nav__link">
+    ☆ DML
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dql" class="md-nav__link">
+    ☆ DQL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dcl" class="md-nav__link">
+    ☆ DCL
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3sql" class="md-nav__link">
+    3、SQL基本语法
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_2" class="md-nav__link">
+    4、小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ddl_1" class="md-nav__link">
+    六、DDL数据库操作
+  </a>
+  
+    <nav class="md-nav" aria-label="六、DDL数据库操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1mysql_2" class="md-nav__link">
+    1、MySQL的组成结构
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_1" class="md-nav__link">
+    2、数据库的基本操作
+  </a>
+  
+    <nav class="md-nav" aria-label="2、数据库的基本操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_2" class="md-nav__link">
+    ① 创建数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_2" class="md-nav__link">
+    ② 查询数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_3" class="md-nav__link">
+    ③ 删除数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_3" class="md-nav__link">
+    ④ 选择数据库
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_4" class="md-nav__link">
+    3、小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ddl_2" class="md-nav__link">
+    七、DDL数据表操作
+  </a>
+  
+    <nav class="md-nav" aria-label="七、DDL数据表操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_3" class="md-nav__link">
+    1、数据表的基本操作
+  </a>
+  
+    <nav class="md-nav" aria-label="1、数据表的基本操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    ☆ 数据表的创建
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    ☆ 查询已创建数据表
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    ☆ 修改数据表信息
+  </a>
+  
+    <nav class="md-nav" aria-label="☆ 修改数据表信息">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_4" class="md-nav__link">
+    ① 数据表字段添加
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_3" class="md-nav__link">
+    ② 修改字段名称或字段类型
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_5" class="md-nav__link">
+    ③ 删除某个字段
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_4" class="md-nav__link">
+    ④ 修改数据表名称
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    ☆ 删除数据表
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_4" class="md-nav__link">
+    2、字段类型详解
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dml_1" class="md-nav__link">
+    八、DML数据操作语言
+  </a>
+  
+    <nav class="md-nav" aria-label="八、DML数据操作语言">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1dmlsql" class="md-nav__link">
+    1、DML包括哪些SQL语句
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_5" class="md-nav__link">
+    2、数据的增删改（重点）
+  </a>
+  
+    <nav class="md-nav" aria-label="2、数据的增删改（重点）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    ☆ 数据的增加操作
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    ☆ 数据的修改操作
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    ☆ 数据的删除操作
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%802.html" class="md-nav__link">
+        2 MySQL数据库基础II
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E9%AB%98%E7%BA%A7.html" class="md-nav__link">
+        3 MySQL高级
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          第三章 环境搭建
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第三章 环境搭建" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          第三章 环境搭建
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/01_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.html" class="md-nav__link">
+        1 环境搭建及使用
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          第四章 NumPy
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第四章 NumPy" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          第四章 NumPy
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_NumPy%E8%AE%B2%E4%B9%89/01_NumPy%E8%AE%B2%E4%B9%89.html" class="md-nav__link">
+        1 NumPy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_NumPy%E8%AE%B2%E4%B9%89/02_%E5%B8%B8%E7%94%A8%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        2 常用概念
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          第五章 Pandas
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第五章 Pandas" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          第五章 Pandas
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/01_Python%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%AE%80%E4%BB%8B.html" class="md-nav__link">
+        1 Python 数据分析处理简介
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/02_Pandas_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.html" class="md-nav__link">
+        2 Pandas 数据结构
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/03_Pandas_DataFrame%E5%85%A5%E9%97%A8.html" class="md-nav__link">
+        3 Pandas DataFrame 入门
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/04_Pandas%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%85%A5%E9%97%A8.html" class="md-nav__link">
+        4 Pandas 数据分析入门
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/05_%E6%95%B0%E6%8D%AE%E7%BB%84%E5%90%88.html" class="md-nav__link">
+        5 数据组合
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/06_%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97.html" class="md-nav__link">
+        6 数据清洗
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/07_apply%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0.html" class="md-nav__link">
+        7 apply 自定义函数
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/08_%E6%95%B0%E6%8D%AE%E5%88%86%E7%BB%84.html" class="md-nav__link">
+        8 数据分组
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/09_%E6%95%B0%E6%8D%AE%E9%80%8F%E8%A7%86%E8%A1%A8.html" class="md-nav__link">
+        9 数据透视表
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_Pandas%E8%AE%B2%E4%B9%89/10_datetime%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.html" class="md-nav__link">
+        10 datetime 数据类型
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          第六章 数据分析绘图
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第六章 数据分析绘图" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          第六章 数据分析绘图
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/01_%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        1 Python数据可视化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/02_Matplotlib%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        2 Matplotlib绘图
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/03_Pandas%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        3 Pandas绘图
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%BB%98%E5%9B%BE/04_Seaborn%E7%BB%98%E5%9B%BE.html" class="md-nav__link">
+        4 Seaborn 可视化
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          第七章 综合案例
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="第七章 综合案例" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          第七章 综合案例
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_%E7%BB%BC%E5%90%88%E6%A1%88%E4%BE%8B/01_RFM%E4%BC%9A%E5%91%98%E4%BB%B7%E5%80%BC%E5%BA%A6%E6%A8%A1%E5%9E%8B%E6%A1%88%E4%BE%8B.html" class="md-nav__link">
+        1 RFM会员价值度模型案例
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    一、数据库概述
+  </a>
+  
+    <nav class="md-nav" aria-label="一、数据库概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1、数据库介绍
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2、数据库分类
+  </a>
+  
+    <nav class="md-nav" aria-label="2、数据库分类">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    ☆ 关系型数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nosql" class="md-nav__link">
+    ☆ 非关系型数据库NoSQL
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3、常见数据库介绍
+  </a>
+  
+    <nav class="md-nav" aria-label="3、常见数据库介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    ☆ 关系型数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    ☆ 非关系型数据库
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4、小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mysql" class="md-nav__link">
+    二、MySQL数据库
+  </a>
+  
+    <nav class="md-nav" aria-label="二、MySQL数据库">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1mysql" class="md-nav__link">
+    1、MySQL介绍
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2mysql" class="md-nav__link">
+    2、MySQL的特点
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3mysql" class="md-nav__link">
+    3、MySQL版本
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4mysql" class="md-nav__link">
+    4、MySQL数据库下载与安装
+  </a>
+  
+    <nav class="md-nav" aria-label="4、MySQL数据库下载与安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    ☆ 下载
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    ☆ 安装
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5windows" class="md-nav__link">
+    5、添加环境变量（Windows）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    6、检测环境变量是否配置成功
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linuxmysql" class="md-nav__link">
+    三、Linux系统下的MySQL安装与使用
+  </a>
+  
+    <nav class="md-nav" aria-label="三、Linux系统下的MySQL安装与使用">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1mysql_1" class="md-nav__link">
+    1、MySQL安装与使用
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2mysql_1" class="md-nav__link">
+    2、登陆MySQL数据库
+  </a>
+  
+    <nav class="md-nav" aria-label="2、登陆MySQL数据库">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mysql_1" class="md-nav__link">
+    ☆ 本地（针对本地MySQL）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mysqlmysql" class="md-nav__link">
+    ☆ 远程（针对远程MySQL，MySQL服务器不再本地）
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    ☆ 退出
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_1" class="md-nav__link">
+    3、小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mysqldatagrip" class="md-nav__link">
+    四、MySQL图形化开发工具DataGrip
+  </a>
+  
+    <nav class="md-nav" aria-label="四、MySQL图形化开发工具DataGrip">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1datagrip" class="md-nav__link">
+    1、DataGrip介绍
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2datagrip" class="md-nav__link">
+    2、DataGrip安装
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_2" class="md-nav__link">
+    3、创建工程
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_1" class="md-nav__link">
+    4、连接数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5、选择要使用的数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6datagrip" class="md-nav__link">
+    6、DataGrip软件设置
+  </a>
+  
+    <nav class="md-nav" aria-label="6、DataGrip软件设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    ☆ 设置字体大小
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    ☆ 设置关键字大写
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    ☆ 自动排版
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sql" class="md-nav__link">
+    五、SQL语句
+  </a>
+  
+    <nav class="md-nav" aria-label="五、SQL语句">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_1" class="md-nav__link">
+    1、连接数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2sql" class="md-nav__link">
+    2、SQL语句分类
+  </a>
+  
+    <nav class="md-nav" aria-label="2、SQL语句分类">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ddl" class="md-nav__link">
+    ☆ DDL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dml" class="md-nav__link">
+    ☆ DML
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dql" class="md-nav__link">
+    ☆ DQL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dcl" class="md-nav__link">
+    ☆ DCL
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3sql" class="md-nav__link">
+    3、SQL基本语法
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_2" class="md-nav__link">
+    4、小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ddl_1" class="md-nav__link">
+    六、DDL数据库操作
+  </a>
+  
+    <nav class="md-nav" aria-label="六、DDL数据库操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1mysql_2" class="md-nav__link">
+    1、MySQL的组成结构
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_1" class="md-nav__link">
+    2、数据库的基本操作
+  </a>
+  
+    <nav class="md-nav" aria-label="2、数据库的基本操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_2" class="md-nav__link">
+    ① 创建数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_2" class="md-nav__link">
+    ② 查询数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_3" class="md-nav__link">
+    ③ 删除数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_3" class="md-nav__link">
+    ④ 选择数据库
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_4" class="md-nav__link">
+    3、小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ddl_2" class="md-nav__link">
+    七、DDL数据表操作
+  </a>
+  
+    <nav class="md-nav" aria-label="七、DDL数据表操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_3" class="md-nav__link">
+    1、数据表的基本操作
+  </a>
+  
+    <nav class="md-nav" aria-label="1、数据表的基本操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    ☆ 数据表的创建
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    ☆ 查询已创建数据表
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    ☆ 修改数据表信息
+  </a>
+  
+    <nav class="md-nav" aria-label="☆ 修改数据表信息">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_4" class="md-nav__link">
+    ① 数据表字段添加
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_3" class="md-nav__link">
+    ② 修改字段名称或字段类型
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_5" class="md-nav__link">
+    ③ 删除某个字段
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_4" class="md-nav__link">
+    ④ 修改数据表名称
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    ☆ 删除数据表
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_4" class="md-nav__link">
+    2、字段类型详解
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dml_1" class="md-nav__link">
+    八、DML数据操作语言
+  </a>
+  
+    <nav class="md-nav" aria-label="八、DML数据操作语言">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1dmlsql" class="md-nav__link">
+    1、DML包括哪些SQL语句
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_5" class="md-nav__link">
+    2、数据的增删改（重点）
+  </a>
+  
+    <nav class="md-nav" aria-label="2、数据的增删改（重点）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    ☆ 数据的增加操作
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    ☆ 数据的修改操作
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    ☆ 数据的删除操作
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="1-mysqli">1 MySQL数据库基础I<a class="headerlink" href="#1-mysqli" title="Permanent link">&para;</a></h1>
+<h2 id="_1">学习目标<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>掌握DDL操作</li>
+<li>了解mysql的约束</li>
+<li>掌握DML操作</li>
+<li>掌握DQL操作</li>
+<li>掌握多表联查</li>
+</ul>
+<h2 id="_2">一、数据库概述<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h3 id="1">1、数据库介绍<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<p>数据库就是==存储数据的仓库==，其本质是一个文件系统，按照特定的格式将数据存储起来，用户可以对数据库中的数据进行增加，修改，删除及查询操作。</p>
+<p>随着互联网的高速发展，大量的数据在不断的产生，伴随而来的是如何高效安全的存储数据和处理数据，而这一问题成为了信息时代的一个非常大的问题，而使用数据库可以高效的有条理的储存数据。</p>
+<ul>
+<li>可以结构化存储大量的数据；</li>
+<li>可以有效的保持数据的一致性、完整性；</li>
+<li>读写效率极高。</li>
+</ul>
+<p><img alt="image-20210906152323894" src="media/image-20210906152323894.png" /></p>
+<h3 id="2">2、数据库分类<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<p>数据库又分为==关系型数据库==和==非关系型数据库==</p>
+<h4 id="_3">☆ 关系型数据库<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p>关系型数据库：指采用了关系模型来组织数据的数据库。</p>
+<p>关系模型指的就是二维表格模型，而一个关系型数据库就是由二维表及其之间的联系所组成的一个数据组织。</p>
+<p>初学阶段，我们可以先简单的讲关系型数据库理解为一个Excel表格：</p>
+<p><img alt="image-20210906152434489" src="media/image-20210906152434489.png" /></p>
+<h4 id="nosql">☆ 非关系型数据库NoSQL<a class="headerlink" href="#nosql" title="Permanent link">&para;</a></h4>
+<p>非关系型数据库：又被称为NoSQL（Not Only SQL )，意为不仅仅是SQL，对NoSQL 最普遍的定义是“非关联型的”，强调 Key-Value 的方式存储数据。</p>
+<p>Key-Value结构存储： Key-value数据库是一种以键值对存储数据的一种数据库，类似Java中的map。可以将整个数据库理解为一个大的map，每个键都会对应一个唯一的值。</p>
+<p><img alt="image-20210906152604974" src="media/image-20210906152604974.png" /></p>
+<p>关系型和非关系型数据库区别？</p>
+<p>关系型：通过二维表维持数据关系（有行有列），大部分存储在硬盘，查询速度上关系型要慢一些，相对而言，安全性更高</p>
+<p>非关系型：通过key:value键值对维持数据关系，大部分存储在内存，查询速度上要相对于关系型数据库更快一些，安全系数相对关系型而言不高</p>
+<h3 id="3">3、常见数据库介绍<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<h4 id="_4">☆ 关系型数据库<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th><strong>数据库</strong></th>
+<th><strong>介绍</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>开源免费的数据库，中型的数据库.已经被Oracle收购了.MySQL6.x版本也开始收费。</td>
+</tr>
+<tr>
+<td><strong>Oracle</strong></td>
+<td>收费的大型数据库，Oracle公司的产品。Oracle收购SUN公司，收购MYSQL。</td>
+</tr>
+<tr>
+<td><strong>DB2</strong></td>
+<td>IBM公司的数据库产品,收费的。常应用在银行系统中.</td>
+</tr>
+<tr>
+<td><strong>SQLserver</strong></td>
+<td>MicroSoft 公司收费的中型的数据库。C#、.net等语言常使用。</td>
+</tr>
+<tr>
+<td><strong>SQLite</strong></td>
+<td>嵌入式的小型数据库，应用在手机端。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_5">☆ 非关系型数据库<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th><strong>数据库</strong></th>
+<th><strong>介绍</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Redis</strong></td>
+<td>是一个小而美的数据库，主要用在key-value  的内存缓存，读写性能极佳</td>
+</tr>
+<tr>
+<td>HBase</td>
+<td>HBase是列式数据库，目标是高效存储大量数据</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>MongoDB是文档型数据库，非常接近关系型数据库的。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4">4、小结<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<p>① 数据库就是存储数据的仓库，用户可以对数据库中的数据进行增删改查操作</p>
+<p>② 数据库分为关系型数据库和非关系型数据库。</p>
+<p>③ 常用的关系型数据库有：MySQL，Oracle，DB2，SQLserver，sqlite</p>
+<p>④ 常用的非关系型数据库有：Redis，Hbase，MongoDB</p>
+<h2 id="mysql">二、MySQL数据库<a class="headerlink" href="#mysql" title="Permanent link">&para;</a></h2>
+<h3 id="1mysql">1、MySQL介绍<a class="headerlink" href="#1mysql" title="Permanent link">&para;</a></h3>
+<p>MySQL是一个关系型数据库管理系统，在 WEB 应用方面，MySQL是最好的 RDBMS (Relational Database Management System，关系数据库管理系统) 应用软件，它是由瑞典MySQL AB 公司开发，目前属于 Oracle 旗下产品，MySQL 是最流行的关系型数据库管理系统中的一个。</p>
+<h3 id="2mysql">2、MySQL的特点<a class="headerlink" href="#2mysql" title="Permanent link">&para;</a></h3>
+<p>MySQL是开源的，所以你不需要支付额外的费用。
+MySQL支持大型的数据库。可以处理拥有上千万条记录的大型数据库。
+MySQL使用标准的SQL数据语言形式。
+MySQL可以安装在不同的操作系统，并且提供多种编程语言的操作接口。这些编程语言包括C、C++、Python、Java、Ruby等等。</p>
+<h3 id="3mysql">3、MySQL版本<a class="headerlink" href="#3mysql" title="Permanent link">&para;</a></h3>
+<p><mark>MySQL Community Server：社区版本，开源免费，但不提供官方技术支持。</mark></p>
+<p>MySQL Enterprise Edition：企业版本，需付费，可以试用30天。</p>
+<p>MySQL Cluster：集群版，开源免费。可将几个MySQL Server封装成一个Server。</p>
+<p>MySQL Cluster CGE：高级集群版，需付费。</p>
+<p>MySQL Workbench（GUITOOL）：一款专为MySQL设计的ER/数据库建模工具。它是著名的数据库设计工具DBDesigner4的继任者。MySQL Workbench又分为两个版本，分别是社区版（MySQL Workbench OSS）、商用版（MySQL WorkbenchSE）。</p>
+<blockquote>
+<p>本次课程，我们使用MySQL8.0版本， MySQL Community Server进行学习。</p>
+</blockquote>
+<h3 id="4mysql">4、MySQL数据库下载与安装<a class="headerlink" href="#4mysql" title="Permanent link">&para;</a></h3>
+<h4 id="_6">☆ 下载<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<p>MySQL是开源免费的，可以直接去官网下载最新版MySQL，下载地址如下：</p>
+<p>下载地址：<a href="https://dev.mysql.com/downloads/mysql/">https://dev.mysql.com/downloads/mysql/</a>，拉到下面，选择 Windows 系统。</p>
+<p>建议选择安装版进行安装，点击Go to Download Page进行安装。</p>
+<p>点击 Download 后会跳转到如下页面，点击左下角的 No thanks, just start my download. 开始下载。</p>
+<p><img alt="image-20210906153142314" src="media/image-20210906153142314.png" /></p>
+<h4 id="_7">☆ 安装<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<p>下载完成后打开安装包，稍等片刻后，选择开发者默认的安装方式，点击下一步即可。</p>
+<p>此后按照流程安装即可，遇到Next（下一步），和Execute（执行）直接点击即可，点击Execute后需要等待几分钟。</p>
+<p>直至出现Account and Roles输入数据库密码，此处输入密码务必记住，用于之后登陆数据库。</p>
+<p>继续点击Next，出现finish后点击，完成安装。</p>
+<p><img alt="image-20210906153342542" src="media/image-20210906153342542.png" /></p>
+<blockquote>
+<p>注意：MySQL软件有一个默认管理员叫做root</p>
+</blockquote>
+<h3 id="5windows">5、添加环境变量（Windows）<a class="headerlink" href="#5windows" title="Permanent link">&para;</a></h3>
+<p>cmd（DOS窗口）=&gt; 输入命令如mysql =&gt; 当前==Windows的环境变量==中去寻找</p>
+<p>添加环境变量的目的：输入终端命令时，可以搜索对应的可执行文件。</p>
+<p>首先找到mysql的安装目录，并且定位到mysql文件，将地址栏内容进行复制。</p>
+<p>默认的安装路径： C:\Program Files\MySQL\MySQL Server 8.0\bin</p>
+<p>找到此电脑右键点击选择属性，弹出如下界面，选择高级系统设置，不同版本系统位置可能不太一样，耐心寻找一下。</p>
+<p><img alt="image-20210906153727995" src="media/image-20210906153727995.png" /></p>
+<p>进入高级系统设置之后，点击环境变量按钮，即可进入环境变量配置界面。</p>
+<p>找到系统变量中的path变量，点击编辑，进入编辑界面。</p>
+<p>选择新建，将刚才的赋值的mysql文件的地址粘贴到文本框中，点击确定，完成环境变量配置。</p>
+<p><img alt="image-20210906154114931" src="media/image-20210906154114931.png" /></p>
+<h3 id="6">6、检测环境变量是否配置成功<a class="headerlink" href="#6" title="Permanent link">&para;</a></h3>
+<p>在底部搜索栏输入cmd，按Enter键唤出终端窗口。</p>
+<p>输入mysql -V（V要大写），输出如下内容则配置成功。</p>
+<p><img alt="image-20210906154244598" src="media/image-20210906154244598.png" /></p>
+<h2 id="linuxmysql">三、Linux系统下的MySQL安装与使用<a class="headerlink" href="#linuxmysql" title="Permanent link">&para;</a></h2>
+<h3 id="1mysql_1">1、MySQL安装与使用<a class="headerlink" href="#1mysql_1" title="Permanent link">&para;</a></h3>
+<p>课程提供的Linux系统中已经安装好了Mysql，可以无需安装，直接使用即可</p>
+<p>安装文档请查看：MySQL8.0安装.docx</p>
+<h3 id="2mysql_1">2、登陆MySQL数据库<a class="headerlink" href="#2mysql_1" title="Permanent link">&para;</a></h3>
+<p>MySQL是一个需要账户名密码登录的数据库，登陆后使用，它提供了一个默认的root账号，使用安装时设置的密码即可登录，目前有两种登录场景：</p>
+<h4 id="mysql_1">☆ 本地（针对本地MySQL）<a class="headerlink" href="#mysql_1" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c"># mysql -uroot –p 回车  </span>
+<span class="n">password</span><span class="err">：</span><span class="n">输入密码1</span>
+</code></pre></div>
+<p>案例演示：</p>
+<p><img alt="image-20210906154513647" src="media/image-20210906154513647.png" /></p>
+<blockquote>
+<p>说明：
+-u 后面是登录的用户名
+-p 后面是登录密码, 如果不填写, 回车之后会提示输入密码</p>
+</blockquote>
+<h4 id="mysqlmysql">☆ 远程（针对远程MySQL，MySQL服务器不再本地）<a class="headerlink" href="#mysqlmysql" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c"># mysql -h 远程服务器IP地址 -P 端口号 -u用户名 -p 回车</span>
+<span class="n">password</span><span class="err">：</span><span class="n">输入密码</span>
+
+
+<span class="n">案例</span><span class="err">：</span>
+<span class="c"># mysql -h 192.168.88.161 -P 3306 -uroot -p</span>
+<span class="n">Enter</span> <span class="n">password</span><span class="p">:</span><span class="n">123456</span>
+</code></pre></div>
+<h4 id="_8">☆ 退出<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="n">①</span> <span class="n">mysql</span><span class="p">&gt;</span> <span class="n">exit</span>
+<span class="n">②</span> <span class="n">mysql</span><span class="p">&gt;</span> <span class="n">quit</span>
+<span class="n">③</span> <span class="n">快捷键Ctrl</span> <span class="p">+</span> <span class="n">d</span>
+</code></pre></div>
+<h3 id="3_1">3、小结<a class="headerlink" href="#3_1" title="Permanent link">&para;</a></h3>
+<p>① MySQL的特点：免费，支持大型数据库，标准的SQL语言形式，跨平台。</p>
+<p>② 课程使用的版本时MySQL8.0版本。</p>
+<p>③ MySQL登录的两种方式：</p>
+<p>方法一：本地 mysql -uroot -p123456</p>
+<p>方法二：远程mysql -h 192.168.88.100 -P 3306 -uroot -p123456</p>
+<p>④ 从MySQL软件中退出有3种方式</p>
+<p>方法一：exit</p>
+<p>方法二：quit</p>
+<p>方法三：Ctrl + d</p>
+<h2 id="mysqldatagrip">四、MySQL图形化开发工具DataGrip<a class="headerlink" href="#mysqldatagrip" title="Permanent link">&para;</a></h2>
+<h3 id="1datagrip">1、DataGrip介绍<a class="headerlink" href="#1datagrip" title="Permanent link">&para;</a></h3>
+<p>DataGrip是JetBrains公司推出的管理数据库的产品，功能非常强大，可以兼容各种数据库，另外,JetBrains公司还有一款知名的IDE开发工具IDEA，用户体验非常不错。</p>
+<p>下载地址：<a href="https://www.jetbrains.com/datagrip/download/">https://</a><a href="https://www.jetbrains.com/datagrip/download/">www.jetbrains.com</a><a href="https://www.jetbrains.com/datagrip/download/">/</a><a href="https://www.jetbrains.com/datagrip/download/">datagrip</a><a href="https://www.jetbrains.com/datagrip/download/">/download/#section=windows</a></p>
+<p><img alt="image-20210906155227527" src="media/image-20210906155227527.png" /></p>
+<h3 id="2datagrip">2、DataGrip安装<a class="headerlink" href="#2datagrip" title="Permanent link">&para;</a></h3>
+<p>下载完成后打开安装程序，选择安装路径，一直点击Next即可安装。
+直到Finish点击完成安装，并打开应用。
+选择Evaluate for free 免费试用30天。</p>
+<p><img alt="image-20210906155338737" src="media/image-20210906155338737.png" /></p>
+<h3 id="3_2">3、创建工程<a class="headerlink" href="#3_2" title="Permanent link">&para;</a></h3>
+<p>点击File-&gt;New-&gt;Project新建DataGrip工程</p>
+<p>输入项目名称，点击确定。</p>
+<p>选择新项目打开方式：This Windows（在本窗口中打开），New Windows（在新窗口中打开）， Attach（附加模式）</p>
+<p><img alt="image-20210906155501506" src="media/image-20210906155501506.png" /></p>
+<h3 id="4_1">4、连接数据库<a class="headerlink" href="#4_1" title="Permanent link">&para;</a></h3>
+<p>选择Database下的➕，点击DataSource菜单下的MySQL。
+填写对应的参数，连接数据库：连接名，IP，用户名，密码等，点击OK完成连接。
+注意：如果第一次使用，需要下载mysql驱动文件。</p>
+<p><img alt="image-20210906155803643" src="media/image-20210906155803643.png" /></p>
+<p>设置数据库时区：</p>
+<ol>
+<li>点击Advanced按钮；</li>
+<li>在VM options后面写入<code>-Duser.timezone=Asia/Shanghai</code>，就可以啦；</li>
+</ol>
+<p><img alt="image-20210906160121362" src="media/image-20210906160121362.png" /></p>
+<p>设置完成后，单击Apply（应用），单击OK，数据库就连接成功了！</p>
+<h3 id="5">5、选择要使用的数据库<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
+<p>点击连接名称之后的按钮可以选择所要使用的数据库：</p>
+<p><img alt="image-20210906160356140" src="media/image-20210906160356140.png" /></p>
+<h3 id="6datagrip">6、DataGrip软件设置<a class="headerlink" href="#6datagrip" title="Permanent link">&para;</a></h3>
+<h4 id="_9">☆ 设置字体大小<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
+<p>设置文字大小： File---&gt;settings---&gt;Editor----&gt;Font</p>
+<p><img alt="image-20210906160447286" src="media/image-20210906160447286.png" /></p>
+<h4 id="_10">☆ 设置关键字大写<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h4>
+<p>设置关键字大写： File---&gt;settings---&gt;Editor----&gt;Code Style---&gt;SQL---&gt;MySql(需要设置的数据库)---&gt;Case</p>
+<p><img alt="image-20210906160549496" src="media/image-20210906160549496.png" /></p>
+<h4 id="_11">☆ 自动排版<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h4>
+<p>自动排版布局： File---&gt;settings---&gt;Editor----&gt;Code Style---&gt;SQL---&gt;MySql(需要设置的数据库)---&gt;Queries
+自动排版快捷键：Ctrl+ Alt + L</p>
+<p><img alt="image-20210906160636261" src="media/image-20210906160636261.png" /></p>
+<h2 id="sql">五、SQL语句<a class="headerlink" href="#sql" title="Permanent link">&para;</a></h2>
+<h3 id="1_1">1、连接数据库<a class="headerlink" href="#1_1" title="Permanent link">&para;</a></h3>
+<p>结构化查询语言(Structured Query Language)简称SQL，是关系型数据库管理系统都需要遵循的规范，是数据库认识的语句。不同的数据库生产厂商都支持SQL语句，但都有特有内容。</p>
+<p><strong>举例：</strong></p>
+<p>普通话：各数据库厂商都遵循的ISO标准。</p>
+<p>方言：数据库特有的关键字。</p>
+<p><img alt="image-20210906161025925" src="media/image-20210906161025925.png" /></p>
+<h3 id="2sql">2、SQL语句分类<a class="headerlink" href="#2sql" title="Permanent link">&para;</a></h3>
+<h4 id="ddl">☆ DDL<a class="headerlink" href="#ddl" title="Permanent link">&para;</a></h4>
+<p>数据定义语言：简称DDL(Data Definition Language)
+用来定义数据库对象：数据库，表，列等。
+关键字：create，alter，drop等</p>
+<h4 id="dml">☆ DML<a class="headerlink" href="#dml" title="Permanent link">&para;</a></h4>
+<p>数据操作语言：简称DML(Data Manipulation Language)
+用来对数据库中表的记录进行更新。
+关键字：insert，delete，update等</p>
+<h4 id="dql">☆ DQL<a class="headerlink" href="#dql" title="Permanent link">&para;</a></h4>
+<p>数据查询语言：简称DQL(Data Query Language)
+用来查询数据库中表的记录。
+关键字：select，from，where等</p>
+<h4 id="dcl">☆ DCL<a class="headerlink" href="#dcl" title="Permanent link">&para;</a></h4>
+<p>数据控制语言：简称DCL(Data Control Language)
+用来定义数据库的访问权限和安全级别，及创建用户。</p>
+<h3 id="3sql">3、SQL基本语法<a class="headerlink" href="#3sql" title="Permanent link">&para;</a></h3>
+<p>① SQL语句可以单行或多行书写，以分号结尾。</p>
+<div class="highlight"><pre><span></span><code><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">students</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<p>② 可使用空格和缩进来增强语句的可读性</p>
+<div class="highlight"><pre><span></span><code><span class="nb">select</span>
+  <span class="p">*</span>
+<span class="n">from</span> <span class="n">students</span><span class="p">;</span>
+</code></pre></div>
+<p>③ MySQL数据库的SQL语句不区分大小写，关键字建议使用大写</p>
+<div class="highlight"><pre><span></span><code><span class="nb">SELECT </span><span class="p">*</span> <span class="n">FROM</span> <span class="n">user</span><span class="p">;</span>
+<span class="n">等价于</span>
+<span class="nb">select </span><span class="p">*</span> <span class="n">from</span> <span class="n">user</span><span class="p">;</span> 
+</code></pre></div>
+<p>④ 可以使用单行与多行注释</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#  单行注释</span><span class="w"></span>
+<span class="c1">-- 单行注释，注意：--后面有一个空格</span><span class="w"></span>
+<span class="cm">/*</span>
+<span class="cm">    ...</span>
+<span class="cm">    多行注释</span>
+<span class="cm">    ...</span>
+<span class="cm">*/</span><span class="w"></span>
+</code></pre></div>
+<h3 id="4_2">4、小结<a class="headerlink" href="#4_2" title="Permanent link">&para;</a></h3>
+<p>结构化查询语言（SQL），是关系型数据库管理系统都需要遵循的规范，。不同的数据库生产厂商都支持SQL语句，但都有特有内容。</p>
+<p>SQL语句分为：数据定义语言（DDL），数据操作语言（DML），数据查询语言（DQL），数据控制语言（DCL）。</p>
+<p>SQL通用语法：结构灵活，使用分号结尾；不区分大小写；可以使用/**/，#，--来进行注释。</p>
+<h2 id="ddl_1">六、DDL数据库操作<a class="headerlink" href="#ddl_1" title="Permanent link">&para;</a></h2>
+<h3 id="1mysql_2">1、MySQL的组成结构<a class="headerlink" href="#1mysql_2" title="Permanent link">&para;</a></h3>
+<p><img alt="image-20200825112014915" src="media/image-20200825112014915.png" /></p>
+<blockquote>
+<p>注：我们平常说的MySQL，其实主要指的是MySQL数据库管理软件。</p>
+</blockquote>
+<p>一个MySQL DBMS可以同时存放多个数据库，理论上一个项目就对应一个数据库。如博客项目blog数据库、商城项目shop数据库、微信项目wechat数据库。</p>
+<p>一个数据库中还可以同时包含多个数据表，而数据表才是真正用于存放数据的位置。（类似我们Office软件中的Excel表格），理论上一个功能就对应一个数据表。如博客系统中的用户管理功能，就需要一个user数据表、博客中的文章就需要一个article数据表、博客中的评论就需要一个message数据表。</p>
+<p>一个数据表又可以拆分为多个字段，每个字段就是一个属性。</p>
+<p>一个数据表除了字段以外，还有很多行，每一行都是一条完整的数据（记录）。</p>
+<h3 id="2_1">2、数据库的基本操作<a class="headerlink" href="#2_1" title="Permanent link">&para;</a></h3>
+<h4 id="1_2">① 创建数据库<a class="headerlink" href="#1_2" title="Permanent link">&para;</a></h4>
+<p>普及英语小课堂：</p>
+<p>创建 =&gt; create</p>
+<p>数据库 =&gt; database</p>
+<p>创建 + 数据库 = create database 数据库名称(字母+数字+下划线组成，以字母开头，不能出现中文以及特殊字符)</p>
+<p>基本语法：</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">create</span> <span class="n">database</span> <span class="n">数据库名称</span> <span class="p">[</span><span class="n">设置编码格式</span><span class="p">];</span>
+</code></pre></div>
+<blockquote>
+<p>特别注意：在MySQL中，当一条SQL语句编写完毕后，一定要使用分号;进行结尾，否则系统认为这条语句还没有结束。</p>
+</blockquote>
+<p>案例：创建数据库的相关案例</p>
+<div class="highlight"><pre><span></span><code><span class="n">创建db_itheima库</span>
+<span class="n">create</span> <span class="n">database</span> <span class="n">db_itheima</span><span class="p">;</span>
+
+<span class="n">创建db1库并指定默认字符集</span>
+<span class="n">create</span> <span class="n">database</span> <span class="n">db_itheima</span> <span class="k">default</span> <span class="n">charset</span> <span class="n">gbk</span><span class="p">;</span>
+
+<span class="n">如果存在不报错</span><span class="p">(</span><span class="k">if</span> <span class="n">not</span> <span class="n">exists</span><span class="p">)</span>
+<span class="n">create</span> <span class="n">database</span> <span class="k">if</span> <span class="n">not</span> <span class="n">exists</span> <span class="n">db_itheima</span> <span class="k">default</span> <span class="n">character</span> <span class="nb">set </span><span class="n">utf8</span><span class="p">;</span>
+<span class="n">说明</span><span class="err">：</span><span class="n">不能创建相同名字的数据库</span><span class="err">！</span>
+</code></pre></div>
+<blockquote>
+<p>扩展：编码格式，常见的gbk（中国的编码格式）与utf8（国际通用编码格式）</p>
+</blockquote>
+<p>latin1 256个字符</p>
+<p>国内汉字无法通过256个字符进行描述，所以国内开发了自己的编码格式gb2312，升级gbk</p>
+<p>中国台湾业开发了一套自己的编码格式big5</p>
+<p>很多项目并不仅仅只在本地使用，也可能支持多国语言，标准化组织开发了一套通用编码utf8，后来5.6版本以后又进行了升级utf8mb4</p>
+<blockquote>
+<p>编写SQL语句是一个比较细致工作，不建议大家直接在终端中输入SQL语句，可以先把你要写的SQL语句写入一个记事本中，然后拷贝执行。</p>
+</blockquote>
+<h4 id="2_2">② 查询数据库<a class="headerlink" href="#2_2" title="Permanent link">&para;</a></h4>
+<p>英语小课堂：</p>
+<p>显示 =&gt; show</p>
+<p>数据库 =&gt; database</p>
+<p>显示 + 所有数据库 = show databases;</p>
+<p>基本语法：显示所有数据库</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">show</span> <span class="n">databases</span><span class="p">;</span>
+</code></pre></div>
+<h4 id="3_3">③ 删除数据库<a class="headerlink" href="#3_3" title="Permanent link">&para;</a></h4>
+<p>英语小课堂：</p>
+<p>删除 =&gt; drop</p>
+<p>数据库 =&gt; database</p>
+<p>删除 + 数据库 = drop database 数据库名称;</p>
+<p>基本语法：</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">drop</span> <span class="n">database</span> <span class="n">数据库名称</span><span class="p">;</span>
+</code></pre></div>
+<p>案例：删除db_itheima数据库</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">drop</span> <span class="n">database</span> <span class="n">db_itheima</span><span class="p">;</span>
+</code></pre></div>
+<h4 id="4_3">④ 选择数据库<a class="headerlink" href="#4_3" title="Permanent link">&para;</a></h4>
+<p>从数据库列表中查找需要使用的数据库</p>
+<p>格式：</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">db_itheima</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+<p>查看正在使用的数据库（8.0以后版本需要基于select查询来获取当前数据库）</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="nb">select </span><span class="n">database</span><span class="p">();</span>
+</code></pre></div>
+<h3 id="3_4">3、小结<a class="headerlink" href="#3_4" title="Permanent link">&para;</a></h3>
+<p>创建数据库：CREATE DATABASE 数据库名；
+查看数据库：SHOW DATABASES;
+删除数据库：DROP DATABASE 数据库名；
+使用数据库：USE 数据库名；</p>
+<h2 id="ddl_2">七、DDL数据表操作<a class="headerlink" href="#ddl_2" title="Permanent link">&para;</a></h2>
+<p>特别注意：创建数据表必须有一个前提，首先要明确选择某一个数据库。</p>
+<h3 id="1_3">1、数据表的基本操作<a class="headerlink" href="#1_3" title="Permanent link">&para;</a></h3>
+<h4 id="_12">☆ 数据表的创建<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h4>
+<p>英语小课堂：</p>
+<p>创建 =&gt; create</p>
+<p>数据表 =&gt; table</p>
+<p>创建 + 数据表 = create table 数据表名称</p>
+<p>基本语法：</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">create</span> <span class="n">table</span> <span class="n">数据表名称</span><span class="p">(</span>
+    <span class="n">字段1</span> <span class="n">字段类型</span> <span class="p">[</span><span class="n">字段约束</span><span class="p">],</span>
+    <span class="n">字段2</span> <span class="n">字段类型</span> <span class="p">[</span><span class="n">字段约束</span><span class="p">],</span>
+    <span class="p">...</span>
+<span class="p">);</span> 
+</code></pre></div>
+<p>案例：创建一个admin管理员表，拥有3个字段（编号、用户名称、用户密码）</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">create</span> <span class="n">database</span> <span class="n">db_itheima</span><span class="p">;</span>
+<span class="n">mysql</span><span class="p">&gt;</span> <span class="n">use</span> <span class="n">db_itheima</span><span class="p">;</span>
+</code></pre></div>
+<blockquote>
+<p>use在MySQL中的含义代表选择，use 数据库名称相当于选择指定的数据库。而且use比较特殊，其选择结束后，其尾部可以不加分号；但是强烈建议所有的SQL语句都要加分号，养成一个好习惯。</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">create</span> <span class="n">table</span> <span class="n">tb_admin</span><span class="p">(</span>
+    <span class="n">id</span> <span class="n">tinyint</span><span class="p">,</span>
+    <span class="n">username</span> <span class="n">varchar</span><span class="p">(</span><span class="n">20</span><span class="p">),</span>
+    <span class="n">password</span> <span class="n">char</span><span class="p">(</span><span class="n">32</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">engine</span><span class="p">=</span><span class="n">innodb</span> <span class="k">default</span> <span class="n">charset</span><span class="p">=</span><span class="n">utf8</span><span class="p">;</span>
+</code></pre></div>
+<blockquote>
+<p>tinyint ：微整型，范围-128 ~ 127，无符号型，则表示0 ~ 255</p>
+<p>表示字符串类型可以使用char与varchar，char代表固定长度的字段，varchar代表变化长度的字段。</p>
+</blockquote>
+<p>案例：创建一个article文章表，拥有4个字段（编号、标题、作者、内容）</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">use</span> <span class="n">db_itheima</span><span class="p">;</span>
+<span class="n">mysql</span><span class="p">&gt;</span> <span class="n">create</span> <span class="n">table</span> <span class="n">tb_article</span><span class="p">(</span>
+    <span class="n">id</span> <span class="n">int</span><span class="p">,</span>
+    <span class="n">title</span> <span class="n">varchar</span><span class="p">(</span><span class="n">50</span><span class="p">),</span>
+    <span class="n">author</span> <span class="n">varchar</span><span class="p">(</span><span class="n">20</span><span class="p">),</span>
+    <span class="n">content</span> <span class="n">text</span>
+<span class="p">)</span> <span class="n">engine</span><span class="p">=</span><span class="n">innodb</span> <span class="k">default</span> <span class="n">charset</span><span class="p">=</span><span class="n">utf8</span><span class="p">;</span>
+</code></pre></div>
+<blockquote>
+<p>text ：文本类型，一般情况下，用varchar存储不了的字符串信息，都建议使用text文本进行处理。</p>
+<p>varchar存储的最大长度，理论值65535个字符。但是实际上，有几个字符是用于存放内容的长度的，所以真正可以使用的不足65535个字符，另外varchar类型存储的字符长度还和编码格式有关。1个GBK格式的占用2个字节长度，1个UTF8格式的字符占用3个字节长度。GBK = 65532~65533/2，UTF8 = 65532~65533/3</p>
+</blockquote>
+<h4 id="_13">☆ 查询已创建数据表<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h4>
+<p>英语小课堂：</p>
+<p>显示 =&gt; show</p>
+<p>数据表 =&gt; table</p>
+<p>显示所有数据表（当前数据库）</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">use</span> <span class="n">数据库名称</span><span class="p">;</span>
+<span class="n">mysql</span><span class="p">&gt;</span> <span class="n">show</span> <span class="n">tables</span><span class="p">;</span>
+</code></pre></div>
+<p>显示数据表的创建过程（编码格式、字段等信息）</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">desc</span> <span class="n">数据表名称</span><span class="p">;</span>
+</code></pre></div>
+<h4 id="_14">☆ 修改数据表信息<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h4>
+<h5 id="1_4">① 数据表字段添加<a class="headerlink" href="#1_4" title="Permanent link">&para;</a></h5>
+<p>英语小课堂：</p>
+<p>修改 =&gt; alter</p>
+<p>数据表 =&gt; table</p>
+<p>基本语法：</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">alter</span> <span class="n">table</span> <span class="n">数据表名称</span> <span class="n">add</span> <span class="n">新字段名称</span> <span class="n">字段类型</span> <span class="n">first</span><span class="p">|</span><span class="n">after</span> <span class="n">其他字段名称</span><span class="p">;</span>
+<span class="n">选项说明</span><span class="err">：</span>
+<span class="n">first</span><span class="err">：</span><span class="n">把新添加字段放在第一位</span>
+<span class="n">after</span> <span class="n">字段名称</span><span class="err">：</span><span class="n">把新添加字段放在指定字段的后面</span>
+</code></pre></div>
+<p>案例：在tb_article文章表中添加一个addtime字段，类型为date(年-月-日)</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">alter</span> <span class="n">table</span> <span class="n">tb_article</span> <span class="n">add</span> <span class="n">addtime</span> <span class="n">date</span> <span class="n">after</span> <span class="n">content</span><span class="p">;</span>
+<span class="n">mysql</span><span class="p">&gt;</span> <span class="n">desc</span> <span class="n">tb_article</span><span class="p">;</span>
+</code></pre></div>
+<h5 id="2_3">② 修改字段名称或字段类型<a class="headerlink" href="#2_3" title="Permanent link">&para;</a></h5>
+<p>修改字段名称与字段类型（也可以只修改名称）</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">alter</span> <span class="n">table</span> <span class="n">tb_admin</span> <span class="n">change</span> <span class="n">username</span> <span class="n">user</span> <span class="n">varchar</span><span class="p">(</span><span class="n">40</span><span class="p">);</span>
+<span class="n">mysql</span><span class="p">&gt;</span> <span class="n">desc</span> <span class="n">tb_admin</span><span class="p">;</span>
+</code></pre></div>
+<p>仅修改字段的类型</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">alter</span> <span class="n">table</span> <span class="n">tb_admin</span> <span class="n">modify</span> <span class="n">user</span> <span class="n">varchar</span><span class="p">(</span><span class="n">20</span><span class="p">);</span>
+<span class="n">mysql</span><span class="p">&gt;</span> <span class="n">desc</span> <span class="n">tb_admin</span><span class="p">;</span>
+</code></pre></div>
+<h5 id="3_5">③ 删除某个字段<a class="headerlink" href="#3_5" title="Permanent link">&para;</a></h5>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">alter</span> <span class="n">table</span> <span class="n">tb_article</span> <span class="n">drop</span> <span class="n">字段名称</span><span class="p">;</span>
+<span class="n">mysql</span><span class="p">&gt;</span> <span class="n">desc</span> <span class="n">tb_article</span><span class="p">;</span>
+</code></pre></div>
+<h5 id="4_4">④ 修改数据表名称<a class="headerlink" href="#4_4" title="Permanent link">&para;</a></h5>
+<div class="highlight"><pre><span></span><code><span class="n">rename</span> <span class="n">table</span> <span class="n">旧名称</span> <span class="n">to</span> <span class="n">新名称</span><span class="p">;</span>
+</code></pre></div>
+<h4 id="_15">☆ 删除数据表<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h4>
+<p>英语小课堂：</p>
+<p>删除 =&gt; drop</p>
+<p>数据表 =&gt; table</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">drop</span> <span class="n">table</span> <span class="n">数据表名称</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="2_4">2、字段类型详解<a class="headerlink" href="#2_4" title="Permanent link">&para;</a></h3>
+<p>① 整数类型</p>
+<table>
+<thead>
+<tr>
+<th><strong>分类</strong></th>
+<th><strong>类型名称</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tinyint</td>
+<td>很小的整数</td>
+<td>-128 ~ 127</td>
+</tr>
+<tr>
+<td>smallint</td>
+<td>小的整数</td>
+<td>-32768 ~ 32767</td>
+</tr>
+<tr>
+<td>mediumint</td>
+<td>中等大小的整数</td>
+<td>-8388608 ~ 8388607</td>
+</tr>
+<tr>
+<td>int(integer)</td>
+<td>普通大小的整数</td>
+<td>-2147483648 ~ 2147483647</td>
+</tr>
+</tbody>
+</table>
+<p>② 浮点类型</p>
+<p>浮点类型（精度失真情况）和定点类型（推荐使用定点类型）</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>类型名称</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>float</td>
+<td>单精度浮点数</td>
+</tr>
+<tr>
+<td>double</td>
+<td>双精度浮点数</td>
+</tr>
+<tr>
+<td>decimal(m,d)</td>
+<td>定点数，decimal(10,2)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>decimal(10,2) ：代表这个数的总长度为10 = 整数长度 + 小数长度，2代表保留2位小数</p>
+</blockquote>
+<p>③ 日期类型</p>
+<table>
+<thead>
+<tr>
+<th>份额里</th>
+<th>类型名称</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>year</td>
+<td>YYYY 1901~2155</td>
+</tr>
+<tr>
+<td>time</td>
+<td>HH:MM:SS -838:59:59~838:59:59</td>
+</tr>
+<tr>
+<td>date</td>
+<td>YYYY-MM-DD  1000-01-01~9999-12-3</td>
+</tr>
+<tr>
+<td>datetime</td>
+<td>YYYY-MM-DD  HH:MM:SS 1000-01-01 00:00:00~ 9999-12-31 23:59:59</td>
+</tr>
+<tr>
+<td>timestamp</td>
+<td>YYYY-MM-DD  HH:MM:SS 1970<sub>01</sub>01 00:00:01  UTC~2038-01-19 03:14:07UTC</td>
+</tr>
+</tbody>
+</table>
+<p>④ 文本</p>
+<table>
+<thead>
+<tr>
+<th><strong>类型名称</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>char(m)</td>
+<td>m为0~255之间的整数定长（固定长度）</td>
+</tr>
+<tr>
+<td>varchar(m)</td>
+<td>m为0~65535之间的整数变长（变化长度）</td>
+</tr>
+<tr>
+<td>text</td>
+<td>允许长度0~65535字节</td>
+</tr>
+<tr>
+<td>mediumtext</td>
+<td>允许长度0~167772150字节</td>
+</tr>
+<tr>
+<td>longtext</td>
+<td>允许长度0~4294967295字节</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dml_1">八、DML数据操作语言<a class="headerlink" href="#dml_1" title="Permanent link">&para;</a></h2>
+<h3 id="1dmlsql">1、DML包括哪些SQL语句<a class="headerlink" href="#1dmlsql" title="Permanent link">&para;</a></h3>
+<p>insert插入、update更新、delete删除</p>
+<h3 id="2_5">2、数据的增删改（重点）<a class="headerlink" href="#2_5" title="Permanent link">&para;</a></h3>
+<p>英语小课堂：</p>
+<p>增加：insert</p>
+<p>删除：delete</p>
+<p>修改：update</p>
+<h4 id="_16">☆ 数据的增加操作<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h4>
+<p>基本语法：</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">insert</span> <span class="n">into</span> <span class="n">数据表名称</span><span class="p">([</span><span class="n">字段1</span><span class="p">,</span><span class="n">字段2</span><span class="p">,</span><span class="n">字段3</span><span class="p">...])</span> <span class="n">values</span> <span class="p">(</span><span class="n">字段1的值</span><span class="p">,</span><span class="n">字段2的值</span><span class="p">,</span><span class="n">字段3的值</span><span class="p">...);</span>
+</code></pre></div>
+<blockquote>
+<p>特别注意：在SQL语句中，除了数字，其他类型的值，都需要使用引号引起来，否则插入时会报错。</p>
+</blockquote>
+<p>第一步：准备一个数据表</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">use</span> <span class="n">db_itheima</span><span class="p">;</span>
+<span class="n">mysql</span><span class="p">&gt;</span> <span class="n">create</span> <span class="n">table</span> <span class="n">tb_user</span><span class="p">(</span>
+    <span class="n">id</span> <span class="n">int</span><span class="p">,</span>
+    <span class="n">username</span> <span class="n">varchar</span><span class="p">(</span><span class="n">20</span><span class="p">),</span>
+    <span class="n">age</span> <span class="n">tinyint</span> <span class="n">unsigned</span><span class="p">,</span>
+    <span class="n">gender</span> <span class="n">enum</span><span class="p">(</span><span class="s1">&#39;男&#39;</span><span class="p">,</span><span class="s1">&#39;女&#39;</span><span class="p">,</span><span class="s1">&#39;保密&#39;</span><span class="p">),</span>
+    <span class="n">address</span> <span class="n">varchar</span><span class="p">(</span><span class="n">255</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">engine</span><span class="p">=</span><span class="n">innodb</span> <span class="k">default</span> <span class="n">charset</span><span class="p">=</span><span class="n">utf8</span><span class="p">;</span>
+</code></pre></div>
+<blockquote>
+<p>unsigned代表无符号型，只有0到正数。tinyint unsigned无符号型，范围0 ~ 255</p>
+<p>enum枚举类型，多选一。只能从给定的值中选择一个</p>
+</blockquote>
+<p>第二步：使用insert语句插入数据</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">insert</span> <span class="n">into</span> <span class="n">tb_user</span> <span class="n">values</span> <span class="p">(</span><span class="n">1</span><span class="p">,</span><span class="s1">&#39;刘备&#39;</span><span class="p">,</span><span class="n">34</span><span class="p">,</span><span class="s1">&#39;男&#39;</span><span class="p">,</span><span class="s1">&#39;广州市天河区&#39;</span><span class="p">);</span>
+<span class="n">mysql</span><span class="p">&gt;</span> <span class="n">insert</span> <span class="n">into</span> <span class="n">tb_user</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">username</span><span class="p">,</span><span class="n">age</span><span class="p">)</span> <span class="n">values</span> <span class="p">(</span><span class="n">2</span><span class="p">,</span><span class="s1">&#39;关羽&#39;</span><span class="p">,</span><span class="n">33</span><span class="p">);</span>
+</code></pre></div>
+<p>第三步：批量插入多条数据</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">insert</span> <span class="n">into</span> <span class="n">tb_user</span> <span class="n">values</span> <span class="p">(</span><span class="n">3</span><span class="p">,</span><span class="s1">&#39;大乔&#39;</span><span class="p">,</span><span class="n">19</span><span class="p">,</span><span class="s1">&#39;女&#39;</span><span class="p">,</span><span class="s1">&#39;上海市浦东新区&#39;</span><span class="p">),(</span><span class="n">4</span><span class="p">,</span><span class="s1">&#39;小乔&#39;</span><span class="p">,</span><span class="n">18</span><span class="p">,</span><span class="s1">&#39;女&#39;</span><span class="p">,</span><span class="s1">&#39;上海市浦东新区&#39;</span><span class="p">),(</span><span class="n">5</span><span class="p">,</span><span class="s1">&#39;马超&#39;</span><span class="p">,</span><span class="n">26</span><span class="p">,</span><span class="s1">&#39;男&#39;</span><span class="p">,</span><span class="s1">&#39;北京市昌平区&#39;</span><span class="p">);</span>
+</code></pre></div>
+<h4 id="_17">☆ 数据的修改操作<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h4>
+<p>基本语法：</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">update</span> <span class="n">数据表名称</span> <span class="nb">set </span><span class="n">字段1</span><span class="p">=</span><span class="n">更新后的值</span><span class="p">,</span><span class="n">字段2</span><span class="p">=</span><span class="n">更新后的值</span><span class="p">,...</span> <span class="nb">where </span><span class="n">更新条件</span><span class="p">;</span>
+</code></pre></div>
+<blockquote>
+<p>特别说明：如果在更新数据时，不指定更新条件，则其会把这个数据表的所有记录全部更新一遍。</p>
+</blockquote>
+<p>案例：修改username='马鹏'这条记录，将其性别更新为男，家庭住址更新为广东省深圳市</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">update</span> <span class="n">tb_user</span> <span class="nb">set </span><span class="n">gender</span><span class="p">=</span><span class="s1">&#39;男&#39;</span><span class="p">,</span><span class="n">address</span><span class="p">=</span><span class="s1">&#39;广东省深圳市&#39;</span> <span class="nb">where </span><span class="n">username</span><span class="p">=</span><span class="s1">&#39;马鹏&#39;</span><span class="p">;</span>
+</code></pre></div>
+<p>案例：今年是2020年，假设到了2021年，现在存储的学员年龄都差1岁，整体进行一次更新</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">update</span> <span class="n">tb_user</span> <span class="nb">set </span><span class="n">age</span><span class="p">=</span><span class="n">age</span><span class="p">+</span><span class="n">1</span><span class="p">;</span>
+</code></pre></div>
+<h4 id="_18">☆ 数据的删除操作<a class="headerlink" href="#_18" title="Permanent link">&para;</a></h4>
+<p>基本语法：</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">delete</span> <span class="n">from</span> <span class="n">数据表名称</span> <span class="no">[where 删除条件]</span><span class="p">;</span>
+</code></pre></div>
+<p>案例：删除tb_user表中，id=1的用户信息</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">delete</span> <span class="n">from</span> <span class="n">tb_user</span> <span class="nb">where </span><span class="n">id</span><span class="p">=</span><span class="n">1</span><span class="p">;</span>
+</code></pre></div>
+<p>delete from与truncate清空数据表操作</p>
+<div class="highlight"><pre><span></span><code><span class="n">mysql</span><span class="p">&gt;</span> <span class="n">delete</span> <span class="n">from</span> <span class="n">数据表</span><span class="p">;</span>
+<span class="n">或</span>
+<span class="n">mysql</span><span class="p">&gt;</span> <span class="n">truncate</span> <span class="n">数据表</span><span class="p">;</span>
+</code></pre></div>
+<p>delete from与truncate区别在哪里？</p>
+<ul>
+<li>delete：删除数据记录</li>
+<li>数据操作语言（DML）</li>
+<li>删除大量记录速度慢，只删除数据，主键自增序列不清零，100 =&gt; 新插入 =&gt; 101</li>
+<li>可以带条件删除</li>
+<li>truncate：删除所有数据记录</li>
+<li>数据定义语言（DDL）</li>
+<li>清里大量数据速度快，主键自增序列清零, 100 =&gt; 新插入 =&gt; 1</li>
+<li>不能带条件删除</li>
+</ul>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="页脚">
+      
+        
+        <a href="../01_Linux%E8%AE%B2%E4%B9%89/02_Linux%E7%B3%BB%E7%BB%9F%E9%AB%98%E7%BA%A7.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 2 Linux系统高级" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              2 Linux系统高级
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%802.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 2 MySQL数据库基础II" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              2 MySQL数据库基础II
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.467223ff.min.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+  </body>
+</html>
