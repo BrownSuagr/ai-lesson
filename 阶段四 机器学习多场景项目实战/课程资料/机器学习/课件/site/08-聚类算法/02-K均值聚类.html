@@ -1,0 +1,1631 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/logo.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.11">
+    
+    
+      
+        <title>K 均值聚类 - 机器学习讲义</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.50e68009.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#k" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="机器学习讲义" class="md-header__button md-logo" aria-label="机器学习讲义" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            机器学习讲义
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              K 均值聚类
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+    <img src="../assets/images/logo.svg" height="45px" alt="logo">
+
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="机器学习讲义" class="md-nav__button md-logo" aria-label="机器学习讲义" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    机器学习讲义
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          1、机器学习概述
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="1、机器学习概述" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          1、机器学习概述
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/01-%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        02_人工智能概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/02-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        03_机器学习概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/03-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        04_机器学习分类
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/05-%E6%8B%9F%E5%90%88%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        05_拟合问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/06-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%99%A8%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.html" class="md-nav__link">
+        06_机器学习开发环境
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          2、K近邻
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="2、K近邻" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          2、K近邻
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/01-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_K近邻算法原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/02-%E8%B7%9D%E7%A6%BB%E7%9A%84%E5%BA%A6%E9%87%8F%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        03_距离的度量方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/03-%E5%BD%92%E4%B8%80%E5%8C%96%E5%92%8C%E6%A0%87%E5%87%86%E5%8C%96.html" class="md-nav__link">
+        04_归一化和标准化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/04-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95API.html" class="md-nav__link">
+        05_K近邻算法API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/06-%E5%88%86%E7%B1%BB%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        06_分类模型评估方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/05-K%E5%80%BC%E9%80%89%E6%8B%A9%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        07_K值选择问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/07-%E6%A1%88%E4%BE%8B-%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E8%AF%86%E5%88%AB.html" class="md-nav__link">
+        08_案例-手写数字识别
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          3、线性回归
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="3、线性回归" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          3、线性回归
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/01-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_线性回归原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/03-%E6%AD%A3%E8%A7%84%E6%96%B9%E7%A8%8B.html" class="md-nav__link">
+        03_损失函数和正规方程
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/%E6%B1%82%E5%AF%BC.html" class="md-nav__link">
+        04_求导
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/04-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%952.html" class="md-nav__link">
+        05_梯度下降法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/05-%E5%85%B6%E4%BB%96%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        06_其他梯度下降方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/%E5%9B%9E%E5%BD%92%E9%97%AE%E9%A2%98%E8%AF%84%E4%BC%B0.html" class="md-nav__link">
+        07_回归问题评估
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/06-%E6%AD%A3%E5%88%99%E5%8C%96.html" class="md-nav__link">
+        08_过拟合欠拟合与正则化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/07-%E6%A1%88%E4%BE%8B-%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%94%BE%E4%BB%B7%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        09_案例-波士顿房价预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          4、逻辑回归
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="4、逻辑回归" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          4、逻辑回归
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%AE%80%E4%BB%8B.html" class="md-nav__link">
+        02_逻辑回归介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/03-%E6%A1%88%E4%BE%8B-%E7%99%8C%E7%97%87%E5%88%86%E7%B1%BB%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        03_案例-癌症分类预测
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/04-%E5%88%86%E7%B1%BB%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87.html" class="md-nav__link">
+        04_分类评估指标
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/06-%E7%BB%83%E4%B9%A0-%E7%94%B5%E4%BF%A1%E5%AE%A2%E6%88%B7%E6%B5%81%E5%A4%B1.html" class="md-nav__link">
+        05_案例-电信客户流失
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          5、决策树
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="5、决策树" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          5、决策树
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/01-%E5%86%B3%E7%AD%96%E6%A0%91%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        02_决策树介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/03-ID3%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        03_ID3决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/04-C4.5%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        04_C4.5决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/05-CART%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        05_CART决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/06-%E5%9B%9E%E5%BD%92%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        06_回归决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/07-%E5%89%AA%E6%9E%9D.html" class="md-nav__link">
+        07_剪枝
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/08-%E6%A1%88%E4%BE%8B-%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7%E7%94%9F%E5%AD%98%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        08_案例-泰坦尼克号生存预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          6、朴素贝叶斯
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="6、朴素贝叶斯" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          6、朴素贝叶斯
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_朴素贝叶斯原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/02-%E6%A1%88%E4%BE%8B-%E5%95%86%E5%93%81%E8%AF%84%E8%AE%BA%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        03_案例-垃圾邮件分类
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          7、支持向量机
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="7、支持向量机" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          7、支持向量机
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/01-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E5%BC%95%E5%85%A5.html" class="md-nav__link">
+        02_支持向量引入
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/02-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        03_支持向量概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/04-%E6%A0%B8%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        04_核方法和损失函数
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/06-%E6%A1%88%E4%BE%8B-%E9%B8%A2%E5%B0%BE%E8%8A%B1%E7%A7%8D%E7%B1%BB%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        05_案例-鸢尾花种类预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9">
+          8、聚类算法
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="8、聚类算法" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          8、聚类算法
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="section1.html" class="md-nav__link">
+        02_聚类概述
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="section2.html" class="md-nav__link">
+        03_KMeans API介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="section3.html" class="md-nav__link">
+        04_KMeans实现流程
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="section4.html" class="md-nav__link">
+        04_聚类效果评估
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04-%E7%89%B9%E5%BE%81%E9%99%8D%E7%BB%B4.html" class="md-nav__link">
+        05_特征降维
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="section5.html" class="md-nav__link">
+        06_案例-顾客数据聚类分析
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          9、集成学习
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="9、集成学习" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          9、集成学习
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/01-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        02_集成学习问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/02-Bagging%E5%92%8C%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97.html" class="md-nav__link">
+        03_Bagging和随机森林
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/03-Boosting%E5%92%8CAdaBoost.html" class="md-nav__link">
+        04_Boosting和AdaBoost
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/04-%E6%A1%88%E4%BE%8B-%E8%BD%A6%E8%BE%86%E8%B4%B7%E6%AC%BE%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        05_案例-车辆贷款违约预测
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/05-GBDT.html" class="md-nav__link">
+        06_GBDT
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/06-XGBoost_1.html" class="md-nav__link">
+        07_XGBoost
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/07-%E6%A1%88%E4%BE%8B-%E7%BA%A2%E9%85%92%E5%93%81%E8%B4%A8%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        08_案例-红酒品质分类
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-sklearnkmeans" class="md-nav__link">
+    1. Sklearn实现KMeans聚类
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Sklearn实现KMeans聚类">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-api" class="md-nav__link">
+    1.1 api介绍
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    1.2 案例
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    1.3 流程分析
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14" class="md-nav__link">
+    1.4 代码实现
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15" class="md-nav__link">
+    1.5 小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2.算法原理
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-kmeans" class="md-nav__link">
+    3. KMeans算法举例
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4. 聚类时要注意的问题
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5. 小节
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="k">K 均值聚类<a class="headerlink" href="#k" title="Permanent link">&para;</a></h1>
+<hr />
+<p>学习目标：
+1. 了解 K 均值聚类算法原理
+2. 了解蕨类时要注意的问题</p>
+<h2 id="1-sklearnkmeans">1. Sklearn实现KMeans聚类<a class="headerlink" href="#1-sklearnkmeans" title="Permanent link">&para;</a></h2>
+<h3 id="11-api">1.1 api介绍<a class="headerlink" href="#11-api" title="Permanent link">&para;</a></h3>
+<p>sklearn.cluster.KMeans(n_clusters=8)</p>
+<p>参数: n_clusters:开始的聚类中心数量  整型，n_clusters=8，生成的聚类数，即产生的质心（centroids）数。</p>
+<p>方法: estimator.fit(x) estimator.predict(x) estimator.fit_predict(x)计算聚类中心并预测每个样本属于哪个类别,相当于先调用fit(x),然后再调用predict(x)</p>
+<h3 id="12"><strong>1.2</strong> 案例<a class="headerlink" href="#12" title="Permanent link">&para;</a></h3>
+<p>随机创建不同二维数据集作为训练集，并结合k-means算法将其聚类，你可以尝试分别聚类不同数量的簇，并观察聚类效果：</p>
+<p><img src="C:/Users/uncle/Desktop/机器学习课件/聚类算法/images/wpsBjFLoA.png" alt="img" style="zoom:25%;" /> </p>
+<p>聚类参数n_cluster传值不同，得到的聚类结果不同</p>
+<p><img src="C:/Users/uncle/Desktop/机器学习课件/聚类算法/images/wpsU1vX5m.png" alt="img" style="zoom:25%;" /> </p>
+<h3 id="13"><strong>1.3</strong> 流程分析<a class="headerlink" href="#13" title="Permanent link">&para;</a></h3>
+<p><img src="../../../../../../Users/weiyunfei/Documents/机器学习课件/聚类算法/images/wpsAMpf7x.png" alt="img" style="zoom:25%;" /> </p>
+<div class="highlight"><pre><span></span><code>
+</code></pre></div>
+<h3 id="14"><strong>1.4</strong> 代码实现<a class="headerlink" href="#14" title="Permanent link">&para;</a></h3>
+<ol>
+<li>创建数据集</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets.samples_generator</span> <span class="kn">import</span> <span class="n">make_blobs</span>
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">silhouette_score</span> 
+<span class="c1"># 创建数据集</span>
+<span class="c1"># X为样本特征，Y为样本簇类别， 共1000个样本，每个样本2个特征，共4个簇，</span>
+<span class="c1"># 簇中心在[-1,-1], [0,0],[1,1], [2,2]， 簇方差分别为[0.4, 0.2, 0.2, 0.2]</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_blobs</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">centers</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
+                  <span class="n">cluster_std</span><span class="o">=</span><span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+                  <span class="n">random_state</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+
+<span class="c1"># 数据集可视化</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p><img src="C:/Users/uncle/Desktop/机器学习课件/聚类算法/images/image-20210702095247377.png" alt="image-20210702095247377" style="zoom:50%;" /></p>
+<ol>
+<li>使用k-means进行聚类,并使用silhouette_score(轮廓系数)评估</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="n">model</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="c1"># 分别尝试n_cluses=2\3\4,然后查看聚类效果</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">y_pred</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># 用轮廓系数评估的聚类分数</span>
+<span class="n">silhouette_score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="c1"># 0.6435178953651656</span>
+</code></pre></div>
+<p><img src="../../../../../../Users/weiyunfei/Documents/机器学习课件/聚类算法/images/image-20210702095349349.png" alt="image-20210702095349349" style="zoom:50%;" /></p>
+<h3 id="15"><strong>1.5</strong> 小结<a class="headerlink" href="#15" title="Permanent link">&para;</a></h3>
+<p>api：sklearn.cluster.KMeans(n_clusters=8)【知道】</p>
+<p>参数:</p>
+<ul>
+<li>n_clusters:开始的聚类中心数量</li>
+</ul>
+<p>方法：</p>
+<ul>
+<li>
+<p>estimator.fit_predict(x)</p>
+</li>
+<li>
+<p>计算聚类中心并预测每个样本属于哪个类别,相当于先调用fit(x),然后再调用predict(x)</p>
+</li>
+</ul>
+<h2 id="2">2.算法原理<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<p>K 均值聚类是一种典型的无监督学习算法，主要用于将相似的样本自动归到一个类别中。
+在聚类算法中根据样本之间的相似性，将样本划分到不同的类别中，对于不同的相似度计算方法，会得到不同的聚类结果，常用的相似度计算方法有欧式距离法。</p>
+<p>其中:
+1. K: 初始中心点个数（计划聚类数）
+2. means: 求中心点到其他数据点距离的平均值</p>
+<p>算法流程如下：</p>
+<p>（1）随机适当选择 K 个类的初始中心； 
+（2）对任意一个样本，求其到 K 个中心的距离，将该样本归到距离最短的中心所在的类；</p>
+<p><img src='assets/05.png' /></p>
+<p>（3）利用均值等方法更新该类的中心值；</p>
+<p><img src='assets/06.png' /></p>
+<p>（4）重复执行 2、3 步, 直到算法收敛</p>
+<p><br /></p>
+<p><img src='assets/08.png' /></p>
+<p><br />
+<br /></p>
+<blockquote>
+<p>算法终止条件：迭代次数/中心值不再发生变化/最小平方误差MSE</p>
+</blockquote>
+<p><br /></p>
+<p><img src='assets/07.png' /></p>
+<h2 id="3-kmeans">3. KMeans算法举例<a class="headerlink" href="#3-kmeans" title="Permanent link">&para;</a></h2>
+<p><img src="02-K均值聚类.assets/wps79B5.tmp.jpg" alt="img" style="zoom:150%;" /></p>
+<p>通过下面的例子理解上面的算法迭代过程。</p>
+<p>示例：假设我们有4个对象作为训练数据点，每个对象有2个属性。 每个属性表示对象的一个维度的坐标。</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79C6.tmp.jpg" /> </p>
+<p>每个药物代表一个具有两个特征（X，Y）的点，我们可以将其在二维坐标系中表示，如下图所示。</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79C7.tmp.jpg" /> <img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79C8.tmp.jpg" /></p>
+<p>（1）质心的初始值：假设我们使用药物A和药物B作为第一重心。 让c1和 c2表示质心的坐标，则c1 =(1,1)和c2 =(2,1)</p>
+<p>（2）对象 - 质心距离：我们计算每个对象的聚类质心之间的距离。右侧D(0)</p>
+<p>（3）距离矩阵中的每列都表示对象。（右侧图） 距离矩阵的第一行对应于每个物体与第一重心的距离，第二行是距离是每个对象与第二个重心的距离。 例如，药物三c3=(4,3)距离第一个质心c1=(1,1)的距离为sqrt((4-1)<sup>2+(3-1)</sup>2)=3.61;到第二个质心c2 =(2,1)的距离sqrt((4-2)<sup>2+(3-1)</sup>2)=2.83。</p>
+<p>（4）对象聚类：我们根据最小距离分配每个对象。 因此，药A是分配到第1组，药物B至组2，药物C至组2和药物D至组2当且仅当对象被分配给该组时，下面的组矩阵的元素是1表示属于哪一类。</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79C9.tmp.jpg" /> </p>
+<p>（5）迭代1次，确定质心：知道每个组的成员，现在我们计算新的基于这些新成员的每个组的质心。 第1组只有一个成员质心保持在c1=（1,1）。 组2现在有三个成员，因此重心是平均数三位成员之间的协调。</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79CA.tmp.jpg" /> </p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79CB.tmp.jpg" /> </p>
+<p>备注：</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79CC.tmp.jpg" /> </p>
+<p>（6）迭代1，对象-质心距离：下一步是计算所有对象的距离新的质心。与步骤2类似，我们在迭代1中有距离矩阵</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79CD.tmp.jpg" /> </p>
+<p>（7）迭代1，对象聚类：与步骤3类似，我们基于最小值分配每个对象距离。 基于新的距离矩阵，我们将药物B移动到组1，而所有其他对象仍然存在。 组矩阵如下所示：</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79CE.tmp.jpg" /> </p>
+<p>备注：</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79CF.tmp.jpg" /> </p>
+<p>（8）迭代2，确定质心：现在我们基于以前迭代的聚类重复步骤（5）来计算新的质心坐标。 组1和组2都有两个成员，因此</p>
+<p>新的质心是</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79D0.tmp.jpg" /> </p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79E0.tmp.jpg" /> </p>
+<p>（9）迭代2，对象 - 质心距离：再次重复步骤2，我们有新的距离矩阵迭代2为：</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79E1.tmp.jpg" /> </p>
+<p>（10）迭代2，对象聚类：再次，我们根据最小距离分配每个对象。</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79E2.tmp.jpg" /> </p>
+<p>我们得到<img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79E3.tmp.jpg" />的结果。 比较上一次迭代的分组和这个迭代显示对象不再移动组。 因此，k均值聚类的计算具有达到稳定，不再需要迭代。 我们得到最终的分组作为结果。</p>
+<p>备注:</p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79E4.tmp.jpg" /> </p>
+<p><img alt="img" src="02-K%E5%9D%87%E5%80%BC%E8%81%9A%E7%B1%BB.assets/wps79E5.tmp.jpg" /> </p>
+<p><strong>总结</strong></p>
+<p>均值是一种基于属性/特征将对象分类或分组为K的算法组数。 K是正整数。 通过最小化平方和来完成分组数据与对应的集群中心之间的距离。 因此，K均值聚类的目的是对数据进行分类。</p>
+<p>一开始，我们确定簇K的数量和假设这些聚类的质心或中心。 我们可以把任何随机选择对象作为初始质心或者第一个K对象（第一行数据）也可以作为初始质心。</p>
+<p>那么K均值算法将会执行以下三个步骤，直到收敛</p>
+<p>迭代直到稳定（=没有对象移动到其他分组）：</p>
+<p>1.确定质心坐标</p>
+<p>2.确定每个物体与重心（中心，或选取点）的距离</p>
+<p>3.根据最小距离对对象进行分组（找到最近的质心）</p>
+<h2 id="4">4. 聚类时要注意的问题<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<p>K均值（K-Means）是聚类中最常用的方法之一，它基于点与点距离的相似度来计算最佳类别归属。但K均值在应用之前一定要注意两种数据异常：
+1. <strong>数据的异常值</strong>。数据中的异常值能明显改变不同点之间的距离相似度，并且这种影响是非常显著的。因此基于距离相似度的判别模式下，异常值的处理必不可少。
+2. <strong>数据的量纲不同</strong>。不同的维度和变量之间，如果存在数值规模或量纲的差异，那么在做距离之前需要先将变量标准化。例如: 订单金额可能是[0，10000000]，而订单数量则是[0，1000]。如果没有标准化操作，那么相似度将主要受到订单金额的影响。</p>
+<ol>
+<li>
+<p><strong>数据量过大的时候不适合使用 KMeans</strong>。
+    3.1 K-Means在算法稳定性、效率和准确率（相对于真实标签的判别）上表现非常好，并且在应对大量数据时依然如此。它的算法时间复杂度上界为O(n * k * t)，其中n是样本量、k是划分的聚类数、t是迭代次数。</p>
+<p>3.2 当真正面对海量数据时，使用K均值算法将面临严重的结果延迟，尤其是当K均值被用做实时性或准实时性的数据预处理、分析和建模时，这种瓶颈效应尤为明显。</p>
+<p>3.3 针对K均值的这一问题，很多延伸算法出现了，MiniBatchKMeans就是其中一个典型代表。 MiniBatchKMeans使用了一个名为 Mini Batch 的方法计算数据点之间的距离。MiniBatch的好处是计算过程中不必使用所有的数据样本，而是从不同类别的样本中抽取一部分样本（而非全部样本）作为代表参与聚类算法过程。
+由于计算样本量少，所以会相应减少运行时间；但另一方面，由于是抽样方法，抽样样本很难完全代表整体样本的全部特征，因此会带来准确度的下降</p>
+<p>经过对 30000 样本点分别使用 K-Means 和 MiniBatchKMeans 进行聚类，对比之后运行时间 MiniBatchKMeans 是 K-Means的一半 （0.17 v.s. 0.36），但聚类结果差异性很小。</p>
+</li>
+</ol>
+<h2 id="5">5. 小节<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<ol>
+<li>K均值聚类算法是较为常用的聚类算法，其算法流程如下：</li>
+<li>随机适当选择 K 个类的初始中心； </li>
+<li>对任意一个样本，求其到 K 个中心的距离，将该样本归到距离最短的中心所在的类；</li>
+<li>利用均值等方法更新该类的中心值；</li>
+<li>重复执行 2、3 步, 直到算法收敛</li>
+<li>K 均值聚类算法容易受到异常值、不同量纲的影响，另外对于大数据场景也较为耗时。</li>
+</ol>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../assets/javascripts/workers/search.092fa1f6.min.js"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a9542cf.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+    
+  </body>
+</html>

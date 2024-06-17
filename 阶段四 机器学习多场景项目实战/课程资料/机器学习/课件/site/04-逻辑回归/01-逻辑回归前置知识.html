@@ -1,0 +1,1651 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/logo.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.11">
+    
+    
+      
+        <title>逻辑回归原理 - 机器学习讲义</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.50e68009.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="机器学习讲义" class="md-header__button md-logo" aria-label="机器学习讲义" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            机器学习讲义
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              逻辑回归原理
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+    <img src="../assets/images/logo.svg" height="45px" alt="logo">
+
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="机器学习讲义" class="md-nav__button md-logo" aria-label="机器学习讲义" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    机器学习讲义
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          1、机器学习概述
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="1、机器学习概述" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          1、机器学习概述
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/01-%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        02_人工智能概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/02-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        03_机器学习概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/03-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        04_机器学习分类
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/05-%E6%8B%9F%E5%90%88%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        05_拟合问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/06-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%99%A8%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.html" class="md-nav__link">
+        06_机器学习开发环境
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          2、K近邻
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="2、K近邻" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          2、K近邻
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/01-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_K近邻算法原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/02-%E8%B7%9D%E7%A6%BB%E7%9A%84%E5%BA%A6%E9%87%8F%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        03_距离的度量方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/03-%E5%BD%92%E4%B8%80%E5%8C%96%E5%92%8C%E6%A0%87%E5%87%86%E5%8C%96.html" class="md-nav__link">
+        04_归一化和标准化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/04-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95API.html" class="md-nav__link">
+        05_K近邻算法API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/06-%E5%88%86%E7%B1%BB%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        06_分类模型评估方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/05-K%E5%80%BC%E9%80%89%E6%8B%A9%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        07_K值选择问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/07-%E6%A1%88%E4%BE%8B-%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E8%AF%86%E5%88%AB.html" class="md-nav__link">
+        08_案例-手写数字识别
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          3、线性回归
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="3、线性回归" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          3、线性回归
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/01-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_线性回归原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/03-%E6%AD%A3%E8%A7%84%E6%96%B9%E7%A8%8B.html" class="md-nav__link">
+        03_损失函数和正规方程
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/%E6%B1%82%E5%AF%BC.html" class="md-nav__link">
+        04_求导
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/04-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%952.html" class="md-nav__link">
+        05_梯度下降法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/05-%E5%85%B6%E4%BB%96%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        06_其他梯度下降方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/%E5%9B%9E%E5%BD%92%E9%97%AE%E9%A2%98%E8%AF%84%E4%BC%B0.html" class="md-nav__link">
+        07_回归问题评估
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/06-%E6%AD%A3%E5%88%99%E5%8C%96.html" class="md-nav__link">
+        08_过拟合欠拟合与正则化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/07-%E6%A1%88%E4%BE%8B-%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%94%BE%E4%BB%B7%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        09_案例-波士顿房价预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          4、逻辑回归
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="4、逻辑回归" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          4、逻辑回归
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%AE%80%E4%BB%8B.html" class="md-nav__link">
+        02_逻辑回归介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03-%E6%A1%88%E4%BE%8B-%E7%99%8C%E7%97%87%E5%88%86%E7%B1%BB%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        03_案例-癌症分类预测
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04-%E5%88%86%E7%B1%BB%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87.html" class="md-nav__link">
+        04_分类评估指标
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="06-%E7%BB%83%E4%B9%A0-%E7%94%B5%E4%BF%A1%E5%AE%A2%E6%88%B7%E6%B5%81%E5%A4%B1.html" class="md-nav__link">
+        05_案例-电信客户流失
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          5、决策树
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="5、决策树" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          5、决策树
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/01-%E5%86%B3%E7%AD%96%E6%A0%91%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        02_决策树介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/03-ID3%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        03_ID3决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/04-C4.5%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        04_C4.5决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/05-CART%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        05_CART决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/06-%E5%9B%9E%E5%BD%92%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        06_回归决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/07-%E5%89%AA%E6%9E%9D.html" class="md-nav__link">
+        07_剪枝
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/08-%E6%A1%88%E4%BE%8B-%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7%E7%94%9F%E5%AD%98%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        08_案例-泰坦尼克号生存预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          6、朴素贝叶斯
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="6、朴素贝叶斯" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          6、朴素贝叶斯
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_朴素贝叶斯原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/02-%E6%A1%88%E4%BE%8B-%E5%95%86%E5%93%81%E8%AF%84%E8%AE%BA%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        03_案例-垃圾邮件分类
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          7、支持向量机
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="7、支持向量机" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          7、支持向量机
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/01-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E5%BC%95%E5%85%A5.html" class="md-nav__link">
+        02_支持向量引入
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/02-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        03_支持向量概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/04-%E6%A0%B8%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        04_核方法和损失函数
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/06-%E6%A1%88%E4%BE%8B-%E9%B8%A2%E5%B0%BE%E8%8A%B1%E7%A7%8D%E7%B1%BB%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        05_案例-鸢尾花种类预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9">
+          8、聚类算法
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="8、聚类算法" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          8、聚类算法
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section1.html" class="md-nav__link">
+        02_聚类概述
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section2.html" class="md-nav__link">
+        03_KMeans API介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section3.html" class="md-nav__link">
+        04_KMeans实现流程
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section4.html" class="md-nav__link">
+        04_聚类效果评估
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/04-%E7%89%B9%E5%BE%81%E9%99%8D%E7%BB%B4.html" class="md-nav__link">
+        05_特征降维
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section5.html" class="md-nav__link">
+        06_案例-顾客数据聚类分析
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          9、集成学习
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="9、集成学习" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          9、集成学习
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/01-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        02_集成学习问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/02-Bagging%E5%92%8C%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97.html" class="md-nav__link">
+        03_Bagging和随机森林
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/03-Boosting%E5%92%8CAdaBoost.html" class="md-nav__link">
+        04_Boosting和AdaBoost
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/04-%E6%A1%88%E4%BE%8B-%E8%BD%A6%E8%BE%86%E8%B4%B7%E6%AC%BE%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        05_案例-车辆贷款违约预测
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/05-GBDT.html" class="md-nav__link">
+        06_GBDT
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/06-XGBoost_1.html" class="md-nav__link">
+        07_XGBoost
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/07-%E6%A1%88%E4%BE%8B-%E7%BA%A2%E9%85%92%E5%93%81%E8%B4%A8%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        08_案例-红酒品质分类
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1. 为什么学习逻辑回归？
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2. 极大似然估计
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 极大似然估计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    2.1  为什么要有极大似然估计？
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    2.2  极大似然估计步骤：
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    2.3  极大似然估计的例子
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-sigmod" class="md-nav__link">
+    3. Sigmod函数模型
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Sigmod函数模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    3.1 逻辑斯特函数的由来
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-sigmod" class="md-nav__link">
+    3.2 Sigmod函数绘图
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-" class="md-nav__link">
+    3.3 进一步探究-加入线性回归
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    3.4  结果解释
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35" class="md-nav__link">
+    3.5 对数似然损失函数
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5. 总结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="_1">逻辑回归原理<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<hr />
+<ul>
+<li>学习目标</li>
+<li>掌握LR使用场景</li>
+<li>掌握LR的基本原理</li>
+</ul>
+<h2 id="1">1. 为什么学习逻辑回归？<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>在前面的KNN算法中直接可以得出预测结果，但是如果想输出预测结果，还要输出预测结果的概率，这时候就需要使用逻辑回归解决问题。</p>
+<p>比如，预测性别的时候，预测为男性，同时预测概率为90%，这样可以通过概率更加具有说服力。</p>
+<p><strong>应用场景</strong></p>
+<p>逻辑回归（Logistic Regression）是机器学习中的一种分类模型，逻辑回归是一种分类算法，虽然名字中带有回归。由于算法的简单和高效，在实际中应用非常广泛。</p>
+<ul>
+<li>
+<p>广告点击率</p>
+</li>
+<li>
+<p>是否为垃圾邮件</p>
+</li>
+<li>
+<p>是否患病</p>
+</li>
+<li>
+<p>金融诈骗</p>
+</li>
+<li>
+<p>虚假账号</p>
+</li>
+</ul>
+<p>看到上面的例子，我们可以发现其中的特点，那就是都属于两个类别之间的判断。逻辑回归就是解决二分类问题的利器。</p>
+<h2 id="2">2. 极大似然估计<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1  <strong>为什么要有极大似然估计？</strong><a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<p>​   例子：我与一位猎人一起外出打猎，一只野兔从前方穿过，只听到一声枪响，野兔应声倒下。问是谁倒下的呢？</p>
+<p>​   答：极有可能是猎人。</p>
+<p>​   显然候选人就两个，我和猎人。若选择我，则事件发生的发生概率为0.01%，因为我不会打猎；若选择猎人，则事件发生的概率为99%，而事件已经发生，因此选择猎人更为合适。</p>
+<p>​   极大似然估计的思想</p>
+<p>​   设总体中含有待估参数w，可以取很多值。已经知道了样本观测值（例子中的兔子被猎人打死了），从w的一切可能值中（引例中是我和猎人）选出一个使该观察值出现的概率为最大的值，作为w参数的估计值，这就是极大似然估计。（顾名思义：就是看上去那个是最大可能的意思）</p>
+<h3 id="22">2.2  <strong>极大似然估计步骤：</strong><a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
+<p>求极大似然函数估计值的一般步骤：</p>
+<p>（1） 写出似然函数；</p>
+<p>（2） 对似然函数取对数，并整理；</p>
+<p>（3） 求导数 ；</p>
+<p>（4） 解似然方程</p>
+<p>极大似然估计，只是一种概率论在统计学的应用，它是参数估计的方法之一。说的是已知某个随机样本满足某种概率分布，但是其中具体的参数不清楚，参数估计就是通过若干次试验，观察其结果，利用结果推出参数的大概值。极大似然估计是建立在这样的思想上：已知某个参数能使这个样本出现的概率最大，我们当然不会再去选择其他小概率的样本，所以干脆就把这个参数作为估计的真实值。</p>
+<p>当然极大似然估计只是一种粗略的数学期望，要知道它的误差大小还要做区间估计。</p>
+<h3 id="23">2.3  <strong>极大似然估计的例子</strong><a class="headerlink" href="#23" title="Permanent link">&para;</a></h3>
+<p>设某工序生产的产品的不合格率为<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A78.tmp.png" />，抽<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A88.tmp.png" />个产品作检验，发现有<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A89.tmp.png" />个不合格，试求<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A8A.tmp.png" />的极大似然估计．</p>
+<p>分析：设<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A8B.tmp.png" />是抽查一个产品时的不合格品个数，则<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A8C.tmp.png" />服从参数为<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A8D.tmp.png" />的二点分布<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A8E.tmp.png" />．抽查<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A8F.tmp.png" />个产品，则得样本<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A90.tmp.png" />，其观察值为<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A91.tmp.png" />，假如样本有<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A92.tmp.png" />个不合格，即表示<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A93.tmp.png" />中有<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A94.tmp.png" />个取值为１，<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A95.tmp.png" />个取值为０．按离散分布场合方法，求<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A96.tmp.png" />的极大似然估计．</p>
+<p>解：（１）写出似然函数：<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5A97.tmp.png" /></p>
+<p>（２）对<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AA8.tmp.png" />取对数，得对数似然函数<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AA9.tmp.png" />：</p>
+<p><img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AAA.tmp.png" /></p>
+<p>（３）由于<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AAB.tmp.png" />对<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AAC.tmp.png" />的导数存在，故将<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AAD.tmp.png" />对<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AAE.tmp.png" />求导，令其为０，得似然方程：<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AAF.tmp.png" /></p>
+<p>（４）解似然方程得：<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AB0.tmp.png" /></p>
+<p>（５）经验证，在<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AB1.tmp.png" />时，<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AB2.tmp.png" />，这表明<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AB3.tmp.png" />可使似然函数达到最大</p>
+<p>（６）上述过程对任一样本观测值都成立，故用样本代替观察值便得<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AB4.tmp.png" />的极大似然估计为：<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AB5.tmp.png" /></p>
+<p>将观察值代入，可得<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AB6.tmp.png" />的极大似然估计值为：<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AC7.tmp.png" />，其中<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AC8.tmp.png" />．</p>
+<p>若总体<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5AC9.tmp.png" />的分布中含有多个未知参数<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5ACA.tmp.png" />时，似然函数<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5ACB.tmp.png" />是这些参数的多元函数<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5ACC.tmp.png" />．代替方程（３），我们有方程组<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5ACD.tmp.png" />，由这个方程组解得<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5ACE.tmp.png" />分别是参数<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5ACF.tmp.png" />的极大似然估计值．</p>
+<h2 id="3-sigmod">3. Sigmod函数模型<a class="headerlink" href="#3-sigmod" title="Permanent link">&para;</a></h2>
+<h3 id="31">3.1 逻辑斯特函数的由来<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>Sigmod函数，也称之为逻辑斯特函数</p>
+</blockquote>
+<p>假设一事件发生的概率为P，则不发生的概率为1-P，我们把发生概率/不发生概率称之为发生的概率比，数学公式表示为：</p>
+<p><img src="01-逻辑回归原理.assets/wps591F.tmp.png" alt="img" style="zoom:200%;" /></p>
+<p>更进一步我们定义logit函数，它是概率比的对数函数（log-odds）</p>
+<p><img src="01-逻辑回归原理.assets/wps5920.tmp.png" alt="img" style="zoom:200%;" /></p>
+<p>Logit函数耳朵输入值范围介于[0,1]之间，它能将输入转换到整个实数范围内。</p>
+<p>对logit函数求反函数，我们将logit的反函数叫做logistic函数：</p>
+<p><img src="01-逻辑回归原理.assets/wps5921.tmp.png" alt="img" style="zoom:200%;" /></p>
+<p>该函数的图像如下图： </p>
+<p>对图像的理解：sidmod函数以实数值作为输入并将其反射到[0，1]区间，拐点在y=0.5地方。</p>
+<h3 id="32-sigmod">3.2 Sigmod函数绘图<a class="headerlink" href="#32-sigmod" title="Permanent link">&para;</a></h3>
+<ul>
+<li>需求：绘制[-7，7]的sigmod函数图像</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="k">def</span> <span class="nf">sigmod</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span>
+<span class="n">z</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">phi_z</span><span class="o">=</span><span class="n">sigmod</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">phi_z</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhspan</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\phi (z)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+<p><img src='assets/02.png' style="zoom:80%;" /></p>
+<ol>
+<li>逻辑回归的分类结果是通过属于某个类别的概率值来判断</li>
+<li>预测概率大于 50% 则分为类1类别(正例), 反之为0类别(反例)</li>
+</ol>
+<h3 id="33-">3.3 进一步探究-加入线性回归<a class="headerlink" href="#33-" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>测试数据为<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5922.tmp.png" /></p>
+</li>
+<li>
+<p>要学习的参数为：<img alt="img" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/wps5923.tmp.png" /> </p>
+</li>
+</ul>
+<p>模型的线性表示：（样本特征与权重的线性组合）</p>
+<p><img src="01-逻辑回归原理.assets/wps5934.tmp.png" alt="img" style="zoom:150%;" /></p>
+<p>向量表示：</p>
+<p><img src="01-逻辑回归原理.assets/wps5935.tmp.png" alt="img" style="zoom:150%;" /></p>
+<p>处理二值数据，引入Sigmoid函数时曲线平滑化 </p>
+<p><img src="01-逻辑回归原理.assets/wps5936.tmp.png" alt="img" style="zoom:200%;" /></p>
+<p>从而实现数据分类任务。</p>
+<h3 id="34">3.4  <strong>结果解释</strong><a class="headerlink" href="#34" title="Permanent link">&para;</a></h3>
+<p>输出结果解释(重要)：假设有两个类别A，B，并且假设我们的概率值为属于A(1)这个类别的概率值。现在有一个样本的输入到逻辑回归输出结果0.55，那么这个概率值超过0.5，意味着我们训练或者预测的结果就是A(1)类别。那么反之，如果得出结果为0.3那么，训练或者预测结果就为B(0)类别。</p>
+<p>关于**逻辑回归的阈值是可以进行改变的**，比如上面举例中，如果你把阈值设置为0.6，那么输出的结果0.55，就属于B类。</p>
+<p><strong>在之前，我们用均方误差来衡量线性回归的损失</strong></p>
+<p><strong>在逻辑回归中，当预测结果不对的时候，我们该怎么衡量其损失呢？</strong></p>
+<p>我们来看下图(下图中，设置阈值为0.6)，</p>
+<p><img alt="image-20220121161828121" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.assets/image-20220121161828121.png" /> </p>
+<p>那么如何去衡量逻辑回归的预测结果与真实结果的差异？</p>
+<p>首先我们进行逻辑斯特回归函数的表示学习。</p>
+<p><br /></p>
+<h3 id="35">3.5 对数似然损失函数<a class="headerlink" href="#35" title="Permanent link">&para;</a></h3>
+<p>假设：有 0、1 两个类别，某个样本被分为 1 类的概率为: p, 则分为 0 类的概率为 1-p，则每一个样本分类正确的概率为：</p>
+<div class="arithmatex">\[
+L=\left\{\begin{array}{ll}
+p &amp; \text { if } y=1 \\
+1-p &amp; \text { if } y=0
+\end{array}\right.
+\]</div>
+<p>上述公式可转换为：</p>
+<div class="arithmatex">\[
+L=p^{y}(1-p)^{1-y}
+\]</div>
+<p>假设，我们现在有样本：<strong>[(x1, y1), (x2, y2) … (xn, yn)]</strong>，那么，全部预测正确的概率表示为：</p>
+<p><img src="assets/03.png" /></p>
+<p>通过极大化事件概率，从而估计出模型参数。接下来，将上式其转换为对数加法的形式：</p>
+<div class="arithmatex">\[
+\log (\mathrm{L})=\sum_{\mathrm{i}=1}^{\mathrm{m}} \mathrm{y}_{\mathrm{i}} \cdot \log \left(\mathrm{p}_{\mathrm{i}}\right)+\left(1-\mathrm{y}_{\mathrm{i}}\right) \cdot \log \left(1-\mathrm{p}_{\mathrm{i}}\right)
+\]</div>
+<p>上述公式为最大化问题，通过增加一个负号，将其变为最小化问题，公式再次转换如下：
+$$
+\log (\mathrm{L})=\sum_{i=1}^{m}-y_{i} \cdot \log \left(p_{i}\right)-\left(1-y_{i}\right) \cdot \log \left(1-p_{i}\right)
+$$</p>
+<div class="arithmatex">\[
+p_i=\frac{1}{1+e^{-w^{T} x-b}}
+\]</div>
+<p>此时，得到**逻辑回归的对数似然损失函数.**</p>
+<p>如上述案例，我们就带入上面那个例子来计算一遍，就能理解意义了。</p>
+<p><img alt="image-20220121162237594" src="01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86.assets/image-20220121162237594.png" /> </p>
+<p>我们已经知道，-log(P), P值越大，结果越小，所以我们可以对着这个损失的式子去分析。</p>
+<h2 id="5">5. 总结<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Sigmod函数含义</li>
+<li>对数似然函数的理解</li>
+</ul>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../assets/javascripts/workers/search.092fa1f6.min.js"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a9542cf.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+    
+  </body>
+</html>

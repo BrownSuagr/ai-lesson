@@ -1,0 +1,2006 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/logo.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.11">
+    
+    
+      
+        <title>07_XGBoost - 机器学习讲义</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.50e68009.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#xgboost" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="机器学习讲义" class="md-header__button md-logo" aria-label="机器学习讲义" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            机器学习讲义
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              07_XGBoost
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+    <img src="../assets/images/logo.svg" height="45px" alt="logo">
+
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="机器学习讲义" class="md-nav__button md-logo" aria-label="机器学习讲义" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    机器学习讲义
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          1、机器学习概述
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="1、机器学习概述" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          1、机器学习概述
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/01-%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        02_人工智能概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/02-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        03_机器学习概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/03-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        04_机器学习分类
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/05-%E6%8B%9F%E5%90%88%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        05_拟合问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/06-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%99%A8%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.html" class="md-nav__link">
+        06_机器学习开发环境
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          2、K近邻
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="2、K近邻" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          2、K近邻
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/01-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_K近邻算法原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/02-%E8%B7%9D%E7%A6%BB%E7%9A%84%E5%BA%A6%E9%87%8F%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        03_距离的度量方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/03-%E5%BD%92%E4%B8%80%E5%8C%96%E5%92%8C%E6%A0%87%E5%87%86%E5%8C%96.html" class="md-nav__link">
+        04_归一化和标准化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/04-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95API.html" class="md-nav__link">
+        05_K近邻算法API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/06-%E5%88%86%E7%B1%BB%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        06_分类模型评估方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/05-K%E5%80%BC%E9%80%89%E6%8B%A9%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        07_K值选择问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/07-%E6%A1%88%E4%BE%8B-%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E8%AF%86%E5%88%AB.html" class="md-nav__link">
+        08_案例-手写数字识别
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          3、线性回归
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="3、线性回归" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          3、线性回归
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/01-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_线性回归原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/03-%E6%AD%A3%E8%A7%84%E6%96%B9%E7%A8%8B.html" class="md-nav__link">
+        03_损失函数和正规方程
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/%E6%B1%82%E5%AF%BC.html" class="md-nav__link">
+        04_求导
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/04-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%952.html" class="md-nav__link">
+        05_梯度下降法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/05-%E5%85%B6%E4%BB%96%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        06_其他梯度下降方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/%E5%9B%9E%E5%BD%92%E9%97%AE%E9%A2%98%E8%AF%84%E4%BC%B0.html" class="md-nav__link">
+        07_回归问题评估
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/06-%E6%AD%A3%E5%88%99%E5%8C%96.html" class="md-nav__link">
+        08_过拟合欠拟合与正则化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/07-%E6%A1%88%E4%BE%8B-%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%94%BE%E4%BB%B7%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        09_案例-波士顿房价预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          4、逻辑回归
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="4、逻辑回归" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          4、逻辑回归
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%AE%80%E4%BB%8B.html" class="md-nav__link">
+        02_逻辑回归介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/03-%E6%A1%88%E4%BE%8B-%E7%99%8C%E7%97%87%E5%88%86%E7%B1%BB%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        03_案例-癌症分类预测
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/04-%E5%88%86%E7%B1%BB%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87.html" class="md-nav__link">
+        04_分类评估指标
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/06-%E7%BB%83%E4%B9%A0-%E7%94%B5%E4%BF%A1%E5%AE%A2%E6%88%B7%E6%B5%81%E5%A4%B1.html" class="md-nav__link">
+        05_案例-电信客户流失
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          5、决策树
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="5、决策树" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          5、决策树
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/01-%E5%86%B3%E7%AD%96%E6%A0%91%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        02_决策树介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/03-ID3%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        03_ID3决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/04-C4.5%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        04_C4.5决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/05-CART%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        05_CART决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/06-%E5%9B%9E%E5%BD%92%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        06_回归决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/07-%E5%89%AA%E6%9E%9D.html" class="md-nav__link">
+        07_剪枝
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/08-%E6%A1%88%E4%BE%8B-%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7%E7%94%9F%E5%AD%98%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        08_案例-泰坦尼克号生存预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          6、朴素贝叶斯
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="6、朴素贝叶斯" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          6、朴素贝叶斯
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_朴素贝叶斯原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/02-%E6%A1%88%E4%BE%8B-%E5%95%86%E5%93%81%E8%AF%84%E8%AE%BA%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        03_案例-垃圾邮件分类
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          7、支持向量机
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="7、支持向量机" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          7、支持向量机
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/01-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E5%BC%95%E5%85%A5.html" class="md-nav__link">
+        02_支持向量引入
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/02-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        03_支持向量概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/04-%E6%A0%B8%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        04_核方法和损失函数
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/06-%E6%A1%88%E4%BE%8B-%E9%B8%A2%E5%B0%BE%E8%8A%B1%E7%A7%8D%E7%B1%BB%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        05_案例-鸢尾花种类预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9">
+          8、聚类算法
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="8、聚类算法" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          8、聚类算法
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section1.html" class="md-nav__link">
+        02_聚类概述
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section2.html" class="md-nav__link">
+        03_KMeans API介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section3.html" class="md-nav__link">
+        04_KMeans实现流程
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section4.html" class="md-nav__link">
+        04_聚类效果评估
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/04-%E7%89%B9%E5%BE%81%E9%99%8D%E7%BB%B4.html" class="md-nav__link">
+        05_特征降维
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section5.html" class="md-nav__link">
+        06_案例-顾客数据聚类分析
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          9、集成学习
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="9、集成学习" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          9、集成学习
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        02_集成学习问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02-Bagging%E5%92%8C%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97.html" class="md-nav__link">
+        03_Bagging和随机森林
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03-Boosting%E5%92%8CAdaBoost.html" class="md-nav__link">
+        04_Boosting和AdaBoost
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04-%E6%A1%88%E4%BE%8B-%E8%BD%A6%E8%BE%86%E8%B4%B7%E6%AC%BE%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        05_案例-车辆贷款违约预测
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="05-GBDT.html" class="md-nav__link">
+        06_GBDT
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          07_XGBoost
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="06-XGBoost_1.html" class="md-nav__link md-nav__link--active">
+        07_XGBoost
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-xgboost" class="md-nav__link">
+    1. XGBoost 原理
+  </a>
+  
+    <nav class="md-nav" aria-label="1. XGBoost 原理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    1.1 构造目标函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    1.2 使用泰勒级数展开目标函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    1.3 把树结构引入到目标函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14" class="md-nav__link">
+    1.4 如何构建树
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-xgboost" class="md-nav__link">
+    1.5 XGBoost缺失值处理
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-xgboost" class="md-nav__link">
+    1.6 XGBoost原理小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-xgboost-api" class="md-nav__link">
+    2. XGBoost API
+  </a>
+  
+    <nav class="md-nav" aria-label="2. XGBoost API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    2.1 通用参数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-booster" class="md-nav__link">
+    2.2 Booster 参数
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 Booster 参数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#221-parameters-for-tree-booster" class="md-nav__link">
+    2.2.1 Parameters for Tree Booster
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#222-parameters-for-linear-booster" class="md-nav__link">
+    2.2.2 Parameters for Linear Booster
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    2.3 学习目标参数
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. 小结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="07-%E6%A1%88%E4%BE%8B-%E7%BA%A2%E9%85%92%E5%93%81%E8%B4%A8%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        08_案例-红酒品质分类
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-xgboost" class="md-nav__link">
+    1. XGBoost 原理
+  </a>
+  
+    <nav class="md-nav" aria-label="1. XGBoost 原理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    1.1 构造目标函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    1.2 使用泰勒级数展开目标函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    1.3 把树结构引入到目标函数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14" class="md-nav__link">
+    1.4 如何构建树
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-xgboost" class="md-nav__link">
+    1.5 XGBoost缺失值处理
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-xgboost" class="md-nav__link">
+    1.6 XGBoost原理小结
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-xgboost-api" class="md-nav__link">
+    2. XGBoost API
+  </a>
+  
+    <nav class="md-nav" aria-label="2. XGBoost API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    2.1 通用参数
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-booster" class="md-nav__link">
+    2.2 Booster 参数
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 Booster 参数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#221-parameters-for-tree-booster" class="md-nav__link">
+    2.2.1 Parameters for Tree Booster
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#222-parameters-for-linear-booster" class="md-nav__link">
+    2.2.2 Parameters for Linear Booster
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    2.3 学习目标参数
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. 小结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="xgboost">XGBoost<a class="headerlink" href="#xgboost" title="Permanent link">&para;</a></h1>
+<h2 id="_1">学习目标<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ol>
+<li>知道XGBoost原理</li>
+<li>了解XGBoost API的常用参数</li>
+</ol>
+<h2 id="1-xgboost">1. XGBoost 原理<a class="headerlink" href="#1-xgboost" title="Permanent link">&para;</a></h2>
+<p>XGBoost 是(eXtreme Gradient Boosting)的简称，是优化的分布式梯度提升库：</p>
+<ul>
+<li>基本原理与GBDT相同，属于Gradient Boosting 类型的机器学习算法，是对GBDT的优化</li>
+<li>在训练每一棵树的时候GBDT采用了并行的方式进行训练，提高了模型训练速度</li>
+<li>对比GBDT，XGBoost无论实在训练速度上还是预测精度上都有显著提升</li>
+</ul>
+<p>XGBoost属于参数学习算法，最终我们要找到一个函数来表示XGBoost模型，按照下面的思路我们来分析一下XGBoost的原理：</p>
+<p>构造目标函数 → 目标函数的优化方法 → 用函数来表示一棵树 → 如何构建树模型</p>
+<h3 id="11">1.1 构造目标函数<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<p>通过前面章节的学习， 我们介绍了参数学习算法的基本套路：通过优化目标函数来确定参数，比如</p>
+<ul>
+<li>线性回归、逻辑回归， 我们可以通过梯度下降法来优化目标函数从而得到模型参数</li>
+</ul>
+<p>但XGBoost 属于Boosting类集成学习模型， 要串行的训练多个模型逐步逼近降低损失，我们很难找到一个函数通过梯度下降的套路来解决这个问题。</p>
+<p>XGBoost 使用多棵树来预测最终的结果，假设已经训练了t棵树，那么对于第i个样本的最终预测值为：</p>
+<p><span class="arithmatex">\(\large\hat{y}_i = \sum_{t=1}^{t}f_t(t_i) , f_t\in F\)</span></p>
+<blockquote>
+<p>上面式子中， <span class="arithmatex">\(f_t(x_i)\)</span>  为 第i 个样本 <span class="arithmatex">\(x_i\)</span>  在第t棵树上的预测结果</p>
+<p>如： <span class="arithmatex">\(f_1(x_1)\)</span>  为 第1 个样本 <span class="arithmatex">\(x_1\)</span>  在第1棵树上的预测结果</p>
+<p>​      <span class="arithmatex">\(f_2(x_1)\)</span>  为 第1 个样本 <span class="arithmatex">\(x_1\)</span>  在第2棵树上的预测结果</p>
+<p>​          ……  </p>
+<p>​         第1个样本的最终预测结果 <span class="arithmatex">\(\hat{y_1} = f_1(x_1)+f_2(x_1)+……+f_t(x_1)\)</span>        </p>
+</blockquote>
+<p>目标函数可以由下面式子表示：</p>
+<p>​    <span class="arithmatex">\(\large Obj=\sum_{i=1}^n l(y_i,\hat{y}_i) + \sum_{t=1}^{t}\Omega (f_t)\)</span></p>
+<blockquote>
+<p>上式中，左边求和项为损失函数（loss)，其中 <span class="arithmatex">\(y_i\)</span> 为真实值， <span class="arithmatex">\(\hat{y}_i\)</span>为预测值</p>
+<p>右边求和项用于控制模型复杂度（penlty 比如线性回归中的L1、L2正则）</p>
+</blockquote>
+<p>XGBoost 的训练过程是一棵树接一棵树的串行训练，在训练第t棵树时，前t-1棵树已经训练结束，可视为已知，在处理目标函数时，重点关注第t棵树的情况：</p>
+<p>​       <span class="arithmatex">\(\large \hat{y}_i = \hat{y}_i^{t-1}+f_t(x_i)\)</span></p>
+<blockquote>
+<p>上式中，<span class="arithmatex">\(\hat{y}_i^{t-1}\)</span> 为前t-1棵树的预测值</p>
+</blockquote>
+<p>所以上面的目标函数可以改写成：</p>
+<p><span class="arithmatex">\(\large Obj=\sum_{i=1}^n l(y_i,\hat{y}_i^{(t-1)}+f_t(x_i)) + \sum_{t=1}^{t-1}\Omega (f_t)+\Omega(f_t)\)</span></p>
+<p>上式中，<span class="arithmatex">\(\sum_{t=1}^{t-1}\Omega (f_t)\)</span> 可以看做是常数（训练第t棵树时，前面t-1棵树都训练完毕），可以忽略，所以目标函数简化为： </p>
+<p><span class="arithmatex">\(\large Obj=\sum_{i=1}^n l(y_i,\hat{y}_i^{(t-1)}+f_t(x_i))+\Omega(f_t)\)</span></p>
+<h3 id="12">1.2 使用泰勒级数展开目标函数<a class="headerlink" href="#12" title="Permanent link">&para;</a></h3>
+<p>直接对目标函数求解比较困难，通过泰勒展开将目标函数换一种近似的表示方式</p>
+<blockquote>
+<p>泰勒级数，是把一个函数展开来显示的无穷级数，可以用泰勒级数的头几项来估计函数的近似值</p>
+<p>如果 <span class="arithmatex">\(f(x)\)</span> 在点 <span class="arithmatex">\(x=x_0\)</span>  具有任意阶导数，则幂级数</p>
+<p><span class="arithmatex">\(\sum_{n=0}^∞\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n=f(x_0)+f'(x_0)(x-x_0)+\frac{f''(x_0)}{2!}(x-x_0)^2+...+\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n+...\)</span></p>
+<p>称为 <span class="arithmatex">\(f(x)\)</span> 在点 <span class="arithmatex">\(x_0\)</span> 处的泰勒级数</p>
+</blockquote>
+<p>这里我们把目标函数进行二阶泰勒级数展开:</p>
+<p><span class="arithmatex">\(\large f(x+\Delta x) \approx f(x)+f'(x)\Delta x + \frac{1}{2}f''(x)\Delta x^2\)</span></p>
+<p>我们把目标函数带入上面的泰勒级数:</p>
+<p><span class="arithmatex">\(f(x)→l(y_i,\hat{y}_i^{(t-1)}) ，f(x+\Delta x)→l(y_i,\hat{y}_i^{t-1}+f_t(x_i))\)</span></p>
+<p>得到用二阶泰勒级数展开的目标函数</p>
+<p><span class="arithmatex">\(Obj=\sum_{i=1}^n [l(y_i,\hat{y}_i^{(t-1)})+∂_{\hat{y}_i^{(t-1)}}l(y_i,\hat{y}_i^{(t-1)})f_t(x_i)+\frac{1}{2}∂^2_{\hat{y}^{(t-1)}_i}l(y_i,\hat{y}_i^{(t-1)})f_t^2(x_i)]+\Omega(f_t)\)</span></p>
+<p>用 <span class="arithmatex">\(g_i\)</span> 和 <span class="arithmatex">\(h_i\)</span> 来表示上面式子中一阶导数 和 二阶导数的部分, 目标函数整理为：</p>
+<p><span class="arithmatex">\(\large Obj\approx\sum_{i=1}^n [l(y_i,\hat{y}_i^{(t-1)})+g_if_t(x_i)+\frac{1}{2}h_if_t^2(x_i)]+\Omega(f_t)\)</span></p>
+<blockquote>
+<p><span class="arithmatex">\(g_i=∂_{\hat{y}_i^{(t-1)}}l(y_i,\hat{y}_i^{(t-1)})\)</span></p>
+<p><span class="arithmatex">\(h_i = ∂^2_{\hat{y}^{(t-1)}_i}l(y_i,\hat{y}_i^{(t-1)})\)</span></p>
+</blockquote>
+<p>上面的目标函数中，<span class="arithmatex">\(l(y_i,\hat{y}_i^{(t-1)})\)</span> 为前t棵树的损失， 可以视为常数项将其忽略， 我们的目标函数可以近似的表示为：</p>
+<p><span class="arithmatex">\(\large Obj\approx\sum_{i=1}^n [g_if_t(x_i)+\frac{1}{2}h_if_t^2(x_i)]+\Omega(f_t)\)</span></p>
+<blockquote>
+<p>上面的式子中，<span class="arithmatex">\(g_i\)</span> 和 <span class="arithmatex">\(h_i\)</span> 是已知的</p>
+</blockquote>
+<h3 id="13">1.3 把树结构引入到目标函数<a class="headerlink" href="#13" title="Permanent link">&para;</a></h3>
+<p>通过二阶泰勒级数展开， 我们得到了近似的目标函数：</p>
+<p><span class="arithmatex">\(\large Obj\approx\sum_{i=1}^n [g_if_t(x_i)+\frac{1}{2}h_if_t^2(x_i)]+\Omega(f_t)\)</span></p>
+<p>接下来我们需要用具体的函数来替换上面公式中的 <span class="arithmatex">\(f_t(x_i)\)</span>   和  <span class="arithmatex">\(\Omega(f_t)\)</span>，首先看第t棵树的函数表示<span class="arithmatex">\(f_t(x_i)\)</span> :</p>
+<p><span class="arithmatex">\(\large f_t(x_i) = w_{q(x_i)}\)</span></p>
+<p>上面式子表示的是第i个样本在第t棵树上的取值， <span class="arithmatex">\(q(x_i)\)</span> 表示第 <span class="arithmatex">\(x_i\)</span> 个样本在第t棵树中落到的叶子节点编号，如下图中：</p>
+<p><img src="assets/xgboost1.png" style="zoom:67%;" /></p>
+<p>一共有三个叶子节点， 所以 <span class="arithmatex">\(q(x_i)\)</span> 的取值可能为：1，2，3 ，那么如果第 <span class="arithmatex">\(x_i\)</span> 个样本在第t棵树上落到了第3个叶子节点上， <span class="arithmatex">\(q(x_i)\)</span> = 3  此时 <span class="arithmatex">\(f_t(x_i) = w_3 = 20\)</span></p>
+<p>后面一项，模型复杂度<span class="arithmatex">\(\Omega(f_t)\)</span>：</p>
+<p><span class="arithmatex">\(\large \Omega(f_t) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T}w_j^2\)</span></p>
+<blockquote>
+<p>上式中 T 代表叶子节点的个数， γ为一个超参数</p>
+<p>对于上面图中的树结构 <span class="arithmatex">\(\Omega = \gamma3+\frac{1}{2}(15^2+10^2+20^2)\)</span></p>
+</blockquote>
+<p>我们把书结构用函数表示后，目标函数为：</p>
+<p><span class="arithmatex">\(\large Obj\approx\sum_{i=1}^n [g_if_t(x_i)+\frac{1}{2}h_if_t^2(x_i)]+\Omega(f_t)\)</span></p>
+<p><span class="arithmatex">\(\large =\sum_{i=1}^n [g_iw_{q(x_i)}+\frac{1}{2}h_iw_{q(x_i)}^2]+\gamma T+\frac{1}{2}\lambda \sum_{j=1}^{T}w_j^2\)</span></p>
+<p><span class="arithmatex">\(\large =\sum_{j=1}^T [(\sum_{i\in I_j}g_i)w_j+\frac{1}{2}(\sum_{i\in I_j}h_i+\lambda)w_{j}^2]+\gamma T\)</span></p>
+<blockquote>
+<p>上面式子中 <span class="arithmatex">\(I\)</span> 被定义为每个叶子上面样本集合 <span class="arithmatex">\(I_j=i|q(x_i)=j\)</span></p>
+<p>如 上图所示的树形结果， 假设：</p>
+<ul>
+<li>样本1，4，5落到第一个叶子节点</li>
+<li>样本3落到第二个叶子节点</li>
+<li>样本2，6落在第三个叶子节点</li>
+</ul>
+<p><span class="arithmatex">\(\sum_{i=1}^n g_iw_{q(x_i)}=(g_1w_1+g_4w_1+g_5w_1) +g_3w_2 +(g_2w_3+g_6w_3)=(g_1+g_4+g5)w_1+g_3w_2+(g_2+g_6)w_3\)</span>  </p>
+<p><span class="arithmatex">\(=(\sum_{i\in I_j}g_i)w_j\)</span></p>
+</blockquote>
+<p>此时我们进一步令 <span class="arithmatex">\(G_j = \sum_{i\in I_j}g_i\)</span>  ，  <span class="arithmatex">\(H_j = \sum_{i\in I_j}h_i\)</span> 目标函数可以改写为：</p>
+<p><span class="arithmatex">\(\large obj \approx \sum_{j=1}^T [(\sum_{i\in I_j}g_i)w_j+\frac{1}{2}(\sum_{i\in I_j}h_i+\lambda)w_{j}^2]+\gamma T\)</span></p>
+<p><span class="arithmatex">\(\large = \sum_{j=1}^T [G_jw_j+\frac{1}{2}(H_j+\lambda)w_{j}^2]+\gamma T\)</span></p>
+<p><strong>假设我们已经知道树的结构</strong>  <span class="arithmatex">\(q\)</span>，我们可以通过这个目标函数来求解出最好的 <span class="arithmatex">\(w\)</span> ，以及最好的 <span class="arithmatex">\(w\)</span> 对应的目标函数最大的增益。上面的式子其实是关于 <span class="arithmatex">\(w\)</span> 的一个一元二次函数的最小值的问题 ，求解既得到</p>
+<p><span class="arithmatex">\(\large w_j^* = - \frac{G_j}{H_j+\lambda}\)</span></p>
+<p><span class="arithmatex">\(\large Obj = -\frac{1}{2}\sum_{j=1}^T \frac{G_j^2}{H_j+\lambda} + \gamma T\)</span></p>
+<p>Obj表示在某个确定的树结构下的结构分数(structure score)，这个分数可以被看做决策树中的基尼系数、信息增益（一般决策树评分函数） </p>
+<p><img alt="img" src="assets/model_6.png" /></p>
+<h3 id="14">1.4 如何构建树<a class="headerlink" href="#14" title="Permanent link">&para;</a></h3>
+<p>由于最终的目标函数：</p>
+<p><span class="arithmatex">\(\large Obj = -\frac{1}{2}\sum_{j=1}^T \frac{G_j^2}{H_j+\lambda} + \gamma T\)</span></p>
+<p>是基于我们已经知道了所有树结构的前提，所以暴力的解法是枚举出所有可能的树结构，用上面的函数来进行打分，找到分数最小的，把对应的那棵树加入到模型中， 再不断重复， 但这种暴力解法的时间复杂度过高。</p>
+<p>我们可以选择使用一般决策树的构建思路， 采用贪心算法的思路， 对当前树中的每一个叶子节点，用不同特征尝试进行分割，并用下面的函数计算分裂前和分裂后的增益分数，找到最优的分割方案：</p>
+<p><img src='assets/59.png' /></p>
+<p>其过程如下：</p>
+<ol>
+<li>对树中的每个叶子结点尝试进行分裂</li>
+<li>计算分裂前 - 分裂后的分数：</li>
+<li>如果分数 &gt; 0，则分裂之后分树的结构损失更小，我们会考虑此次分裂</li>
+<li>如果分数 &lt; 0，说明分裂后的分数比分裂前的分数大，此时不建议分裂</li>
+<li>当触发以下条件时停止分裂：</li>
+<li>达到最大深度</li>
+<li>叶子结点样本数量低于某个阈值</li>
+<li>等等...</li>
+</ol>
+<h3 id="15-xgboost">1.5 XGBoost缺失值处理<a class="headerlink" href="#15-xgboost" title="Permanent link">&para;</a></h3>
+<p>实际的项目中的数据一般会存在缺失数据，因此在寻找最佳分割点时需要考虑如何处理缺失的特征，作者在论文中提出下面的算法 </p>
+<p><img alt="img" src="assets/sparsity.png" /></p>
+<p>对于特征k，在寻找split point时只对特征值为非缺失（non-missing）的样本上对应的特征值进行遍历，统计量G和H则是全部数据上的统计量。</p>
+<p>在遍历非缺失（non-missing）的样本 <span class="arithmatex">\(I_k\)</span>时会进行两次:</p>
+<ul>
+<li>
+<p>按照特征值升序排列遍历时实际是将missing value划分到右叶子节点</p>
+</li>
+<li>
+<p>按照特征值降序遍历则是划分到左叶子节点</p>
+</li>
+</ul>
+<p>最后选择score最大的split point以及对应的方向作为缺失值的划分方向.</p>
+<p>在预测阶段，如果特征<span class="arithmatex">\(f_0\)</span>出现了缺失值，则可以分为以下两种情况：</p>
+<p>如果训练过程中，<span class="arithmatex">\(f_0\)</span><strong>出现过缺失值</strong>，则按照训练过程中缺失值划分的方向(左或右)，进行划分；</p>
+<p>如果训练过程中，<span class="arithmatex">\(f_0\)</span><strong>没有出现过缺失值</strong>，将缺失值的划分到默认方向（<strong>左子树</strong>)。</p>
+<h3 id="16-xgboost">1.6 XGBoost原理小结<a class="headerlink" href="#16-xgboost" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>构造目标函数</strong> ，XGBoost是一棵树一棵树训练模型， 所以目标函数可以表示为前t-1棵树的损失+第t棵树的损失+控制模型复杂度的惩罚项 <span class="arithmatex">\(Obj=\sum_{i=1}^n l(y_i,\hat{y}_i^{(t-1)}+f_t(x_i))+\Omega(f_t)\)</span></p>
+</li>
+<li>
+<p><strong>使用二阶泰勒泰勒级数展开目标函数：</strong> 直接求解目标函数比较困难，使用二阶泰勒级数展开目标函数。将结果整理后， 目标函数可以表示成 第t颗树的函数 <span class="arithmatex">\(Obj\approx\sum_{i=1}^n [g_if_t(x_i)+\frac{1}{2}h_if_t^2(x_i)]+\Omega(f_t)\)</span>   （<span class="arithmatex">\(g_i 为一阶导数 h_i 为二阶导数）\)</span> </p>
+</li>
+<li>
+<p><strong>用函数来描述树结构：</strong>  用叶子节点的值以及叶子节点的编号来表示第t棵树的预测值，模型复杂度用节点数量以及叶子节点值的平方来描述 最终的目标函数为 <span class="arithmatex">\(Obj = -\frac{1}{2}\sum_{j=1}^T \frac{G_j^2}{H_j+\lambda} + \gamma T\)</span></p>
+</li>
+<li>
+<p><strong>贪心算法建树：</strong>  前面的步骤是基于树结构为已知的前提推导得出， 所以贪心的尝试对不同特征进行分割， 用上面的函数对每一种分割打分，（类似于计算gini系数构建决策树的方式）找到增益分数最大的分割方式</p>
+</li>
+</ul>
+<p><img src='assets/59.png' /></p>
+<ul>
+<li><strong>缺失值处理：</strong> 在训练过程中，如果特征<span class="arithmatex">\(f_0\)</span>出现了缺失值，会为该特征计算一个缺失值划分方向(左子树,右子树)</li>
+</ul>
+<h2 id="2-xgboost-api">2. XGBoost API<a class="headerlink" href="#2-xgboost-api" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1 通用参数<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<p><strong>booster</strong> [缺省值=gbtree]</p>
+<ol>
+<li>gbtree：使用树模型</li>
+<li>gblinear：使用线性模型</li>
+<li>dart：使用树模型，主要多了 Dropout</li>
+</ol>
+<p><strong>silent</strong> [缺省值=0]</p>
+<ul>
+<li>设置为 0 打印运行信息</li>
+<li>设置为 1不打印运行信息</li>
+</ul>
+<p><strong>nthread</strong> [缺省值=设置为最大可能的线程数]</p>
+<ul>
+<li>并行运行的线程数，输入的参数应该 &lt;= 系统的CPU核心数</li>
+<li>若是没有设置算法会检测将其设置为 CPU 的全部核心数</li>
+</ul>
+<blockquote>
+<p>下面的两个参数不需要设置，使用默认的就好了</p>
+</blockquote>
+<p><strong>num_pbuffer</strong> [xgboost自动设置，不需要用户设置]</p>
+<ul>
+<li>预测结果缓存大小，通常设置为训练实例的个数。该缓存用于保存最后 boosting 操作的预测结果</li>
+</ul>
+<p><strong>num_feature</strong> [xgboost自动设置，不需要用户设置]</p>
+<ul>
+<li>在boosting中使用特征的维度，设置为特征的最大维度</li>
+</ul>
+<h3 id="22-booster">2.2 Booster 参数<a class="headerlink" href="#22-booster" title="Permanent link">&para;</a></h3>
+<h4 id="221-parameters-for-tree-booster">2.2.1 Parameters for Tree Booster<a class="headerlink" href="#221-parameters-for-tree-booster" title="Permanent link">&para;</a></h4>
+<p><strong>eta</strong> [缺省值=0.3，别名：learning_rate]</p>
+<ul>
+<li>更新中减少的步长来防止过拟合</li>
+<li>每次 boosting 之后，可以直接获得新的特征权值，这样可以使得 boosting 更加鲁棒</li>
+<li>范围： [0,1]</li>
+</ul>
+<p><strong>gamma</strong> [缺省值=0，别名: min_split_loss]（分裂最小loss）</p>
+<ul>
+<li>gamma 指定了节点分裂所需的最小损失函数下降值</li>
+<li>这个参数的值和损失函数息息相关，所以是需要调整的</li>
+<li>范围: [0, ∞]</li>
+</ul>
+<p><strong>max_depth</strong>  [缺省值=6]</p>
+<ul>
+<li>这个值为树的最大深度。 这个值也是用来避免过拟合的</li>
+<li>max_depth越大，模型会学到更具体更局部的样本</li>
+<li>设置为 0 代表没有限制</li>
+<li>范围: [0 ,∞]</li>
+</ul>
+<p><strong>min_child_weight</strong> [缺省值=1]</p>
+<ul>
+<li>当它的值较大时，可以避免模型学习到局部的特殊样本</li>
+<li>如果这个值过高，会导致欠拟合</li>
+<li>范围: [0,∞] </li>
+</ul>
+<p><strong>subsample</strong> [缺省值=1]</p>
+<ul>
+<li>这个参数控制对于每棵树，随机采样的比例</li>
+<li>如果这个值设置得过大，它可能会导致过拟合</li>
+<li>如果这个值设置得过小，它可能会导致欠拟合</li>
+<li>典型值：0.5-1，0.5 代表平均采样，防止过拟合</li>
+<li>范围: (0,1]</li>
+</ul>
+<p><strong>colsample_bytree</strong> [缺省值=1]</p>
+<ul>
+<li>控制每棵随机特征采样的比例</li>
+<li>范围: (0,1]，典型值：0.5-1</li>
+</ul>
+<p><strong>colsample_bylevel</strong> [缺省值=1]</p>
+<ul>
+<li>用来控制树每一次分裂时对特征的采样的比例</li>
+<li>范围: (0,1]</li>
+</ul>
+<p><strong>alpha</strong> [缺省值=0，别名: reg_alpha]</p>
+<ul>
+<li>权重的L1正则化项。(和Lasso regression类似)。 可以应用在很高维度的情况下，使得算法的速度更快</li>
+</ul>
+<p><strong>scale_pos_weight</strong>[缺省值=1]</p>
+<ul>
+<li>在各类别样本十分不平衡时，把这个参数设定为一个正值，可以使算法更快收敛</li>
+<li>通常可以将其设置为负样本的数目与正样本数目的比值</li>
+</ul>
+<h4 id="222-parameters-for-linear-booster">2.2.2 Parameters for Linear Booster<a class="headerlink" href="#222-parameters-for-linear-booster" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>linear booster一般很少用到。</p>
+</blockquote>
+<p><strong>lambda</strong> [缺省值=0，别称: reg_lambda]</p>
+<ul>
+<li>L2 正则化惩罚系数，增加该值会使得模型更加保守</li>
+</ul>
+<p><strong>alpha</strong> [缺省值=0，别称: reg_alpha]</p>
+<ul>
+<li>L1正则化惩罚系数，增加该值会使得模型更加保守。</li>
+</ul>
+<p><strong>lambda_bias</strong> [缺省值=0，别称: reg_lambda_bias]</p>
+<ul>
+<li>偏置上的 L2 正则化（没有在L1上加偏置，因为并不重要）</li>
+</ul>
+<h3 id="23">2.3 学习目标参数<a class="headerlink" href="#23" title="Permanent link">&para;</a></h3>
+<p><strong>objective</strong> [缺省值=reg:linear]</p>
+<ol>
+<li><strong>reg:linear</strong>：线性回归</li>
+<li><strong>reg:logistic：</strong> 逻辑回归</li>
+<li><strong>binary:logistic</strong>：二分类逻辑回归，输出为概率</li>
+<li><strong>multi:softmax</strong>：使用softmax的多分类器，返回预测的类别(不是概率)。在这种情况下，你还需要多设一个参数：num_class(类别数目)</li>
+<li><strong>multi:softprob</strong>：和multi:softmax参数一样，但是返回的是每个数据属于各个类别的概率。</li>
+</ol>
+<p><strong>eval_metric</strong> [缺省值=通过目标函数选择]  验证集</p>
+<p>可供选择的如下所示：</p>
+<ol>
+<li><strong>rmse</strong>: 均方根误差</li>
+<li><strong>mae</strong>: 平均绝对值误差</li>
+<li><strong>logloss</strong>: 负对数似然函数值</li>
+<li><strong>error</strong>：其值通过错误分类数目与全部分类数目比值得到。对于预测，预测值大于0.5被认为是正类，其它归为负类。</li>
+<li><strong>error@t</strong>: 不同的划分阈值可以通过 ‘t’进行设置</li>
+<li><strong>merror</strong>: 多分类错误率，计算公式为(wrong cases)/(all cases)</li>
+<li><strong>mlogloss</strong>: 多分类log损失</li>
+<li><strong>auc</strong>: 曲线下的面积</li>
+</ol>
+<p>seed [缺省值=0]</p>
+<ul>
+<li>随机数的种子，设置它可以复现随机数据的结果，也可以用于调整参数</li>
+</ul>
+<h2 id="3">3. 小结<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<ol>
+<li>XGBoost 算法是对 GBDT 的改进，在损失函数中增加了正则化项，综合考虑了模型的结构风险</li>
+<li>XGBoost 使用自己的分裂增益计算方法来构建强学习器</li>
+</ol>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="页脚">
+      
+        
+        <a href="05-GBDT.html" class="md-footer__link md-footer__link--prev" aria-label="上一页: 06_GBDT" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              06_GBDT
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="07-%E6%A1%88%E4%BE%8B-%E7%BA%A2%E9%85%92%E5%93%81%E8%B4%A8%E5%88%86%E7%B1%BB.html" class="md-footer__link md-footer__link--next" aria-label="下一页: 08_案例-红酒品质分类" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              08_案例-红酒品质分类
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../assets/javascripts/workers/search.092fa1f6.min.js"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a9542cf.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+    
+  </body>
+</html>
