@@ -1,0 +1,1889 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/logo.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.11">
+    
+    
+      
+        <title>梯度下降法 - 机器学习讲义</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.50e68009.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="机器学习讲义" class="md-header__button md-logo" aria-label="机器学习讲义" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            机器学习讲义
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              梯度下降法
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+    <img src="../assets/images/logo.svg" height="45px" alt="logo">
+
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="机器学习讲义" class="md-nav__button md-logo" aria-label="机器学习讲义" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    机器学习讲义
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          1、机器学习概述
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="1、机器学习概述" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          1、机器学习概述
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/01-%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        02_人工智能概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/02-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        03_机器学习概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/03-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        04_机器学习分类
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/05-%E6%8B%9F%E5%90%88%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        05_拟合问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/06-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%99%A8%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.html" class="md-nav__link">
+        06_机器学习开发环境
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          2、K近邻
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="2、K近邻" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          2、K近邻
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/01-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_K近邻算法原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/02-%E8%B7%9D%E7%A6%BB%E7%9A%84%E5%BA%A6%E9%87%8F%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        03_距离的度量方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/03-%E5%BD%92%E4%B8%80%E5%8C%96%E5%92%8C%E6%A0%87%E5%87%86%E5%8C%96.html" class="md-nav__link">
+        04_归一化和标准化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/04-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95API.html" class="md-nav__link">
+        05_K近邻算法API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/06-%E5%88%86%E7%B1%BB%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        06_分类模型评估方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/05-K%E5%80%BC%E9%80%89%E6%8B%A9%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        07_K值选择问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/07-%E6%A1%88%E4%BE%8B-%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E8%AF%86%E5%88%AB.html" class="md-nav__link">
+        08_案例-手写数字识别
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          3、线性回归
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="3、线性回归" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          3、线性回归
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_线性回归原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03-%E6%AD%A3%E8%A7%84%E6%96%B9%E7%A8%8B.html" class="md-nav__link">
+        03_损失函数和正规方程
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="%E6%B1%82%E5%AF%BC.html" class="md-nav__link">
+        04_求导
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%952.html" class="md-nav__link">
+        05_梯度下降法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="05-%E5%85%B6%E4%BB%96%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        06_其他梯度下降方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="%E5%9B%9E%E5%BD%92%E9%97%AE%E9%A2%98%E8%AF%84%E4%BC%B0.html" class="md-nav__link">
+        07_回归问题评估
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="06-%E6%AD%A3%E5%88%99%E5%8C%96.html" class="md-nav__link">
+        08_过拟合欠拟合与正则化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="07-%E6%A1%88%E4%BE%8B-%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%94%BE%E4%BB%B7%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        09_案例-波士顿房价预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          4、逻辑回归
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="4、逻辑回归" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          4、逻辑回归
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%AE%80%E4%BB%8B.html" class="md-nav__link">
+        02_逻辑回归介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/03-%E6%A1%88%E4%BE%8B-%E7%99%8C%E7%97%87%E5%88%86%E7%B1%BB%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        03_案例-癌症分类预测
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/04-%E5%88%86%E7%B1%BB%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87.html" class="md-nav__link">
+        04_分类评估指标
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/06-%E7%BB%83%E4%B9%A0-%E7%94%B5%E4%BF%A1%E5%AE%A2%E6%88%B7%E6%B5%81%E5%A4%B1.html" class="md-nav__link">
+        05_案例-电信客户流失
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          5、决策树
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="5、决策树" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          5、决策树
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/01-%E5%86%B3%E7%AD%96%E6%A0%91%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        02_决策树介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/03-ID3%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        03_ID3决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/04-C4.5%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        04_C4.5决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/05-CART%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        05_CART决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/06-%E5%9B%9E%E5%BD%92%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        06_回归决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/07-%E5%89%AA%E6%9E%9D.html" class="md-nav__link">
+        07_剪枝
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/08-%E6%A1%88%E4%BE%8B-%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7%E7%94%9F%E5%AD%98%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        08_案例-泰坦尼克号生存预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          6、朴素贝叶斯
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="6、朴素贝叶斯" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          6、朴素贝叶斯
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_朴素贝叶斯原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/02-%E6%A1%88%E4%BE%8B-%E5%95%86%E5%93%81%E8%AF%84%E8%AE%BA%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        03_案例-垃圾邮件分类
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          7、支持向量机
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="7、支持向量机" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          7、支持向量机
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/01-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E5%BC%95%E5%85%A5.html" class="md-nav__link">
+        02_支持向量引入
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/02-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        03_支持向量概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/04-%E6%A0%B8%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        04_核方法和损失函数
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/06-%E6%A1%88%E4%BE%8B-%E9%B8%A2%E5%B0%BE%E8%8A%B1%E7%A7%8D%E7%B1%BB%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        05_案例-鸢尾花种类预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9">
+          8、聚类算法
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="8、聚类算法" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          8、聚类算法
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section1.html" class="md-nav__link">
+        02_聚类概述
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section2.html" class="md-nav__link">
+        03_KMeans API介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section3.html" class="md-nav__link">
+        04_KMeans实现流程
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section4.html" class="md-nav__link">
+        04_聚类效果评估
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/04-%E7%89%B9%E5%BE%81%E9%99%8D%E7%BB%B4.html" class="md-nav__link">
+        05_特征降维
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section5.html" class="md-nav__link">
+        06_案例-顾客数据聚类分析
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          9、集成学习
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="9、集成学习" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          9、集成学习
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/01-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        02_集成学习问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/02-Bagging%E5%92%8C%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97.html" class="md-nav__link">
+        03_Bagging和随机森林
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/03-Boosting%E5%92%8CAdaBoost.html" class="md-nav__link">
+        04_Boosting和AdaBoost
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/04-%E6%A1%88%E4%BE%8B-%E8%BD%A6%E8%BE%86%E8%B4%B7%E6%AC%BE%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        05_案例-车辆贷款违约预测
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/05-GBDT.html" class="md-nav__link">
+        06_GBDT
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/06-XGBoost_1.html" class="md-nav__link">
+        07_XGBoost
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/07-%E6%A1%88%E4%BE%8B-%E7%BA%A2%E9%85%92%E5%93%81%E8%B4%A8%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        08_案例-红酒品质分类
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-gradient-descent" class="md-nav__link">
+    1. 梯度下降(Gradient Descent)
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 梯度下降(Gradient Descent)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    1.1 什么是梯度下降
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    1.2 梯度的概念
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    1.3 梯度下降举例
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-gradient-descent" class="md-nav__link">
+    1.4 梯度下降（Gradient Descent）公式
+  </a>
+  
+    <nav class="md-nav" aria-label="1.4 梯度下降（Gradient Descent）公式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    优化动态图演示
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2. 梯度下降优化原理
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 梯度下降优化原理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    2.1梯度下降的相关概念复习
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    3.2 梯度下降法的推导流程
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. 手动实现梯度下降法
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 手动实现梯度下降法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    3.1 一次模型
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32_1" class="md-nav__link">
+    3.2 高次模型
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4. 小结
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="_1">梯度下降法<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h2 id="_2">学习目标<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<ol>
+<li>了解梯度下降算法的原理</li>
+<li>了解梯度下降法优化损失函数的原理</li>
+<li>了解其他梯度下降算法</li>
+<li>掌握 SGDRegressor API 的使用</li>
+</ol>
+<h2 id="1-gradient-descent">1. 梯度下降(Gradient Descent)<a class="headerlink" href="#1-gradient-descent" title="Permanent link">&para;</a></h2>
+<h3 id="11">1.1 什么是梯度下降<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<p>梯度下降法的基本思想可以类比为一个下山的过程。</p>
+<p>假设这样一个场景：</p>
+<p>一个人 <strong>被困在山上，需要从山上下来</strong> (i.e. 找到山的最低点，也就是山谷)。但此时山上的浓雾很大，导致可视度很低。</p>
+<p>因此，下山的路径就无法确定，他必须利用自己周围的信息去找到下山的路径。这个时候，他就可以利用梯度下降算法来帮助自己下山。</p>
+<p>具体来说就是，以他当前的所处的位置为基准，<strong>寻找这个位置最陡峭的地方，然后朝着山的高度下降的地方走</strong>，（同理，如果我们的目标是上山，也就是爬到山顶，那么此时应该是朝着最陡峭的方向往上走）。然后每走一段距离，都反复采用同一个方法，最后就能成功的抵达山谷。</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1ga8u1vatkkj30v80gyn1o.jpg" alt="image-20190221112607972" style="zoom: 33%;" /></p>
+<p>梯度下降的基本过程就和下山的场景很类似。</p>
+<p>首先，我们有一个 <strong>可微分的函数</strong> 。这个函数就代表着一座山。</p>
+<p>我们的目标就是找到 <strong>这个函数的最小值</strong> ，也就是山底。</p>
+<p>根据之前的场景假设，最快的下山的方式就是找到当前位置最陡峭的方向，然后沿着此方向向下走，对应到函数中，就是 <strong>找到给定点的梯度</strong> ，然后朝着梯度相反的方向，就能让函数值下降的最快！因为梯度的方向就是函数值变化最快的方向。
+ 所以，我们重复利用这个方法，反复求取梯度，最后就能到达局部的最小值，这就类似于我们下山的过程。而求取梯度就确定了最陡峭的方向，也就是场景中测量方向的手段。</p>
+<h3 id="12">1.2 梯度的概念<a class="headerlink" href="#12" title="Permanent link">&para;</a></h3>
+<p>梯度是微积分中一个很重要的概念</p>
+<ul>
+<li>
+<p><strong>在单变量的函数中，梯度其实就是函数的微分，代表着函数在某个给定点的切线的斜率；</strong></p>
+</li>
+<li>
+<p><strong>在多变量函数中，梯度是一个向量，向量有方向，梯度的方向就指出了函数在给定点的上升最快的方向；</strong></p>
+</li>
+<li>
+<blockquote>
+<p>在微积分里面，对多元函数的参数求∂偏导数，把求得的各个参数的偏导数以向量的形式写出来，就是梯度。</p>
+</blockquote>
+</li>
+</ul>
+<p>这也就说明了为什么我们需要千方百计的求取梯度！我们需要到达山底，就需要在每一步观测到此时最陡峭的地方，梯度就恰巧告诉了我们这个方向。梯度的方向是函数在给定点上升最快的方向，那么梯度的反方向就是函数在给定点下降最快的方向，这正是我们所需要的。所以我们只要沿着梯度的反方向一直走，就能走到局部的最低点！</p>
+<h3 id="13">1.3 梯度下降举例<a class="headerlink" href="#13" title="Permanent link">&para;</a></h3>
+<p><strong>单变量函数的梯度下降</strong></p>
+<p>我们假设有一个单变量的函数 :<span class="arithmatex">\(J(\theta) = \theta^2\)</span></p>
+<p>函数的微分：<span class="arithmatex">\(J^\prime(\theta) = 2\theta\)</span></p>
+<p>初始化，起点为：<span class="arithmatex">\(\theta^0 = 1\)</span></p>
+<p>学习率：<span class="arithmatex">\(\alpha = 0.4\)</span></p>
+<p>我们开始进行梯度下降的迭代计算过程:</p>
+<div class="arithmatex">\[
+\large
+\begin{eqnarray}
+\theta^0 &amp;=&amp; 1 \tag{1} \\ 
+\theta^1 &amp;=&amp; \theta^0-\alpha * J^\prime(\theta^0) \tag{2} \\
+&amp;=&amp; 1 - 0.4 * 2 \\
+&amp;=&amp; 0.2 \\
+\theta^2 &amp;=&amp;\theta^1-\alpha*J^\prime(\theta^1) \tag{3} \\
+&amp;=&amp; 0.04 \\
+\theta^3 &amp;=&amp; 0.008 \tag{4}\\
+\theta^4 &amp;=&amp; 0.0016 \tag{5}
+\end{eqnarray}
+\]</div>
+<p>如图，经过四次的运算，也就是走了四步，基本就抵达了函数的最低点，也就是山底</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1ga8u1x5wjfj30je0imdh3.jpg" alt="image-20190221102725918" style="zoom:50%;" /></p>
+<p><strong>多变量函数的梯度下降</strong> </p>
+<p>我们假设有一个目标函数 ：<span class="arithmatex">\(J(\theta) = \theta_{1}^{2} + \theta_{2}^{2}\)</span></p>
+<p>现在要通过梯度下降法计算这个函数的最小值。我们通过观察就能发现最小值其实就是 (0，0)点。但是接下
+来，我们会从梯度下降算法开始一步步计算到这个最小值!
+我们假设初始的起点为： <span class="arithmatex">\(\theta^{0} = (1, 3)\)</span></p>
+<p>初始的学习率为：<span class="arithmatex">\(\alpha = 0.1\)</span> </p>
+<p>函数的梯度为：<span class="arithmatex">\(\Delta J(\theta) =&lt; 2\theta_{1} ,2\theta_{2}&gt;\)</span></p>
+<p>进行多次迭代：</p>
+<div class="arithmatex">\[
+\begin{eqnarray}
+\Theta^0 &amp;=&amp; (1, 3) \\
+\Theta^1 &amp;=&amp; \Theta^0-\alpha\Delta J(\Theta)\\
+&amp;=&amp;(1,3)-0.1(2,6)\\
+&amp;=&amp;(0.8, 2.4)\\
+\Theta^2 &amp;=&amp; (0.8, 2.4)-0.1(1.6, 4.8)\\
+&amp;=&amp;(0.64, 1.92)\\
+\Theta^3 &amp;=&amp; (0.512, 1.536)\\
+\Theta^4 &amp;=&amp; (0.4096, 1.2288)\\
+\vdots\\
+\Theta^{10} &amp;=&amp; (0.10737418240000003, 0.32212254720000005)\\
+\vdots\\
+\Theta^{50} &amp;=&amp; (1.1417981541647683e^{-5}, 3.425394462494306e^{-5})\\
+\vdots\\
+\Theta^{100} &amp;=&amp; (1.6296287810675902e^{-10}, 4.888886343202771e^{-10})\\
+\end{eqnarray}
+\]</div>
+<p>我们发现，已经基本靠近函数的最小值点</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1ga8u2a7jmfj30ti0gwdjy.jpg" alt="image-20190221103220033" style="zoom:50%;" /></p>
+<h3 id="14-gradient-descent">1.4 梯度下降（Gradient Descent）公式<a class="headerlink" href="#14-gradient-descent" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[
+\Large
+\theta_{i+1} = \theta_{i} - \alpha\frac{\partial}{\partial\theta_{i}}J(\theta)
+\]</div>
+<ul>
+<li><strong>1) <span class="arithmatex">\(\alpha\)</span>是什么含义？</strong></li>
+</ul>
+<p><span class="arithmatex">\(\alpha\)</span>在梯度下降算法中被称作为**学习率**或者**步长**，意味着我们可以通过α来控制每一步走的距离，控制参数不要走太快，错过了使损失函数取最小值的点。同时也要保证不要走的太慢，导致太阳下山了，还没有走到山下。所以α的选择在梯度下降法中往往是很重要的！α不能太大也不能太小，太小的话，可能导致迟迟走不到最低点，太大的话，会导致错过最低点！</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1ga8u2ddvhbj31280i2jxg.jpg" alt="image-20190221113408141" style="zoom:50%;" /></p>
+<ul>
+<li><strong>2) 为什么梯度要乘以一个负号</strong>？</li>
+</ul>
+<p>梯度前加一个负号，就意味着朝着梯度相反的方向前进！我们在前文提到，梯度的方向实际就是函数在此点上升最快的方向！而我们需要朝着下降最快的方向走，自然就是负的梯度的方向，所以此处需要加上负号</p>
+<p>我们通过两个图更好理解梯度下降的过程</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1ga8u2egmojj30ym0motb1.jpg" alt="ååéçæ¢¯åº¦ä¸é" style="zoom:50%;" /></p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1ga8u2gwld0j31120qgtvj.jpg" alt="å¤åéçæ¢¯åº¦ä¸é" style="zoom:50%;" /></p>
+<p><strong>所以有了梯度下降这样一个优化算法，回归就有了"自动学习"的能力</strong></p>
+<ul>
+<li>
+<h5 id="_3"><strong>优化动态图演示</strong><a class="headerlink" href="#_3" title="Permanent link">&para;</a></h5>
+</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1ga8u2pniukg30xc0d2e81.gif" alt="image-20190220211910033" style="zoom: 50%;" /></p>
+<h2 id="2">2. 梯度下降优化原理<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1梯度下降的相关概念复习<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<p>在详细了解梯度下降的算法之前，我们先复习相关的一些概念。</p>
+<p><strong>步长(Learning rate)：</strong></p>
+<ul>
+<li><strong>步长决定了在梯度下降迭代的过程中，每一步沿梯度负方向前进的长度。</strong> 用前面下山的例子，步长就是在当前这一步所在位置沿着最陡峭最易下山的位置走的那一步的长度。</li>
+</ul>
+<p><strong>特征(feature)：</strong></p>
+<ul>
+<li><strong>指的是样本中输入部分</strong>，比如2个单特征的样本<span class="arithmatex">\((x^{(0)},y^{(0)}),(x^{(1)},y^{(1)})\)</span>,则第一个样本特征为<span class="arithmatex">\(x^{(0)}\)</span>，第一个样本输出为<span class="arithmatex">\(y^{(0)}\)</span>。</li>
+</ul>
+<p><strong>假设函数(hypothesis function)：</strong></p>
+<ul>
+<li><strong>在监督学习中，为了拟合输入样本，而使用的假设函数，记为<span class="arithmatex">\(h_\theta (x)\)</span>。</strong> 比如对于单个特征的m个样本<span class="arithmatex">\((x^{(i)},y^{(i)})(i=1,2,...m)\)</span>,可以采用拟合函数如下： <span class="arithmatex">\(h_\theta (x)=\theta _0+\theta _1x\)</span>。</li>
+</ul>
+<p><strong>损失函数(loss function)：</strong></p>
+<ul>
+<li>为了评估模型拟合的好坏， <strong>通常用损失函数来度量拟合的程度。</strong> 损失函数极小化，意味着拟合程度最好，对应的模型参数即为最优参数。</li>
+<li>在线性回归中，损失函数通常为样本输出和假设函数的差取平方。比如对于m个样本<span class="arithmatex">\((x_i,y_i)(i=1,2,...m)\)</span>，采用线性回归，损失函数为：</li>
+</ul>
+<div class="arithmatex">\[
+\large
+J(\theta_0, \theta_1) = \sum_{i=1}^{m}(h_{\theta}(x_{i})-y_{i})^2
+\]</div>
+<blockquote>
+<p>其中<span class="arithmatex">\(x_i\)</span>表示第i个样本特征，<span class="arithmatex">\(y_i\)</span>表示第i个样本对应的输出，<span class="arithmatex">\(h_\theta (x_i)\)</span>为假设函数。  </p>
+</blockquote>
+<h3 id="32">3.2 梯度下降法的推导流程<a class="headerlink" href="#32" title="Permanent link">&para;</a></h3>
+<p><strong>1) 先决条件： 确认优化模型的假设函数和损失函数。</strong></p>
+<p>比如对于线性回归，假设函数表示为 <span class="arithmatex">\(h_\theta (x_1,x_2,...,x_n)=\theta _0+\theta _1x_1+...+\theta _nx_n\)</span>, 其中<span class="arithmatex">\(\theta _i (i = 0,1,2... n)\)</span>为模型参数，<span class="arithmatex">\(x_i (i = 0,1,2... n)\)</span>为每个样本的n个特征值。这个表示可以简化，我们增加一个特征<span class="arithmatex">\(x_0=1\)</span> ，这样</p>
+<div class="arithmatex">\[
+\large h_\theta(x_{0}, x_{1}, \cdots, x_{n}) = \sum_{i=0}^{n}\theta_ix_i
+\]</div>
+<p>同样是线性回归，对应于上面的假设函数，损失函数为：</p>
+<div class="arithmatex">\[
+\large
+J(\theta_0,\theta_1,\cdots,\theta_n) = \frac{1}{2m}\sum_{j=0}^{m}(h_{\theta}(x_0^{(j)},x_1^{(j)},\cdots,x_n^{(j)})-y_j)^2
+\]</div>
+<p><strong>2) 算法相关参数初始化,</strong></p>
+<p>主要是初始化<span class="arithmatex">\(\theta _0,\theta _1...,\theta _n\)</span>,算法终止距离ε以及步长<span class="arithmatex">\(\alpha\)</span> 。在没有任何先验知识的时候，可以将所有的<span class="arithmatex">\(\theta\)</span> 初始化为0， 将步长初始化为1。在调优的时候再 优化。</p>
+<p><strong>3) 算法过程：</strong></p>
+<p>3.1) 确定当前位置的损失函数的梯度，对于<span class="arithmatex">\(\theta _i\)</span>,其梯度表达式如下：</p>
+<div class="arithmatex">\[
+\large
+\frac{\partial}{\partial\theta_i}J(\theta_0,\theta_1,\cdots,\theta_n)
+\]</div>
+<p>3.2) 用步长乘以损失函数的梯度，得到当前位置下降的距离，即</p>
+<div class="arithmatex">\[
+\large
+\alpha\frac{\partial}{\partial\theta_i}J(\theta_0,\theta_1,\cdots,\theta_n)
+\]</div>
+<p>对应于前面登山例子中的某一步。</p>
+<p>3.3) 确定是否所有的<span class="arithmatex">\(\theta _i\)</span>,梯度下降的距离都小于ε，如果小于ε则算法终止，当前所有的<span class="arithmatex">\(\theta _i(i=0,1,...n)\)</span>即为最终结果。否则进入步骤4.</p>
+<p>4)更新所有的<span class="arithmatex">\(\theta\)</span> ，对于<span class="arithmatex">\(\theta _i\)</span>，其更新表达式如下。更新完毕后继续转入步骤1。</p>
+<div class="arithmatex">\[
+\large
+\theta_{i+1} = \theta_i - \alpha\frac{1}{m}\sum_{j=0}^{m}(h_{\theta}(x_0^{(j)},x_1^{(j)},\cdots,x_n^{(j)})-y_j)x_i^{(j)}
+\]</div>
+<hr />
+<p>下面用线性回归的例子来具体描述梯度下降。假设我们的样本是:</p>
+<div class="arithmatex">\[
+\large
+(x_1^{(0)},x_2^{(0)},\cdots,x_n^{(0)},y_0), (x_1^{(1)},x_2^{(1)},\cdots,x_n^{(1)},y_1), (x_1^{(m)},x_2^{(m)},\cdots,x_n^{(m)},y_m)
+\]</div>
+<p>损失函数如前面先决条件所述：</p>
+<div class="arithmatex">\[
+\large
+J(\theta_0,\theta_1,\cdots,\theta_n) = \frac{1}{2m}\sum_{j=0}^{m}(h_{\theta}(x_1^{(j)},x_2^{(j)},\cdots,x_n^{(j)})-y_j)^2
+\]</div>
+<p>则在算法过程步骤1中对于<span class="arithmatex">\(\theta _i\)</span> 的偏导数计算如下：</p>
+<div class="arithmatex">\[
+\large
+\frac{\partial}{\partial\theta_i}J(\theta_0,\theta_1,\cdots,\theta_n) = \frac{1}{m}\sum_{j=0}^{m}(h_{\theta}(x_1^{(j)},x_2^{(j)},\cdots,x_n^{(j)})-y_j)x_i^{(j)}
+\]</div>
+<p>由于样本中没有<span class="arithmatex">\(x_0\)</span>上式中令所有的<span class="arithmatex">\(x_0^j\)</span>为1.</p>
+<p>步骤4中<span class="arithmatex">\(\theta _i\)</span>的更新表达式如下：</p>
+<div class="arithmatex">\[
+\large
+\theta_{i+1} = \theta_i - \alpha\frac{1}{m}\sum_{j=0}^{m}(h_{\theta}(x_0^{(j)},x_1^{(j)},\cdots,x_n^{(j)})-y_j)x_i^{(j)}
+\]</div>
+<p>从这个例子可以看出当前点的梯度方向是由所有的样本决定的，加<span class="arithmatex">\(\frac{1}{m}\)</span> 是为了好理解。由于步长也为常数，他们的乘积也为常数，所以这里<span class="arithmatex">\(\alpha\frac{1}{m}\)</span> 可以用一个常数表示。</p>
+<p>在下面一节中，咱们会详细讲到梯度下降法的变种，他们主要的区别就是 **对样本的采用方法不同。这里我们采用的是用所有样本。 ** </p>
+<h2 id="3">3. 手动实现梯度下降法<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<p>手动实现梯度下降法</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">666</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">size</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="c1"># 生成均匀分布的随机数</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">+</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="c1"># 构建</span>
+</code></pre></div>
+<h3 id="31">3.1 一次模型<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<p>定义假设函数，损失函数，损失函数对参数w的导数</p>
+<div class="highlight"><pre><span></span><code>a = np.array([[1,2], [3,4]])
+b = np.array([[4,5,6], [7,8, 9]])
+</code></pre></div>
+<p>定义如下</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">h</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">w0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    假设函数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">w1</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">w0</span><span class="p">)</span>
+    <span class="c1"># y_predict = w * x + b*1 # </span>
+    <span class="c1"># y_predict = w * x1 + b*x0</span>
+
+<span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    损失函数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">((</span><span class="n">h</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">-</span><span class="n">y</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> 
+    <span class="c1"># loss = sum((np.matmul(x.reshape(-1, 1), w)+b - y)^2)</span>
+    <span class="c1"># loss = sum((w * x + b -y)^2)</span>
+
+
+<span class="k">def</span> <span class="nf">loss_bar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    全梯度下降算法</span>
+<span class="sd">    损失函数对参数的导数</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># loss&#39; = 2*x*(w * x + b -y)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">((</span><span class="n">h</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">-</span><span class="n">y</span><span class="p">),</span> <span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+<p>初始化参数</p>
+<div class="highlight"><pre><span></span><code># 初始化参数
+# 一元一次线性模型，所以只有一个w和b
+w1 = np.random.rand(1)
+w0 = np.random.rand(1)
+alpha = 0.1
+epoch = 100
+</code></pre></div>
+<p>模型训练</p>
+<div class="highlight"><pre><span></span><code># 全梯度下降算法进行优化，更新参数
+for i in range(epoch):
+    w1 = w1 - alpha * loss_bar(X[:, 0], y, w1, w0)
+    w0 = w0 - alpha * loss_bar(np.ones((len(x), 1)), y, w1, w0)
+</code></pre></div>
+<ul>
+<li>w</li>
+</ul>
+<div class="highlight"><pre><span></span><code>array([0.9401193])
+</code></pre></div>
+<ul>
+<li>b</li>
+</ul>
+<div class="highlight"><pre><span></span><code>array([2.6993786])
+</code></pre></div>
+<ul>
+<li>计算模型预测结果</li>
+</ul>
+<div class="highlight"><pre><span></span><code>y_predict = h(x, w, b)
+</code></pre></div>
+<ul>
+<li>结果</li>
+</ul>
+<div class="highlight"><pre><span></span><code>array([ 3.82998744,  4.64083763,  3.6950458 ,  3.98466114,  5.24592463,
+       -0.04932419,  2.21195136,  0.15435979,  0.4426893 ,  2.74487833,
+        1.00856015,  4.07658288,  0.96706966,  3.83228676,  1.5330371 ,
+        4.24763919, -0.0921618 ,  0.51561864,  0.50487882,  1.27604678,
+        0.01009005,  3.98163262,  1.79706116,  0.99307987,  5.00744439,
+        5.397598  ,  2.88440842,  1.34070981,  3.17214176,  1.7161491 ,
+        4.8930491 ,  3.41239061,  4.49805446,  2.96644066,  2.22957469,
+        4.07033873,  1.96380884,  0.3030138 ,  4.25166398,  1.11664588,
+        0.32656708,  2.62481127,  0.7458515 ,  4.55215707,  0.9584764 ,
+        1.40432075,  3.04365642,  4.96909202,  4.68371666,  2.23730222,
+        2.0985085 , -0.02948401,  1.56679829,  1.87458308,  4.9190153 ,
+        4.31339367,  4.23019512,  2.24843076,  4.25635796,  2.49805098,
+        0.90433454,  4.8655579 ,  3.9335236 ,  3.66891216,  1.32622323,
+        2.30905134, -0.02816936,  1.20455408,  2.76239279,  1.52616183,
+        2.71005934,  2.68963781,  0.46436637,  2.39727943,  5.34594136,
+        4.04452642,  3.93780118,  4.91642464,  5.30919499,  0.99052502,
+        3.9098196 ,  0.79238761,  4.76531768,  3.39781342,  5.29103438,
+        2.83555699,  0.0845282 ,  3.9790967 , -0.09892499,  0.16271486,
+        5.47456743,  1.07630493,  5.22286938,  2.4260326 ,  5.51293759,
+        3.53139258,  3.84016097,  2.30216935,  0.82539043,  0.5453759 ])
+</code></pre></div>
+<ul>
+<li>图像</li>
+</ul>
+<div class="highlight"><pre><span></span><code>import matplotlib.pyplot as plt
+plt.scatter(x, y)
+plt.scatter(x, y_predict)
+plt.show()
+</code></pre></div>
+<p><img alt="image-20220121152622600" src="03-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95.assets/image-20220121152622600.png" /></p>
+<h3 id="32_1">3.2 高次模型<a class="headerlink" href="#32_1" title="Permanent link">&para;</a></h3>
+<p>定义假设函数，损失函数对参数w导数</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">h2</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    假设函数定义</span>
+<span class="sd">    假设x1是一次，x2是二次，w1，w2分别是对应的参数</span>
+<span class="sd">    y = w1*x^1+w2*x^2+b</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">w1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x2</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">w2</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span>
+
+<span class="c1"># 损失函数对参数导数</span>
+<span class="k">def</span> <span class="nf">loss_bar</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    全梯度下降算法</span>
+<span class="sd">    损失函数对参数的导数</span>
+<span class="sd">    根据推导的公式得到如下结果</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">((</span><span class="n">h2</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">-</span><span class="n">y</span><span class="p">),</span> <span class="n">t</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+<p>准备数据</p>
+<div class="highlight"><pre><span></span><code># 准备数据
+X2 = np.hstack([X, X**2])
+</code></pre></div>
+<ul>
+<li>初始化参数</li>
+</ul>
+<div class="highlight"><pre><span></span><code>w1 = np.random.rand(1)
+w2 = np.random.rand(1)
+b = np.random.rand(1)
+alpha = 0.1
+epoch = 20
+</code></pre></div>
+<ul>
+<li>模型训练</li>
+</ul>
+<div class="highlight"><pre><span></span><code>for i in range(epoch):
+    w1 = w1 - alpha * loss_bar(X2[:, 0], X2[:, 1], y, w1, w2, b, X2[:, 0])
+    w2 = w2 - alpha * loss_bar(X2[:, 0], X2[:, 1], y, w1, w2, b, X2[:, 1])
+    b = b - alpha * loss_bar(X2[:, 0], X2[:, 1], y, w1, w2, b, np.ones((len(x), 1)))
+</code></pre></div>
+<ul>
+<li>
+<p>计算预测结果</p>
+</li>
+<li>
+<p>w1=array([1.01083825])</p>
+</li>
+<li>w2=array([0.6036596])</li>
+<li>b=array([1.3810806])</li>
+<li>
+<p>y_predict = h2(X2[:, 0], X2[:, 1], w1, w2, b)</p>
+</li>
+<li>
+<p>画出图像</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code>plt.scatter(x, y)
+plt.scatter(x, y_predict)
+plt.show()
+</code></pre></div>
+<p><img alt="image-20220121153006334" src="03-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95.assets/image-20220121153006334.png" /></p>
+<h2 id="4">4. 小结<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>梯度是微积分中一个很重要的概念.在单变量的函数中，梯度其实就是函数的微分，在多变量函数中，梯度是一个向量。</p>
+</li>
+<li>
+<p>梯度下降算法是平方损失的一种优化方法</p>
+</li>
+</ol>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../assets/javascripts/workers/search.092fa1f6.min.js"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a9542cf.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+    
+  </body>
+</html>

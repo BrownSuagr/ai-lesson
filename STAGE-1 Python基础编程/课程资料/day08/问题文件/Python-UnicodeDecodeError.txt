@@ -1,0 +1,8 @@
+错误描述：Traceback (most recent call last):
+  File "D:/PycharmProjects/newProject/01-Python文件操作三步走.py", line 17, in <module>
+    content = f.read()
+UnicodeDecodeError: 'gbk' codec can't decode byte 0xaa in position 8: illegal multibyte sequence
+
+错误解析：出现以上问题的主要原因主要在于f.read()读取的文件内容其默认编码为utf-8，而open(name,mode)打开文件默认编码为gbk，两者编码不一致，会导致中文内容读取失败
+
+解决方案：open(name, mode, encoding='utf-8')

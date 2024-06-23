@@ -1,0 +1,58 @@
+{
+  "title": "Python基础",
+  "description": "传智教育Python+大数据学科",
+  "author": "cndws",
+  "generator": "site",
+  "language": "zh-hans",
+  "gitbook": "2.6.9",
+  "plugins": [
+    "anchor-navigation-ex",
+    "toggle-chapters",
+    "code",
+    "-highlight",
+    "fontsettings",
+    "-github",
+    "-search",
+    "-sharing",
+    "prism",
+    "hide-element",
+    "splitter",
+    "theme-comscore",
+    "-search-pro",
+    "atoc",
+    "toc",
+    "copy-code-button"
+  ],
+  "pluginsConfig": {
+    "anchor-navigation-ex": {
+      "showLevel": false,
+      "showGoTop": true,
+      "isRewritePageTitle": true,
+      "isShowTocTitleIcon": true,
+      "tocLevel1Icon": "fa fa-hand-o-right",
+      "tocLevel2Icon": "fa fa-hand-o-right",
+      "tocLevel3Icon": "fa fa-hand-o-right"
+    },
+    "code": {
+      "copyButtons": true
+    },
+    "-github": {
+      "url": "https://github.com/your/repo"
+    },
+    "theme-default": {
+      "showLevel": true
+    },
+    "hide-element": {
+      "elements": [".gitbook-link"]
+    },
+    "prism": {
+      "css": ["prismjs/themes/prism-solarizedlight.css"]
+    },
+    "atoc": {
+      "addClass": true,
+      "className": "atoc",
+      "maxDepth": 1,
+      "skipFirstH1": true
+    }
+  }
+}

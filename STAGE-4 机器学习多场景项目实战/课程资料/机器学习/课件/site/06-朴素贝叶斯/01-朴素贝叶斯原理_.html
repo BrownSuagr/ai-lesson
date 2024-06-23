@@ -1,0 +1,1850 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../img/logo.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.11">
+    
+    
+      
+        <title>朴素贝叶斯原理 - 机器学习讲义</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.50e68009.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../index.html" title="机器学习讲义" class="md-header__button md-logo" aria-label="机器学习讲义" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            机器学习讲义
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              朴素贝叶斯原理
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+    <img src="../assets/images/logo.svg" height="45px" alt="logo">
+
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="机器学习讲义" class="md-nav__button md-logo" aria-label="机器学习讲义" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    机器学习讲义
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          1、机器学习概述
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="1、机器学习概述" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          1、机器学习概述
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/01-%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        02_人工智能概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/02-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        03_机器学习概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/03-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        04_机器学习分类
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/05-%E6%8B%9F%E5%90%88%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        05_拟合问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-%E5%89%8D%E7%BD%AE%E6%A6%82%E5%BF%B5/06-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%99%A8%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.html" class="md-nav__link">
+        06_机器学习开发环境
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          2、K近邻
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="2、K近邻" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          2、K近邻
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/01-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_K近邻算法原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/02-%E8%B7%9D%E7%A6%BB%E7%9A%84%E5%BA%A6%E9%87%8F%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        03_距离的度量方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/03-%E5%BD%92%E4%B8%80%E5%8C%96%E5%92%8C%E6%A0%87%E5%87%86%E5%8C%96.html" class="md-nav__link">
+        04_归一化和标准化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/04-K%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95API.html" class="md-nav__link">
+        05_K近邻算法API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/06-%E5%88%86%E7%B1%BB%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        06_分类模型评估方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/05-K%E5%80%BC%E9%80%89%E6%8B%A9%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        07_K值选择问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-K%E8%BF%91%E9%82%BB/07-%E6%A1%88%E4%BE%8B-%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E8%AF%86%E5%88%AB.html" class="md-nav__link">
+        08_案例-手写数字识别
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          3、线性回归
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="3、线性回归" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          3、线性回归
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/01-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_线性回归原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/03-%E6%AD%A3%E8%A7%84%E6%96%B9%E7%A8%8B.html" class="md-nav__link">
+        03_损失函数和正规方程
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/%E6%B1%82%E5%AF%BC.html" class="md-nav__link">
+        04_求导
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/04-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%952.html" class="md-nav__link">
+        05_梯度下降法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/05-%E5%85%B6%E4%BB%96%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        06_其他梯度下降方法
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/%E5%9B%9E%E5%BD%92%E9%97%AE%E9%A2%98%E8%AF%84%E4%BC%B0.html" class="md-nav__link">
+        07_回归问题评估
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/06-%E6%AD%A3%E5%88%99%E5%8C%96.html" class="md-nav__link">
+        08_过拟合欠拟合与正则化
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/07-%E6%A1%88%E4%BE%8B-%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%94%BE%E4%BB%B7%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        09_案例-波士顿房价预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          4、逻辑回归
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="4、逻辑回归" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          4、逻辑回归
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/01-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%AE%80%E4%BB%8B.html" class="md-nav__link">
+        02_逻辑回归介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/03-%E6%A1%88%E4%BE%8B-%E7%99%8C%E7%97%87%E5%88%86%E7%B1%BB%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        03_案例-癌症分类预测
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/04-%E5%88%86%E7%B1%BB%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87.html" class="md-nav__link">
+        04_分类评估指标
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/06-%E7%BB%83%E4%B9%A0-%E7%94%B5%E4%BF%A1%E5%AE%A2%E6%88%B7%E6%B5%81%E5%A4%B1.html" class="md-nav__link">
+        05_案例-电信客户流失
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          5、决策树
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="5、决策树" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          5、决策树
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/01-%E5%86%B3%E7%AD%96%E6%A0%91%E4%BB%8B%E7%BB%8D.html" class="md-nav__link">
+        02_决策树介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/03-ID3%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        03_ID3决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/04-C4.5%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        04_C4.5决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/05-CART%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        05_CART决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/06-%E5%9B%9E%E5%BD%92%E5%86%B3%E7%AD%96%E6%A0%91.html" class="md-nav__link">
+        06_回归决策树
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/07-%E5%89%AA%E6%9E%9D.html" class="md-nav__link">
+        07_剪枝
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-%E5%86%B3%E7%AD%96%E6%A0%91/08-%E6%A1%88%E4%BE%8B-%E6%B3%B0%E5%9D%A6%E5%B0%BC%E5%85%8B%E5%8F%B7%E7%94%9F%E5%AD%98%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        08_案例-泰坦尼克号生存预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          6、朴素贝叶斯
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="6、朴素贝叶斯" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          6、朴素贝叶斯
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.html" class="md-nav__link">
+        02_朴素贝叶斯原理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02-%E6%A1%88%E4%BE%8B-%E5%95%86%E5%93%81%E8%AF%84%E8%AE%BA%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        03_案例-垃圾邮件分类
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          7、支持向量机
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="7、支持向量机" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          7、支持向量机
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/01-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E5%BC%95%E5%85%A5.html" class="md-nav__link">
+        02_支持向量引入
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/02-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%A6%82%E5%BF%B5.html" class="md-nav__link">
+        03_支持向量概念
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/04-%E6%A0%B8%E6%96%B9%E6%B3%95.html" class="md-nav__link">
+        04_核方法和损失函数
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/06-%E6%A1%88%E4%BE%8B-%E9%B8%A2%E5%B0%BE%E8%8A%B1%E7%A7%8D%E7%B1%BB%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        05_案例-鸢尾花种类预测
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9">
+          8、聚类算法
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="8、聚类算法" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          8、聚类算法
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section1.html" class="md-nav__link">
+        02_聚类概述
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section2.html" class="md-nav__link">
+        03_KMeans API介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section3.html" class="md-nav__link">
+        04_KMeans实现流程
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section4.html" class="md-nav__link">
+        04_聚类效果评估
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/04-%E7%89%B9%E5%BE%81%E9%99%8D%E7%BB%B4.html" class="md-nav__link">
+        05_特征降维
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/section5.html" class="md-nav__link">
+        06_案例-顾客数据聚类分析
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          9、集成学习
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="9、集成学习" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          9、集成学习
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/00-README.html" class="md-nav__link">
+        01_内容介绍
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/01-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E9%97%AE%E9%A2%98.html" class="md-nav__link">
+        02_集成学习问题
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/02-Bagging%E5%92%8C%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97.html" class="md-nav__link">
+        03_Bagging和随机森林
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/03-Boosting%E5%92%8CAdaBoost.html" class="md-nav__link">
+        04_Boosting和AdaBoost
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/04-%E6%A1%88%E4%BE%8B-%E8%BD%A6%E8%BE%86%E8%B4%B7%E6%AC%BE%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html" class="md-nav__link">
+        05_案例-车辆贷款违约预测
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/05-GBDT.html" class="md-nav__link">
+        06_GBDT
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/06-XGBoost_1.html" class="md-nav__link">
+        07_XGBoost
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/07-%E6%A1%88%E4%BE%8B-%E7%BA%A2%E9%85%92%E5%93%81%E8%B4%A8%E5%88%86%E7%B1%BB.html" class="md-nav__link">
+        08_案例-红酒品质分类
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    学习目标
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    1. 概率公式
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    2. 贝叶斯公式
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    3. 朴素贝叶斯
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    4. 拉普拉斯平滑系数
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    5. 案例
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 案例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    5.1 首先分析各维度数据的类型
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    5.2 条件独立
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    5.3 分类属性的条件概率
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54" class="md-nav__link">
+    5.4 连续属性的条件概率
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55" class="md-nav__link">
+    5.5 应用举例
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56" class="md-nav__link">
+    5.6 根据贝叶斯公式计算给定条件的概率
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-m" class="md-nav__link">
+    5.7 条件概率的m估计
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    6. 小节
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="_1">朴素贝叶斯原理<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h2 id="_2">学习目标<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<ol>
+<li>了解常见概率的计算</li>
+<li>了解贝叶斯公式</li>
+<li>了解朴素贝叶斯中朴素的含义</li>
+<li>了解拉普拉斯平滑系数的作用</li>
+</ol>
+<h2 id="1">1. 概率公式<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p><img src='assets/01.png' />
+<br /></p>
+<ol>
+<li>条件概率：表示事件A在另外一个事件B已经发生条件下的发生概率，P(A|B)</li>
+<li>
+<p>在女神喜欢的条件下，职业是程序员的概率？</p>
+<ol>
+<li>女神喜欢条件下，有 2、3、4、7 共 4 个样本</li>
+<li>4 个样本中，有程序员 3、4 共 2 个样本</li>
+<li>则 P(程序员|喜欢) = 2/4 = 0.5</li>
+</ol>
+</li>
+<li>
+<p>联合概率：表示多个条件同时成立的概率，P(AB)   =  P(A)   P(B|A)  <br />
+   特征条件独立性假设：P(AB) = P(A) P(B)</p>
+</li>
+<li>职业是程序员并且体型匀称的概率？<ol>
+<li>数据集中，共有 7 个样本   </li>
+<li>职业是程序员有 1、3、4 共 3 个样本，则其概率为：3/7</li>
+<li>在职业是程序员，体型是匀称有 3  共 1 个样本，则其概率为：&#8531;</li>
+<li>则即是程序员又体型匀称的概率为：3/7 * &#8531; = 1/7</li>
+</ol>
+</li>
+<li>
+<p>【思考】：体型匀称并且是程序员的概率是多少？  P(B)   P(A|B)</p>
+</li>
+<li>
+<p>联合概率 + 条件概率：</p>
+</li>
+<li>在女神喜欢的条件下，职业是程序员、体重超重的概率？  P(AB|C) = P(A|C) P(B|AC)<ol>
+<li>在女神喜欢的条件下，有 2、3、4、7 共 4 个样本</li>
+<li>在这 4 个样本中，职业是程序员有 3、4 共 2 个样本，则其概率为：2/4=0.5</li>
+<li>在在 2 个样本中，体型超重的有 4 共 1 个样本，则其概率为：&frac12; = 0.5</li>
+<li>则 P(程序员, 超重|喜欢) = 0.5 * 0.5 = 0.25</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>简言之：
+条件概率：在去掉部分样本的情况下，计算某些样本的出现的概率，表示为：P(B|A)
+联合概率：多个事件同时发生的概率是多少，表示为：P(AB) = P(B)*P(A|B)</p>
+</blockquote>
+<p><br />
+<br /></p>
+<h2 id="2">2. 贝叶斯公式<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<p><img src='assets/03.png' /></p>
+<ol>
+<li>P(C) 表示 C 出现的概率</li>
+<li>P(W|C) 表示 C 条件 W 出现的概率</li>
+<li>P(W) 表示 W 出现的概率</li>
+</ol>
+<p><br />
+<img src='assets/04.png' /></p>
+<p><br />
+<br /></p>
+<ol>
+<li>P(C|W) = P(喜欢|程序员，超重)</li>
+<li>P(W|C) = P(程序员，超重|喜欢)</li>
+<li>P(C) = P(喜欢)</li>
+<li>P(W) = P(程序员，超重)</li>
+</ol>
+<p><br /></p>
+<ol>
+<li>根据训练样本估计先验概率P(C)：P(喜欢) = 4/7</li>
+<li>根据条件概率P(W|C)调整先验概率：P(程序员,超重|喜欢) = &frac14;</li>
+<li>此时我们的后验概率P(C|W)为：P(程序员,超重|喜欢) * P(喜欢) = 4/7 * &frac14; = 1/7 </li>
+<li>那么该部分数据占所有既为程序员，又超重的人中的比例是多少呢？</li>
+<li>P(程序员,超重) = P(程序员) * P(超重|程序员) = 3/7 * &#8532; = 2/7</li>
+<li>P(喜欢|程序员, 超重) = 1/7 ➗ 2/7 = 0.5</li>
+</ol>
+<h2 id="3">3. 朴素贝叶斯<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<p>我们发现，在前面的贝叶斯概率计算过程中，需要计算 P(程序员,超重|喜欢) 和 P(程序员, 超重) 等联合概率，为了简化联合概率的计算，朴素贝叶斯在贝叶斯基础上增加：<strong>特征条件独立假设</strong>，即：特征之间是互为独立的。</p>
+<p>此时，联合概率的计算即可简化为：</p>
+<ol>
+<li>P(程序员,超重|喜欢)  = P(程序员|喜欢) * P(超重|喜欢)</li>
+<li>P(程序员,超重) = P(程序员) * P(超重)</li>
+</ol>
+<h2 id="4">4. 拉普拉斯平滑系数<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<p>由于训练样本的不足，导致概率计算时出现 0 的情况。为了解决这个问题，我们引入了拉普拉斯平滑系数。</p>
+<p><img src='assets/05.png' /></p>
+<ol>
+<li>α 是拉普拉斯平滑系数，一般指定为 1</li>
+<li>N<sub>i</sub> 是 F1 中符合条件 C 的样本数量</li>
+<li>N 是在条件 C 下所有样本的总数</li>
+<li>m 表示**所有独立样本**的总数</li>
+</ol>
+<p>我们只需要知道为了避免概率值为 0，我们在分子和分母分别加上一个数值，这就是拉普拉斯平滑系数的作用。</p>
+<h2 id="5">5. 案例<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<p>考虑任务：预测一个贷款者是否会拖欠还款，我们基于以下图表做分析，假设有一组测试记录X={有房=否，婚姻状况=已婚，年收入=120W}，要分类该记录，我们需要利用训练数据中的可用信息计算后验概率P(Yes|X)和P(No|X)，如果P(Yes|X)&gt;P(No|X)，那么记录分类为Yes，反之为No。</p>
+<h3 id="51">5.1 首先分析各维度数据的类型<a class="headerlink" href="#51" title="Permanent link">&para;</a></h3>
+<ul>
+<li>有房：二元变量，婚否：分类变量，年收入：连续变量，拖欠贷款：类变量</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Tid</th>
+<th>有房</th>
+<th>婚否</th>
+<th>年收入</th>
+<th>拖欠贷款</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>是</td>
+<td>单身</td>
+<td>125</td>
+<td>否</td>
+</tr>
+<tr>
+<td>2</td>
+<td>否</td>
+<td>已婚</td>
+<td>100</td>
+<td>否</td>
+</tr>
+<tr>
+<td>3</td>
+<td>否</td>
+<td>单身</td>
+<td>70</td>
+<td>否</td>
+</tr>
+<tr>
+<td>4</td>
+<td>是</td>
+<td>已婚</td>
+<td>120</td>
+<td>否</td>
+</tr>
+<tr>
+<td>5</td>
+<td>否</td>
+<td>离异</td>
+<td>95</td>
+<td>是</td>
+</tr>
+<tr>
+<td>6</td>
+<td>否</td>
+<td>已婚</td>
+<td>60</td>
+<td>否</td>
+</tr>
+<tr>
+<td>7</td>
+<td>是</td>
+<td>离异</td>
+<td>220</td>
+<td>否</td>
+</tr>
+<tr>
+<td>8</td>
+<td>否</td>
+<td>单身</td>
+<td>85</td>
+<td>是</td>
+</tr>
+<tr>
+<td>9</td>
+<td>否</td>
+<td>已婚</td>
+<td>75</td>
+<td>否</td>
+</tr>
+<tr>
+<td>10</td>
+<td>否</td>
+<td>单身</td>
+<td>90</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<p>准确估计类标号和属性值的每一种可能组合的后验概率非常困难，因为即便属性数目不是很大，仍然需要很大的训练集。此时，我们采用贝叶斯就比较方便，它允许我们使用先验概率P(Y)、类条件概率p(X|Y)表示后验概率：</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wpsE73F.tmp.png" /></p>
+<p>上式中的，分母P(X)通过全概率公式可计算得出，结果是常数，通常实践中可忽略。P(Y)先验概率可以通过计算训练集中属于每个类的训练记录所占的比例计算。p(X|Y)的估计常用的有两种估计方法：朴素贝叶斯和贝叶斯网络。</p>
+<h3 id="52">5.2 条件独立<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<p>朴素贝叶斯是基于上述的 <strong>贝叶斯定理与特征条件独立</strong> 的分类方法。朴素贝叶斯对条件概率分布做了条件独立性假设，由于这是一个较强的假设，朴素贝叶斯也由此得名。</p>
+<p>给定Z,X条件独立于Y，则有下面条件独立</p>
+<p>P(X|Y,Z)=P(X|Z)</p>
+<p>比如一个人的手臂长短和它的阅读能力之间的关系，你可能会发现手臂较长的人阅读能力较强。这种关系可以用另外一个因素去解释，那就是年龄。小孩子的手臂往往比较短，也不具备成年人的阅读能力。如果年龄一定，则观察到的手臂长度和阅读能力之间的关系消失了。也就是如果年龄一定，手臂长度和阅读能力两者条件独立。</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4847.tmp.png" /></p>
+<p>条件独立假设等于说是用于分类的特征在类确定的条件下都是条件独立的，这一假设使得朴素贝叶斯算法变得简单，但是有时会牺牲一定的分类准确率。</p>
+<p>朴素贝叶斯实际上学习到生成数据的机制，所以属于生成模型。</p>
+<p>朴素贝叶斯分类时，对给定的输入x，通过学习到的模型计算后验概率分布P(Y=c|X=x)，将后验概率最大的类作为x的类输出。后验概率计算根据上述的贝叶斯定理进行：</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4848.tmp.png" /></p>
+<p>将上面公式（1）代入上式得到朴素贝叶斯公式</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4849.tmp.png" /></p>
+<p>上式中的分母对所有的类别都是相同的，因此只需要当分子取最大值时即可</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps484A.tmp.png" /></p>
+<h3 id="53">5.3 分类属性的条件概率<a class="headerlink" href="#53" title="Permanent link">&para;</a></h3>
+<p>分类属性<img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps484B.tmp.png" />，我们只需要根据类y中属性值等于<img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps484C.tmp.png" />的训练实例的比例来估计的条件概率。比如上面的是否拖欠贷款的例子中P(婚否=单身|Yes拖欠)=&#8532;。</p>
+<p>请大家自行算其他分类属性的条件概率。</p>
+<h3 id="54">5.4 连续属性的条件概率<a class="headerlink" href="#54" title="Permanent link">&para;</a></h3>
+<p>我们采用假设连续变量服从某种概率分布，然后使用训练数据估计分布的参数。高斯分布被用来表示连续属性的类条件概率分布，如下表示每个类<img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps484D.tmp.png" />，属性<img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps484E.tmp.png" />的类条件概率为：</p>
+<p><img src="01-朴素贝叶斯原理.assets/wps484F.tmp.png" alt="img" style="zoom:150%;" /></p>
+<p>参数<img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4850.tmp.png" />可以用类<img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4851.tmp.png" />的所有训练记录关于<img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4852.tmp.png" />的样本均值<img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4863.tmp.png" />来估计，参数<img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4864.tmp.png" />可以用这些记录的方差<img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4865.tmp.png" />来估计。</p>
+<p>比如上面的是否拖欠贷款的例子中，收入的数据就是连续型变量：</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4866.tmp.png" /></p>
+<p>假设给定一个收入等于120W，它的类条件概率为：</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4867.tmp.png" /></p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4868.tmp.png" /></p>
+<h3 id="55"><strong>5.5 应用举例</strong><a class="headerlink" href="#55" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tid</th>
+<th>有房</th>
+<th>婚否</th>
+<th>年收入</th>
+<th>拖欠贷款</th>
+<th>概率计算</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>是</td>
+<td>单身</td>
+<td>125</td>
+<td>否</td>
+<td>P(有房=是|拖欠贷款=否)=3/7</td>
+</tr>
+<tr>
+<td>2</td>
+<td>否</td>
+<td>已婚</td>
+<td>100</td>
+<td>否</td>
+<td>P(有房=否|拖欠贷款=否)=4/7</td>
+</tr>
+<tr>
+<td>3</td>
+<td>否</td>
+<td>单身</td>
+<td>70</td>
+<td>否</td>
+<td>P(有房=是|拖欠贷款=是)=0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>是</td>
+<td>已婚</td>
+<td>120</td>
+<td>否</td>
+<td>P(有房=是|拖欠贷款=否)=1</td>
+</tr>
+<tr>
+<td>5</td>
+<td>否</td>
+<td>离异</td>
+<td>95</td>
+<td>是</td>
+<td>P(婚否=单身|拖欠=否)=2/7</td>
+</tr>
+<tr>
+<td>6</td>
+<td>否</td>
+<td>已婚</td>
+<td>60</td>
+<td>否</td>
+<td>P(婚否=离异|拖欠=否)=1/7</td>
+</tr>
+<tr>
+<td>7</td>
+<td>是</td>
+<td>离异</td>
+<td>220</td>
+<td>否</td>
+<td>P(婚否=已婚|拖欠=否)=4/7</td>
+</tr>
+<tr>
+<td>8</td>
+<td>否</td>
+<td>单身</td>
+<td>85</td>
+<td>是</td>
+<td>P(婚否=单身|拖欠=是)=&#8532;</td>
+</tr>
+<tr>
+<td>9</td>
+<td>否</td>
+<td>已婚</td>
+<td>75</td>
+<td>否</td>
+<td>P(婚否=离异|拖欠=是)=&#8531;</td>
+</tr>
+<tr>
+<td>10</td>
+<td>否</td>
+<td>单身</td>
+<td>90</td>
+<td>是</td>
+<td>P(婚否=已婚|拖欠=是)=0</td>
+</tr>
+</tbody>
+</table>
+<p>年收入是连续型变量，采取求取均值和方差办法</p>
+<p>如果P(年收入|拖欠贷款=否)：样本均值=110，样本方差=2975</p>
+<p>如果P(年收入|拖欠贷款=是)：样本均值=90，样本方差=25</p>
+<p>预测：X={有房=否，婚姻状况=已婚，年收入=120W}是否拖欠欠款？</p>
+<p>预测是否拖欠贷款首先需要计算p(拖欠=否|X（上述的三个条件）)和p(拖欠=是|X（上述的三个条件）)的大小。</p>
+<p>公式：<img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4869.tmp.png" /></p>
+<p>公式如下：</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps486A.tmp.png" /></p>
+<h3 id="56">5.6 根据贝叶斯公式计算给定条件的概率<a class="headerlink" href="#56" title="Permanent link">&para;</a></h3>
+<p>首先计算不拖欠贷款的概率：</p>
+<p><img src="01-朴素贝叶斯原理.assets/wps486B.tmp.png" alt="img" style="zoom:150%;" /><strong><em>*在计算拖欠贷款的概率：*</em></strong></p>
+<p><img src="01-朴素贝叶斯原理.assets/wps486C.tmp.png" alt="img" style="zoom:150%;" /></p>
+<p>因为p(拖欠=否|X（上述的三个条件）)&gt;p(拖欠=是|X（上述的三个条件）)，因此该条记录被判断为不拖欠贷款情况。</p>
+<h3 id="57-m">5.7 条件概率的m估计<a class="headerlink" href="#57-m" title="Permanent link">&para;</a></h3>
+<p>上面的例子大家可能从训练数据估计后验概率发现了一个问题：如果有一个属性的类条件概率为0，则整个类的后验概率就等于0。仅使用记录比例来估计类条件概率的方法对很对场景是不够准确的，尤其是当训练样例很少而属性数目又很大的时候。</p>
+<p>当有一个或几个属性的类条件概率为0导致整个类的后验概率为0的时候，朴素贝叶斯就失效了，无法根据朴素贝叶斯分类该记录。这里介绍的条件概率的m估计就是解决办法。</p>
+<p>m估计方法依照的数学公式为：</p>
+<p><img src="01-朴素贝叶斯原理.assets/wps487D.tmp.png" alt="img" style="zoom:150%;" /></p>
+<p>前面的例子，条件概率p(婚姻状况=已婚|Yes)=0，Yes表示有欠款。这里采用m估计，****指定m=3，不欠款类p=&#8532;，欠款类p=&#8531;，****其中:</p>
+<p>n=3，欠款出现在数据集中一共3条</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps487E.tmp.png" />欠款中结婚状况为已婚个数为0.</p>
+<p>则条件概率不再是0，以下为几个条件概率的计算结果：</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps487F.tmp.png" /></p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4880.tmp.png" /></p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4881.tmp.png" /></p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4882.tmp.png" /></p>
+<p>则：</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4883.tmp.png" />   类YES得后验概率：</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4884.tmp.png" /><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4885.tmp.png" />类No得后验概率：</p>
+<p><img alt="img" src="01-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%8E%9F%E7%90%86.assets/wps4886.tmp.png" /></p>
+<p>因为p(拖欠=否|X（上述的三个条件）)&gt;p(拖欠=是|X（上述的三个条件）)，因此该条记录被判断为不拖欠贷款情况。尽管和上面结果一致，但是当训练样例较少时候，m估计通常是一种更加健壮得概率估计方法。</p>
+<h2 id="6">6. 小节<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<ol>
+<li>概率、联合概率、条件概率是概率模型计算中经常使用的计算公式</li>
+<li>朴素贝叶斯中的朴素指的是特征条件独立性假设</li>
+<li>拉普拉斯平滑平滑系数主要为了解决概率为0的问题</li>
+</ol>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "\u590d\u5236", "clipboard.copied": "\u5df2\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "search": "../assets/javascripts/workers/search.092fa1f6.min.js"}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a9542cf.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../js/extra.js"></script>
+      
+    
+  </body>
+</html>
