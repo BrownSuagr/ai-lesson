@@ -1,0 +1,6 @@
+第九阶段是大模型基础与项目，本阶段涉及的库有一些是最近几年新开源的，容易出现版本兼容类错误，因此提供了一个稳定的环境。
+requirements.txt文件使用方法：
+	第一步：在anaconda prompt命令窗口新建一个虚拟环境，命令是conda create -n 你的虚拟环境名 python=3.10
+	第二步：切换到此虚拟环境，命令是 conda activate 你的虚拟环境名
+	第三步：通过requirements.txt文件安装所有文件中的第三方库，若anaconda有配置默认镜像源，则命令是 pip install -r requirements.txt
+	        若anaconda没有配置默认镜像源可能安装较慢，可以镜像源进行安装，命令是 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
