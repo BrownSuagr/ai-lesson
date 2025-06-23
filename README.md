@@ -74,7 +74,7 @@ nohup jupyter notebook --allow-root &
 ├── STAGE-1 Python基础编程
 │   └── 第一章 Python基础语法
 ├── STAGE-2 Python进阶编程
-STAGE-3 数据处理与统计分析
+├── STAGE-3 数据处理与统计分析
 │   ├── 1-Linux                 # Linux 系统基础命令，用于数据处理环境的命令行熟练操作
 │   ├── 2-MySQL                 # 数据库基础操作，包含 SQL 查询、数据表操作等
 │   ├── 3-搭建环境               # 安装 Python、Jupyter、依赖包，配置数据科学工作环境
